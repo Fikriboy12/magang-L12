@@ -45,10 +45,10 @@
            <tr>
                  {{-- <td width = "200px"><img src="{{ asset('') }}assets_admin/img/logonew.png" width="100%"></td> --}}
                  <td class="tengah">
-                       <h2>PT. Biro Klasifikasi Indonesia (Persero)</h2>
+                       <h2>PT. Aditama Net Media Solusindo (Persero)</h2>
                      
-                       <h4> Jl. Yos Sudarso No.38-40, RT.4/RW.10, Kb. Bawang, </h4>
-                       <h4>Kec. Tj. Priok, Jkt Utara, Daerah Khusus Ibukota Jakarta 14320</h4>
+                       <h4> Jl. Sungai Alam No.38-40, RT.4/RW.10, Kb. Bengkalis, </h4>
+                       <h4>Kec. Tj. Priok, Bengkalis, Daerah Khusus Ibukota Riau 14320</h4>
                  </td>
             </tr>
             <hr>
@@ -63,7 +63,7 @@
              <tr>
                  <td style="width: 30%;">Nama</td>
                  <td style="width: 5%;">:</td>
-                 <td style="width: 65%;">HRD PT. Biro Klasifikasi Indonesia</td>
+                 <td style="width: 65%;">HRD PT. Aditama Net Media Solusindo</td>
              </tr>
              <tr>
                 <td style="width: 30%;">No telp</td>
@@ -73,7 +73,7 @@
              <tr>
                  <td style="width: 30%; vertical-align: top;">Alamat</td>
                  <td style="width: 5%; vertical-align: top;">:</td>
-                 <td style="width: 65%;">Jl. Yos Sudarso No.38-40, RT.4/RW.10, Kb. Bawang, Kec. Tj. Priok, Jkt Utara, Daerah Khusus Ibukota Jakarta 14320</td>
+                 <td style="width: 65%;">Jl. Wonosari No.38-40, RT.4/RW.10, Kb. Bawang, Kec. Tj. Priok, Bengkalis, Daerah Khusus Ibukota Riau 14320</td>
              </tr>
             
          </table>
@@ -96,12 +96,12 @@
             </tr>
          
         </table>
-         <p align = "justify">Mahasiswa yang bersangkutan telah diterima magang kerja di PT. Biro Klasifikasi Indonesia (Persero) Yang bersangkutan dapat melaksanakan magang kerja selama 6 bulan, 
+         <p align = "justify">Mahasiswa yang bersangkutan telah diterima magang kerja di PT. Aditama net Media Solusindo (Persero) Yang bersangkutan dapat melaksanakan magang kerja selama 6 bulan, 
             Selama magang di PT. Nama Perusahaan, yang bersangkutan wajib menaati peraturan yang ada di perusahaan kami.</p>
      
-         {{-- <div style="width: 50%; text-align: left; float: right;">Jakarta, {{date('d-m-Y')}}</div><br> --}}
+         {{-- <div style="width: 50%; text-align: left; float: right;">Bengkalis, {{date('d-m-Y')}}</div><br> --}}
          <div style="width: 50%; text-align: left; float: right;">Yang bertanda tangan,</div><br><br><br><br><br>
-         <div style="width: 50%; text-align: left; float: right;">HRD  PT. Biro Klasifikasi Indonesia</div>
+         <div style="width: 50%; text-align: left; float: right;">HRD  PT. Aditama Net Media Solusindo</div>
      
      </div>
 </div>

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\View\View;
 
 class LoginController extends Controller
 {
@@ -15,166 +14,136 @@ class LoginController extends Controller
         $this->middleware('guest')->except([
             'logout',
             'profile',
+            'lengkapi_profile',
             'update_profile',
-            'insert_lengkapi_profile',
-            'lengkapi_profile'
+            'insert_lengkapi_profile'
         ]);
     }
 
-    // Form login
+    // =======================
+    // 🚪 FORM LOGIN
+    // =======================
     public function login()
     {
         return view('auth.login');
     }
 
-    // Proses login
+    // =======================
+    // 🔐 PROSES LOGIN
+    // =======================
     public function action_login(Request $request)
     {
-        $credentials = $request->validate([
+        $request->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
 
-        if(Auth::attempt($credentials)){
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt($credentials)) {
+
             $request->session()->regenerate();
             $user = Auth::user();
 
-            if($user->role == 'admin'){
-                return redirect('admin/dashboard')->with('success', 'Selamat datang, ' . $user->name);
-            } else {
-                return redirect('/home')->with('success', 'Selamat datang, ' . $user->name);
+            // =================================
+            // 🔄 REDIRECT BERDASARKAN ROLE
+            // =================================
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard')
+                    ->with('success', 'Selamat datang Admin!');
             }
+
+            if ($user->role === 'pelamar') {
+                return redirect()->route('home.auth')
+                    ->with('success', 'Selamat datang Pelamar!');
+            }
+
+            // --- INI PERBAIKANNYA ---
+            if ($user->role === 'pembimbing') {
+                // Saya ganti 'pembimbing.laporan.index' menjadi 'pembimbing.dashboard'
+                return redirect()->route('pembimbing.dashboard')
+                    ->with('success', 'Selamat datang Pembimbing!');
+            }
+            // --- BATAS PERBAIKAN ---
+
+            return redirect()->route('home.auth');
         }
 
-        return back()->with('error', 'Email atau password salah');
+        return back()->withErrors([
+            'email' => 'Email atau password salah!',
+        ]);
     }
 
+    // =======================
+    // 🚪 LOGOUT
+    // =======================
     public function logout(Request $request)
     {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login')->with('success', 'Anda berhasil logout');
+        return redirect()->route('login')->with('success', 'Berhasil logout!');
     }
 
-    // Tampilkan profile
-    public function profile(): View
+    // =======================
+    // 👤 PROFILE
+    // =======================
+    public function profile()
     {
         $user = Auth::user();
-        $data = [
-            'profile' => $user
-        ];
-        return view('auth.profile', compact('data'));
+        return view('auth.profile', compact('user'));
     }
 
-    // Tampilkan lengkapi profile
-    public function lengkapi_profile(): View
+    // =======================
+    // 📝 FORM LENGKAPI PROFILE
+    // =======================
+    public function lengkapi_profile()
     {
         $user = Auth::user();
-        $data = [
-            'profile' => $user
-        ];
-        return view('auth.lengkapiprofile', compact('data'));
+        return view('auth.lengkapi_profile', compact('user'));
     }
 
-
-    // ==========================================================
-    // PERBAIKAN PADA FUNGSI UPDATE
-    // ==========================================================
-    public function update_profile(Request $request)
-    {
-        $request->validate([
-            'nama_lengkap' => 'required|string|max:255',
-            'email' => 'required|email',
-            'no_telp' => 'required|string',
-            'nim' => 'required|string',
-            'nik' => 'required|string',
-            'tempat_lahir' => 'required|string',
-            'tanggal_lahir' => 'required|date',
-            'jenis_kelamin' => 'required|string',
-            'agama' => 'required|string',
-            'alamat_lengkap' => 'required|string', 
-            'password' => 'nullable|min:8',
-        ]);
-
-        $user = Auth::user();
-
-        $dataToUpdate = [
-            'name' => $request->nama_lengkap, 
-            'nama_lengkap' => $request->nama_lengkap,
-            'email' => $request->email,
-            'no_telp' => $request->no_telp,
-            'nim' => $request->nim,
-            'nik' => $request->nik,
-            'tempat_lahir' => $request->tempat_lahir,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'agama' => $request->agama,
-            
-            // ======================================================
-            // PERBAIKAN: Hanya update 2 kolom ini
-            // ======================================================
-            'alamat' => $request->alamat_lengkap, // Mengisi kolom 'alamat' lama
-            'alamat_lengkap' => $request->alamat_lengkap, // Mengisi kolom 'alamat_lengkap' baru
-        ];
-
-        if (!empty($request->password)) {
-            $dataToUpdate['password'] = Hash::make($request->password);
-        }
-
-        $user->update($dataToUpdate);
-
-        return redirect('profile')->with('suc_message', 'Profile berhasil di-update!');
-    }
-
-    // ==========================================================
-    // PERBAIKAN PADA FUNGSI LENGKAPI PROFILE
-    // ==========================================================
+    // =======================
+    // 📝 INSERT LENGKAPI PROFILE
+    // =======================
     public function insert_lengkapi_profile(Request $request)
     {
-        $request->validate([
-            'nama_lengkap' => 'required|string|max:255',
-            'email' => 'required|email',
-            'no_telp' => 'required|string',
-            'nim' => 'required|string', 
-            'nik' => 'required|string', 
-            'tempat_lahir' => 'required|string', 
-            'tanggal_lahir' => 'required|date', 
-            'jenis_kelamin' => 'required|string', 
-            'agama' => 'required|string', 
-            'alamat_lengkap' => 'required|string',
-            'password' => 'nullable|min:8', 
-        ]);
-
         $user = Auth::user();
 
-        $dataToUpdate = [
-            'name' => $request->nama_lengkap, 
+        $request->validate([
+            'nama_lengkap' => 'required',
+            'tgl_lahir' => 'required',
+            'alamat' => 'required',
+        ]);
+
+        $user->update([
             'nama_lengkap' => $request->nama_lengkap,
-            'email' => $request->email,
-            'no_telp' => $request->no_telp,
-            'nim' => $request->nim,
-            'nik' => $request->nik,
-            'tempat_lahir' => $request->tempat_lahir,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'agama' => $request->agama,
-            
-            // ======================================================
-            // PERBAIKAN: Hanya update 2 kolom ini
-            // ======================================================
-            'alamat' => $request->alamat_lengkap, // Mengisi kolom 'alamat' lama
-            'alamat_lengkap' => $request->alamat_lengkap, // Mengisi kolom 'alamat_lengkap' baru
-        ];
+            'tgl_lahir' => $request->tgl_lahir,
+            'alamat' => $request->alamat
+        ]);
 
-        if (!empty($request->password)) {
-            $dataToUpdate['password'] = Hash::make($request->password);
-        }
+        return redirect()->route('profile.view')
+            ->with('success', 'Profil berhasil dilengkapi!');
+    }
 
-        $user->update($dataToUpdate);
+    // =======================
+    // ✏ UPDATE PROFILE
+    // =======================
+    public function update_profile(Request $request)
+    {
+        $user = Auth::user();
 
-        return redirect('profile')->with('suc_message', 'Profile berhasil di-update!');
+        $request->validate([
+            'nama_lengkap' => 'required',
+            'alamat' => 'required'
+        ]);
+
+        $user->update([
+            'nama_lengkap' => $request->nama_lengkap,
+            'alamat' => $request->alamat
+        ]);
+
+        return back()->with('success', 'Profil berhasil diperbarui!');
     }
 }
-

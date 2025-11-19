@@ -10,9 +10,22 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-        //
+    ->withMiddleware(function (Middleware $middleware) {
+        
+        // --- SAYA SUDAH MENAMBAHKAN INI UNTUK ANDA ---
+        $middleware->alias([
+            // Untuk role Admin (dari dashboard admin Anda)
+            'admin' => \App\Http\Middleware\RoleMiddleware::class . ':admin',
+            
+            // Untuk role Pelamar
+            'pelamar' => \App\Http\Middleware\RoleMiddleware::class . ':pelamar',
+            
+            // Untuk role Pembimbing (yang baru kita buat)
+            'pembimbing' => \App\Http\Middleware\RoleMiddleware::class . ':pembimbing',
+        ]);
+        // ----------------------------------------------
+
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        //
+    ->withExceptions(function (Exceptions $exceptions) {
+        // ...
     })->create();

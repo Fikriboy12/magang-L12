@@ -17,18 +17,19 @@
         align-items: center;
     }
 
+    /* Card */
     .login-card {
         background: #fff;
         border-radius: 12px;
         padding: 35px 25px;
         width: 100%;
-        max-width: 360px;
+        max-width: 360px; /* card tidak terlalu lebar */
         box-shadow: 0 15px 30px rgba(0,0,0,0.3);
         text-align: center;
     }
 
     .login-card img {
-        width: 90px;
+        width: 180px; /* Diperbesar dari 90px menjadi 120px */
         margin-bottom: 10px;
     }
 
@@ -45,10 +46,11 @@
         font-weight: 700;
     }
 
+    /* Input */
     .input-group {
         position: relative;
         margin-bottom: 12px;
-        max-width: 100%;
+        max-width: 100%; /* tidak melebihi card */
     }
 
     .input-group i {
@@ -60,13 +62,13 @@
     }
 
     .input-group input {
-        width: 100%;
+        width: 100%; /* maksimal sesuai card */
         padding: 8px 12px 8px 35px;
         border-radius: 8px;
         border: 1px solid #ccc;
         outline: none;
         font-size: 14px;
-        box-sizing: border-box;
+        box-sizing: border-box; /* pastikan input tidak melebihi card */
     }
 
     .input-group input:focus {
@@ -74,6 +76,7 @@
         box-shadow: 0 0 6px rgba(30,60,114,0.4);
     }
 
+    /* Button */
     .login-card button {
         width: 100%;
         padding: 10px;
@@ -91,19 +94,21 @@
         background: linear-gradient(135deg, #2a5298, #1e3c72);
     }
 
-    .links {
+    /* Links */
+    .login-card .links {
         margin-top: 12px;
         font-size: 14px;
     }
-    .links a {
+    .login-card .links a {
         color: #1e3c72;
         text-decoration: none;
     }
-    .links a:hover {
+    .login-card .links a:hover {
         color: #2a5298;
         text-decoration: underline;
     }
 
+    /* Alert */
     .alert {
         background: #ffe6e6;
         color: #cc0000;
@@ -111,46 +116,36 @@
         margin-bottom: 12px;
         border-radius: 6px;
         font-size: 14px;
-        text-align: left;
     }
 </style>
 </head>
 <body>
 
 <div class="login-card">
-
-    <img src="{{ asset('assets_admin/img/logolama.png') }}" alt="Logo">
+     <img src="{{ asset('gambar/ANMS-logo.png') }}" alt="Logo ANMS">
     <div class="company-name">PT. Aditama Net media Solusindo</div>
     <h2>Login</h2>
 
-    @if ($errors->any())
-        <div class="alert">
-            <ul style="margin: 0; padding-left: 15px;">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+    @if (session()->has('err_message'))
+        <div class="alert">{{ session()->get('err_message') }}</div>
     @endif
 
-    {{-- ✅ PERBAIKAN: Arahkan ke /action-login --}}
-    <form method="POST" action="{{ url('/action-login') }}">
+    <form method="POST" action="{{ url('action-login') }}">
         @csrf
         <div class="input-group">
             <i class="fas fa-envelope"></i>
-            <input type="email" name="email" placeholder="Email" required value="{{ old('email') }}">
+            <input type="email" name="email" placeholder="Email" required>
         </div>
         <div class="input-group">
             <i class="fas fa-lock"></i>
             <input type="password" name="password" placeholder="Password" required>
         </div>
-
         <button type="submit">Login</button>
     </form>
 
     <div class="links">
-        <a href="{{ route('home') }}">Halaman Utama</a> | 
-        <a href="{{ route('register') }}">Registrasi</a>
+        <a href="{{ url('') }}">Halaman Utama</a> | 
+        <a href="{{ url('registrasi') }}">Registrasi</a>
     </div>
 </div>
 

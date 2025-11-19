@@ -15,6 +15,26 @@
         <li><a href="{{ url('pendaftaran')}}">Pendaftaran</a></li>
         <li><a href="{{ url('data-lamaran')}}">Lamaran</a></li>
 
+        {{-- ========================================================== --}}
+        {{-- == INI ADALAH KODE MENU (LINK) YANG BENAR == --}}
+        {{-- ========================================================== --}}
+        @auth  {{-- Cek dulu apakah user sudah login --}}
+            {{-- Cek apakah rolenya 'pelamar' DAN statusnya 'diterima' --}}
+            @if(Auth::user()->role == 'pelamar' && Auth::user()->status == 'diterima')
+                <li class="nav-item">
+                    {{-- Ini mengarah ke Rute yg kita buat di Langkah 4 --}}
+                    <a href="{{ route('mahasiswa.laporan.index') }}" 
+                       class="nav-link {{ request()->routeIs('mahasiswa.laporan*') ? 'active' : '' }}">
+                        Laporan Harian
+                    </a>
+                </li>
+            @endif
+        @endauth
+        {{-- ========================================================== --}}
+        {{-- == AKHIR DARI KODE MENU == --}}
+        {{-- ========================================================== --}}
+
+
         @guest
             {{-- Tampilkan ini jika user BELUM login --}}
             <li><a href="{{ url('login') }}">Login</a></li>
@@ -40,5 +60,4 @@
 
     </ul>
     </nav></div>
-</header>```
-
+</header>
