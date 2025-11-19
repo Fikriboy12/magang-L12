@@ -1,8 +1,3 @@
-{{-- 
-  File ini adalah KONTEN untuk melihat detail laporan per mahasiswa.
-  Lokasi: resources/views/pembimbing/laporan_detail.blade.php
---}}
-
 @extends('template_admin.master_pembimbing')
 
 @section('title', 'Detail Laporan Mahasiswa')
@@ -10,7 +5,7 @@
 @section('contents')
 
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
+    <!-- Header -->
     <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -26,76 +21,75 @@
         </div>
       </div>
     </div>
-    <!-- /.content-header -->
 
-    <!-- Main content -->
+    <!-- Main Content -->
     <section class="content">
       <div class="container-fluid">
-        
         <div class="row">
             <div class="col-12">
-                <div class="card">
+                <div class="card card-primary card-outline">
                     <div class="card-header">
-                        <h3 class="card-title">Mahasiswa: <strong>{{ $mahasiswa->name }}</strong></h3>
+                        <h3 class="card-title">
+                            <i class="fas fa-user-graduate mr-1"></i>
+                            Mahasiswa: <strong>{{ $mahasiswa->name }}</strong>
+                        </h3>
                     </div>
                     <div class="card-body">
                         @if ($laporanList->isEmpty())
                             <div class="alert alert-warning text-center">
-                                Mahasiswa ini belum meng-upload laporan harian.
+                                <i class="fas fa-info-circle"></i> Mahasiswa ini belum meng-upload laporan harian.
                             </div>
                         @else
-                            {{-- Kita akan gunakan Timeline --}}
-                            <div class="timeline">
-                                @foreach ($laporanList as $laporan)
-                                    <!-- timeline time label -->
-                                    <div class="time-label">
-                                        <span class="bg-primary">{{ \Carbon\Carbon::parse($laporan->tanggal)->format('d F Y') }}</span>
-                                    </div>
-                                    <!-- /.timeline-label -->
-                                    
-                                    <!-- timeline item -->
-                                    <div>
-                                        <i class="fas fa-check bg-green"></i>
-                                        <div class="timeline-item">
-                                            <span class="time"><i class="fas fa-clock"></i> {{ $laporan->created_at->format('H:i') }}</span>
-                                            <h3 class="timeline-header"><strong>Kegiatan:</strong></h3>
-
-                                            <div class="timeline-body">
+                            <table id="example1" class="table table-bordered table-striped table-hover">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th style="width: 5%">No</th>
+                                        <th style="width: 15%">Tanggal & Waktu</th>
+                                        <th style="width: 35%">Kegiatan</th>
+                                        <th style="width: 20%">Catatan</th>
+                                        <th style="width: 25%">Foto Dokumentasi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($laporanList as $laporan)
+                                        <tr>
+                                            <td class="text-center align-middle">{{ $loop->iteration }}</td>
+                                            <td class="align-middle">
+                                                <strong>{{ \Carbon\Carbon::parse($laporan->tanggal)->format('d M Y') }}</strong>
+                                                <br>
+                                                <small class="text-muted"><i class="far fa-clock"></i> {{ $laporan->created_at->format('H:i') }} WIB</small>
+                                            </td>
+                                            <td class="align-middle">
                                                 {{ $laporan->kegiatan }}
-
-                                                @if ($laporan->catatan)
-                                                    <hr>
-                                                    <p><strong>Catatan:</strong> {{ $laporan->catatan }}</p>
+                                            </td>
+                                            <td class="align-middle">
+                                                @if($laporan->catatan)
+                                                    {{ $laporan->catatan }}
+                                                @else
+                                                    <span class="text-muted text-sm font-italic">- Tidak ada catatan -</span>
                                                 @endif
-                                            </div>
-                                            
-                                            <div class="timeline-footer">
+                                            </td>
+                                            <td class="align-middle text-center">
                                                 @php
-                                                    // PERBAIKAN DI SINI: Menggunakan satu titik (.) bukan tiga titik (...)
+                                                    // Logic path foto (Storage Link)
                                                     $fotoUrl = asset('storage/' . str_replace('public/', '', $laporan->foto));
                                                 @endphp
-                                                <a href="{{ $fotoUrl }}" target="_blank" class="btn btn-info btn-sm">
-                                                    <i class="fas fa-image"></i> Lihat Foto
+                                                
+                                                {{-- Menampilkan Foto Langsung --}}
+                                                <a href="{{ $fotoUrl }}" target="_blank" title="Klik untuk memperbesar">
+                                                    <img src="{{ $fotoUrl }}" alt="Foto Laporan" class="img-fluid rounded shadow-sm" style="max-height: 150px; max-width: 100%;">
                                                 </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- END timeline item -->
-                                @endforeach
-                                <div>
-                                    <i class="fas fa-clock bg-gray"></i>
-                                </div>
-                            </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         @endif
                     </div>
                 </div>
             </div>
         </div>
-
-      </div><!--/. container-fluid -->
+      </div>
     </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
-
+</div>
 @endsection
