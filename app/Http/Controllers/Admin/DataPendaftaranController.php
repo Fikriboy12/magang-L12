@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 
-// HANYA USE STATEMENT yang dibutuhkan, bukan deklarasi class
+// HANYA USE STATEMENT yang dibutuhkan
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendMail; 
 
@@ -27,7 +27,7 @@ class DataPendaftaranController extends Controller
         // Data untuk tabel utama
         $data_pendaftaran = Pendaftaran::join('users', 'pendaftaran.id_users', '=', 'users.id')->leftjoin('detail_users', 'detail_users.id_users', '=', 'users.id')->where('status_pendaftaran', 'pengajuan')->get();
 
-        // Data penghitung untuk sidebar (Fix agar counter tidak 0)
+        // Data penghitung untuk sidebar
         $counts = [
             'pengajuan' => Pendaftaran::where('status_pendaftaran', 'pengajuan')->count(),
             'diterima' => Pendaftaran::where('status_pendaftaran', 'diterima')->count(),
@@ -47,7 +47,7 @@ class DataPendaftaranController extends Controller
 
     public function detail($id_pendaftaran)
     {
-        // Data penghitung untuk sidebar (Fix agar counter tidak 0)
+        // Data penghitung untuk sidebar
         $counts = [
             'pengajuan' => Pendaftaran::where('status_pendaftaran', 'pengajuan')->count(),
             'diterima' => Pendaftaran::where('status_pendaftaran', 'diterima')->count(),
@@ -68,33 +68,49 @@ class DataPendaftaranController extends Controller
     }
 
 
+    // FUNGSI INI YANG DIMODIFIKASI
     public function diterima(Request $request){
 
         $id_pendaftaran = $request->id_pendaftaran;
 
+        // 1. Update Status di Tabel Pendaftaran
         $data_update = [
             'status_pendaftaran' => 'diterima',
             'keterangan' => $request->keterangan,
         ];
 
         $pendaftaran = Pendaftaran::where('id_pendaftaran', $id_pendaftaran)->first();
+        
+        // Update data pendaftaran
+        Pendaftaran::where('id_pendaftaran', $id_pendaftaran)->update($data_update);
 
+
+        // 2. Update Status di Tabel Users (OTOMATIS)
         $id_users = $pendaftaran->id_users;
         $users = User::where('id', $id_users)->first();
-        $email = $users->email;
+        
+        // Update status user jadi 'diterima'
+        $users->status = 'diterima';
+        
+        // (Opsi) Jika form Anda mengirim 'pembimbing_id', simpan juga di sini
+        if ($request->has('pembimbing_id')) {
+             $users->pembimbing_id = $request->pembimbing_id;
+        }
+        
+        $users->save();
 
+
+        // 3. Kirim Email Notifikasi
+        $email = $users->email;
         $data_email = [
             'title' => 'Selamat Anda diterima Masuk Pada Magang Yang Anda Lamar!',
             'url' => 'http://localhost/aplikasi-magang/public/',
         ];
         
-        // Panggil kelas Mailer yang sudah benar di app/Mail/SendMail.php
         Mail::to($email)->send(new SendMail($data_email));
         
 
-        Pendaftaran::where('id_pendaftaran', $id_pendaftaran)->update($data_update);
-
-        return redirect('data-pendaftaran')->with('suc_message', 'Data Berhasil diupdate!');
+        return redirect('data-pendaftaran')->with('suc_message', 'Data Berhasil diupdate! Status User otomatis menjadi Diterima.');
     }
 
     public function tidak_diterima(Request $request){
@@ -116,7 +132,6 @@ class DataPendaftaranController extends Controller
             'url' => 'http://localhost/aplikasi-magang/public/',
         ];
 
-        // Panggil kelas Mailer yang sudah benar di app/Mail/SendMail.php
         Mail::to($email)->send(new SendMail($data_email));
 
         Pendaftaran::where('id_pendaftaran', $id_pendaftaran)->update($data_update);
