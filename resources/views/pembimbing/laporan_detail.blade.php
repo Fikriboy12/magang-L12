@@ -7,16 +7,8 @@
 
 @section('title', 'Detail Laporan Mahasiswa')
 
-{{-- 
-  PERBAIKAN: 
-  Menggunakan 'contents' (dengan 's') agar cocok dengan master
---}}
 @section('contents')
 
-{{-- 
-  PERBAIKAN: 
-  Menambahkan "BUNGKUS KONTEN" (content-wrapper)
---}}
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -60,6 +52,7 @@
                                         <span class="bg-primary">{{ \Carbon\Carbon::parse($laporan->tanggal)->format('d F Y') }}</span>
                                     </div>
                                     <!-- /.timeline-label -->
+                                    
                                     <!-- timeline item -->
                                     <div>
                                         <i class="fas fa-check bg-green"></i>
@@ -78,8 +71,8 @@
                                             
                                             <div class="timeline-footer">
                                                 @php
-                                                    // Mengubah path 'public/laporan_harian/file.jpg' menjadi 'storage/laporan_harian/file.jpg'
-                                                    $fotoUrl = asset('storage/'... str_replace('public/', '', $laporan->foto));
+                                                    // PERBAIKAN DI SINI: Menggunakan satu titik (.) bukan tiga titik (...)
+                                                    $fotoUrl = asset('storage/' . str_replace('public/', '', $laporan->foto));
                                                 @endphp
                                                 <a href="{{ $fotoUrl }}" target="_blank" class="btn btn-info btn-sm">
                                                     <i class="fas fa-image"></i> Lihat Foto

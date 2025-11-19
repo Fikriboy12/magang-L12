@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Mahasiswa; // Perhatikan namespace-nya
+namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -28,7 +28,14 @@ class LaporanHarianController extends Controller
      */
     public function create()
     {
-        return view('mahasiswa.laporan_create');
+        // PERBAIKAN DI SINI:
+        // Kita harus mengambil data $laporanList juga untuk halaman create
+        // karena di view laporan_create.blade.php ada tabel history laporan.
+        $laporanList = LaporanHarian::where('user_id', Auth::id())
+                                    ->orderBy('tanggal', 'desc')
+                                    ->get();
+
+        return view('mahasiswa.laporan_create', compact('laporanList'));
     }
 
     /**
