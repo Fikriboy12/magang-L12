@@ -22,3 +22,7 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# --- TAMBAHAN PENTING ---
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
