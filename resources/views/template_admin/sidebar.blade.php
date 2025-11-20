@@ -48,6 +48,8 @@
           <li class=""><a class="nav-link" href="{{ url('/data-admin') }}">Data Admin</a></li>
           {{-- URL: admin/data-pelamar --}}
           <li class=""><a class="nav-link" href="{{ url('/data-pelamar') }}">Data Pelamar</a></li>
+          {{-- URL: admin/data-pembimbing (BARU DITAMBAHKAN) --}}
+          <li class=""><a class="nav-link" href="{{ url('/data-pembimbing') }}">Data Pembimbing</a></li>
         </ul>
       </li>
       
@@ -57,7 +59,7 @@
       <li class = "">
         <a class="nav-link" href="{{ url('/data-pendaftaran') }}">
           <i class="fas fa-calendar-check"></i> 
-          <span>Data Pendaftaran  <sup><span class="subatas">{{ $data['pengajuan'] ?? 0 }}</span></sup> </span>
+          <span>Data Pendaftaran  <sup><span class="subatas">{{ $data['pengajuan'] ?? 0 }}</span></sup> </span>
         </a>
       </li>
       
@@ -75,7 +77,7 @@
       <li class = "">
         <a class="nav-link" href="{{ url('/data-diterima') }}">
           <i class="fas fa-calendar-check"></i> 
-          <span>Data Diterima  <sup><span class="subatas">{{ $data['diterima'] ?? 0 }}</span></sup></span>
+          <span>Data Diterima  <sup><span class="subatas">{{ $data['diterima'] ?? 0 }}</span></sup></span>
         </a>
       </li>
       
@@ -83,7 +85,7 @@
       <li class = "">
         <a class="nav-link" href="{{ url('data-tidak-diterima') }}">
           <i class="fas fa-calendar-check"></i> 
-          <span>Data Tidak Diterima  <sup><span class="subatas">{{ $data['tidak_diterima'] ?? 0 }}</span></sup></span>
+          <span>Data Tidak Diterima  <sup><span class="subatas">{{ $data['tidak_diterima'] ?? 0 }}</span></sup></span>
         </a>
       </li>
     </ul>

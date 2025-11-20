@@ -48,6 +48,8 @@
           <li class=""><a class="nav-link" href="<?php echo e(url('/data-admin')); ?>">Data Admin</a></li>
           
           <li class=""><a class="nav-link" href="<?php echo e(url('/data-pelamar')); ?>">Data Pelamar</a></li>
+          
+          <li class=""><a class="nav-link" href="<?php echo e(url('/data-pembimbing')); ?>">Data Pembimbing</a></li>
         </ul>
       </li>
       
@@ -57,7 +59,7 @@
       <li class = "">
         <a class="nav-link" href="<?php echo e(url('/data-pendaftaran')); ?>">
           <i class="fas fa-calendar-check"></i> 
-          <span>Data Pendaftaran  <sup><span class="subatas"><?php echo e($data['pengajuan'] ?? 0); ?></span></sup> </span>
+          <span>Data Pendaftaran  <sup><span class="subatas"><?php echo e($data['pengajuan'] ?? 0); ?></span></sup> </span>
         </a>
       </li>
       
@@ -75,7 +77,7 @@
       <li class = "">
         <a class="nav-link" href="<?php echo e(url('/data-diterima')); ?>">
           <i class="fas fa-calendar-check"></i> 
-          <span>Data Diterima  <sup><span class="subatas"><?php echo e($data['diterima'] ?? 0); ?></span></sup></span>
+          <span>Data Diterima  <sup><span class="subatas"><?php echo e($data['diterima'] ?? 0); ?></span></sup></span>
         </a>
       </li>
       
@@ -83,7 +85,7 @@
       <li class = "">
         <a class="nav-link" href="<?php echo e(url('data-tidak-diterima')); ?>">
           <i class="fas fa-calendar-check"></i> 
-          <span>Data Tidak Diterima  <sup><span class="subatas"><?php echo e($data['tidak_diterima'] ?? 0); ?></span></sup></span>
+          <span>Data Tidak Diterima  <sup><span class="subatas"><?php echo e($data['tidak_diterima'] ?? 0); ?></span></sup></span>
         </a>
       </li>
     </ul>

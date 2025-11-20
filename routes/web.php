@@ -19,6 +19,9 @@ use App\Http\Controllers\Admin\DataPendaftaranController;
 use App\Http\Controllers\Admin\DataDiterimaController;
 use App\Http\Controllers\Admin\DataTidakDiterimaController;
 
+// --- Controller Baru untuk Data Pembimbing (Admin) ---
+use App\Http\Controllers\Admin\DataPembimbingController;
+
 // --- Controller Baru dari Langkah 3 ---
 use App\Http\Controllers\Pembimbing\DashboardController as PembimbingDashboardController;
 use App\Http\Controllers\Mahasiswa\LaporanHarianController as MahasiswaLaporanHarianController;
@@ -47,7 +50,6 @@ Route::post('/insert-register', [RegisterController::class, 'register'])->name('
 // ----------------------------------------------------
 
 // 👤 ROUTE KHUSUS PELAMAR
-// --- Middleware 'pelamar' Anda sudah benar ---
 Route::middleware(['auth', 'pelamar'])->group(function () {
 
     Route::get('/home', [HomeController::class, 'index'])->name('home.auth');
@@ -77,8 +79,7 @@ Route::middleware(['auth', 'pelamar'])->group(function () {
     // ===================================================================
     // == TAMBAHAN BARU: Rute Laporan Harian Mahasiswa ==
     // ===================================================================
-    // (Ini tetap di dalam grup 'pelamar')
-
+    
     // Halaman Daftar Laporan Harian (yang pernah di-submit)
     Route::get('/laporan-harian', [MahasiswaLaporanHarianController::class, 'index'])->name('mahasiswa.laporan.index');
     
@@ -92,7 +93,6 @@ Route::middleware(['auth', 'pelamar'])->group(function () {
 
 
 // 💼 ROUTE KHUSUS ADMIN
-// --- BAGIAN INI TIDAK SAYA UBAH SAMA SEKALI, SESUAI PERMINTAAN ANDA ---
 Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -102,6 +102,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/insert-admin', [DataAdminController::class, 'insert'])->name('admin.data.insert');
     Route::post('/update-admin', [DataAdminController::class, 'update'])->name('admin.data.update');
     Route::get('/delete-admin/{id}', [DataAdminController::class, 'delete'])->name('admin.data.delete');
+    
+    // DATA PEMBIMBING (BARU DITAMBAHKAN)
+    // Route ini sesuai dengan sidebar: url('/data-pembimbing')
+    Route::get('/data-pembimbing', [DataPembimbingController::class, 'index'])->name('admin.pembimbing.index');
+    // Route ini untuk menyimpan data (create), arahkan form action ke sini
+    Route::post('/insert-pembimbing', [DataPembimbingController::class, 'store'])->name('admin.pembimbing.store');
+
 
     // PROFILE ADMIN
     Route::get('/data-profile', [DataProfileController::class, 'index'])->name('admin.profile.index');
@@ -143,9 +150,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 
 
-// 👨‍🏫 ROUTE KHUSUS PEMBIMBING (BARU)
-// --- Ini adalah BLOK BARU yang sudah diperbaiki ---
-// (Kita asumsikan middleware Anda namanya 'pembimbing')
+// 👨‍🏫 ROUTE KHUSUS PEMBIMBING
 Route::middleware(['auth', 'pembimbing'])->prefix('pembimbing')->name('pembimbing.')->group(function () {
     
     // Dashboard Utama Pembimbing
