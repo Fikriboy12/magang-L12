@@ -28,9 +28,7 @@ class LaporanHarianController extends Controller
      */
     public function create()
     {
-        // PERBAIKAN DI SINI:
-        // Kita harus mengambil data $laporanList juga untuk halaman create
-        // karena di view laporan_create.blade.php ada tabel history laporan.
+        // Mengambil history laporan juga untuk ditampilkan di halaman create
         $laporanList = LaporanHarian::where('user_id', Auth::id())
                                     ->orderBy('tanggal', 'desc')
                                     ->get();
@@ -51,16 +49,17 @@ class LaporanHarianController extends Controller
             'catatan' => 'nullable|string',
         ]);
 
-        // 2. Handle upload foto
-        // Foto akan disimpan di: storage/app/public/laporan_harian
-        $path = $request->file('foto')->store('public/laporan_harian');
+        // 2. Handle upload foto (PERBAIKAN UTAMA DI SINI)
+        // Parameter 1: Nama Folder ('laporan_harian')
+        // Parameter 2: Nama Disk ('public') <- Wajib ada agar bisa diakses browser
+        $path = $request->file('foto')->store('laporan_harian', 'public');
 
         // 3. Simpan ke database
         LaporanHarian::create([
             'user_id' => Auth::id(), // ID mahasiswa yg sedang login
             'tanggal' => $request->tanggal,
             'kegiatan' => $request->kegiatan,
-            'foto' => $path, // Simpan path fotonya
+            'foto' => $path, // Hasilnya akan bersih: "laporan_harian/namafile.jpg"
             'catatan' => $request->catatan,
         ]);
 

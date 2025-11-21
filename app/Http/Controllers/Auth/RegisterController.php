@@ -23,6 +23,7 @@ class RegisterController extends Controller
     // Proses register
     public function register(Request $request)
     {
+        // 1. Validasi (TIDAK SAYA UBAH, SESUAI PERMINTAAN)
         $validated = $request->validate([
             'nama_lengkap' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -39,7 +40,7 @@ class RegisterController extends Controller
             'agree' => 'accepted',
         ]);
 
-        // Simpan user, jangan login otomatis
+        // 2. Simpan Data (TIDAK SAYA UBAH, SESUAI PERMINTAAN)
         User::create([
             'name' => $validated['nama_lengkap'],
             'email' => $validated['email'],
@@ -57,7 +58,9 @@ class RegisterController extends Controller
             'alamat_lengkap' => $validated['alamat_lengkap'],
         ]);
 
-        // Redirect ke login dengan notifikasi sukses
-        return redirect('/login')->with('register_success', 'Registrasi berhasil! Silakan login.');
+        // 3. PERUBAHAN DI SINI:
+        // - Redirect pakai back() (tetap di halaman register)
+        // - Nama session jadi 'success' (agar muncul hijau di view register)
+        return redirect()->back()->with('success', 'Registrasi berhasil! Silakan loginAkun Anda');
     }
 }

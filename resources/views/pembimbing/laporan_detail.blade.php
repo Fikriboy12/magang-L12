@@ -5,25 +5,14 @@
 @section('contents')
 
 <div class="content-wrapper">
-    <!-- Header -->
-    <div class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{{ route('pembimbing.dashboard') }}">Dashboard</a></li>
-              <li class="breadcrumb-item active">Detail Laporan</li>
-            </ol>
-          </div>
-        </div>
-      </div>
-    </div>
+    
+    {{-- 
+        BAGIAN HEADER / BREADCRUMB SUDAH DIHAPUS DI SINI 
+        (Sesuai permintaan)
+    --}}
 
     <!-- Main Content -->
-    <section class="content">
+    <section class="content pt-3"> {{-- Saya tambah pt-3 sedikit agar tidak terlalu mepet atas --}}
       <div class="container-fluid">
         <div class="row">
             <div class="col-12">

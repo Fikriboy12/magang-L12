@@ -54,12 +54,20 @@
                             @foreach ($data['data_pendaftaran'] as $item)
                                 <tr>
                                     <td>{{$no++}}</td>
-                                    <td>{{$item->nama_lengkap}}</td>
+                                    
+                                    {{-- PERBAIKAN DI SINI: Mengambil Nama dari tabel Users --}}
+                                    <td>{{ $item->user->name ?? '-' }}</td>
+                                    
                                     <td>{{$item->universitas}}</td>
                                     <td>{{$item->jurusan}}</td>
                                     <td width = "10%" class ="text-center"><img src="<?= asset('')?>gambar/<?= $item->gambar?>" alt="" width ="90%"></td>
-                                    <td>{{$item->email}}</td>
-                                    <td>{{$item->no_telp}}</td>
+                                    
+                                    {{-- PERBAIKAN DI SINI: Mengambil Email dari tabel Users --}}
+                                    <td>{{ $item->user->email ?? '-' }}</td>
+                                    
+                                    {{-- PERBAIKAN DI SINI: Mengambil No Telp dari tabel Users --}}
+                                    <td>{{ $item->user->no_telp ?? '-' }}</td>
+                                    
                                     <td>{{$item->dari_tanggal}}</td>
                                     <td>{{$item->sampai_tanggal}}</td>
                                     <td>{{$item->status_pendaftaran}}</td>

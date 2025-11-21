@@ -12,7 +12,7 @@
 @section('content')
 <div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
     <div class="card shadow-lg border-0 rounded-4" style="max-width: 650px; width: 100%;">
-        <div class="card-header text-white text-center rounded-top-4" style="background-color: #3c0ee2ff;">
+        <div class="card-header text-white text-center rounded-top-4" style="background-color: #370cf3ff;">
             <h4 class="mb-0 fw-semibold">Form Pendaftaran Magang</h4>
         </div>
 
@@ -148,10 +148,6 @@ ont-size: 1.2rem;">Form Pendaftaran Magang</h4>
                             </div>
                         </div>
 
-                        {{-- ====================================================== --}}
-                        {{-- PERUBAHAN YANG BENAR ADA DI BARIS DI BAWAH INI --}}
-                        {{-- Saya mengubah 'ktp_ktm' menjadi 'ktp' agar cocok dengan Database --}}
-                        {{-- ====================================================== --}}
                         @foreach(['gambar'=>'Gambar','cv'=>'CV','surat_rekomendasi'=>'Surat Rekomendasi','ktp'=>'KTP / KTM','proposal'=>'Proposal','sertifikat'=>'Sertifikat'] as $name => $label)
                             <div class="mb-3">
                                 <label>{{ $label }}</label>

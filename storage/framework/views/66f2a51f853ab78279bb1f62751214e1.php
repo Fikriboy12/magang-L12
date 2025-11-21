@@ -12,7 +12,7 @@
 <?php $__env->startSection('content'); ?>
 <div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
     <div class="card shadow-lg border-0 rounded-4" style="max-width: 650px; width: 100%;">
-        <div class="card-header text-white text-center rounded-top-4" style="background-color: #3c0ee2ff;">
+        <div class="card-header text-white text-center rounded-top-4" style="background-color: #370cf3ff;">
             <h4 class="mb-0 fw-semibold">Form Pendaftaran Magang</h4>
         </div>
 
@@ -152,10 +152,6 @@ ont-size: 1.2rem;">Form Pendaftaran Magang</h4>
                             </div>
                         </div>
 
-                        
-                        
-                        
-                        
                         <?php $__currentLoopData = ['gambar'=>'Gambar','cv'=>'CV','surat_rekomendasi'=>'Surat Rekomendasi','ktp'=>'KTP / KTM','proposal'=>'Proposal','sertifikat'=>'Sertifikat']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $name => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="mb-3">
                                 <label><?php echo e($label); ?></label>

@@ -12,7 +12,7 @@ class Pendaftaran extends Model
     protected $table = 'pendaftaran';
 
     protected $fillable = [
-        'user_id',              // ID user pelamar
+        'id_users',             // SAYA SESUAIKAN JADI 'id_users' AGAR COCOK DGN CONTROLLER
         'universitas',
         'jurusan',
         'program_studi',
@@ -23,8 +23,18 @@ class Pendaftaran extends Model
         'surat_rekomendasi',
         'ktp_ktm',
         'proposal',
-        'sertifikat',           // tambahan file sertifikat jika mau
+        // 'sertifikat',        // SAYA HAPUS SESUAI PERMINTAAN SEBELUMNYA
         'status_pendaftaran',   // misal: pending, diterima, ditolak
         'keterangan',           // catatan admin
     ];
+
+    // ==========================================
+    // TAMBAHAN PENTING: RELASI KE USER
+    // ==========================================
+    public function user()
+    {
+        // Ini menghubungkan kolom 'id_users' di tabel pendaftaran 
+        // dengan kolom 'id' di tabel users.
+        return $this->belongsTo(User::class, 'id_users', 'id');
+    }
 }

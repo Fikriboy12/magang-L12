@@ -41,14 +41,15 @@
     
     <div class="card" style="background: rgba(255,255,255,0.95); border-radius:15px; padding:30px; max-width:450px; width:100%; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
         <div class="text-center mb-4">
+             
              <img src="<?php echo e(asset('gambar/ANMS-logo.png')); ?>" alt="logo" width="200" style="height: auto;">
             <h3 class="mt-2">Register Akun Pelamar</h3>
         </div>
 
         
-        <?php if(session('register_success')): ?>
+        <?php if(session('success')): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <?php echo e(session('register_success')); ?>
+            <strong>Berhasil!</strong> <?php echo e(session('success')); ?>
 
             <button type="button" class="close" data-dismiss="alert">&times;</button>
         </div>
@@ -159,5 +160,4 @@
         </p>
     </div>
 </body>
-</html>
-<?php /**PATH C:\xampp\htdocs\magang-L12\resources\views/auth/register.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\xampp\htdocs\magang-L12\resources\views/auth/register.blade.php ENDPATH**/ ?>

@@ -58,13 +58,12 @@ class LoginController extends Controller
                     ->with('success', 'Selamat datang Pelamar!');
             }
 
-            // --- INI PERBAIKANNYA ---
+            // --- Logic Pembimbing (Sesuai kode Anda) ---
             if ($user->role === 'pembimbing') {
-                // Saya ganti 'pembimbing.laporan.index' menjadi 'pembimbing.dashboard'
                 return redirect()->route('pembimbing.dashboard')
                     ->with('success', 'Selamat datang Pembimbing!');
             }
-            // --- BATAS PERBAIKAN ---
+            // -------------------------------------------
 
             return redirect()->route('home.auth');
         }
@@ -87,12 +86,20 @@ class LoginController extends Controller
     }
 
     // =======================
-    // 👤 PROFILE
+    // 👤 PROFILE (BAGIAN YANG DIPERBAIKI)
     // =======================
     public function profile()
     {
+        // PERBAIKAN: View profile.blade.php membutuhkan variable $data['profile']
+        // Sebelumnya Anda hanya mengirim compact('user'), makanya error "Undefined variable $data"
+        
         $user = Auth::user();
-        return view('auth.profile', compact('user'));
+        $data = [
+            'title' => 'Profile Saya',
+            'profile' => $user
+        ];
+
+        return view('auth.profile', compact('data'));
     }
 
     // =======================
@@ -101,6 +108,8 @@ class LoginController extends Controller
     public function lengkapi_profile()
     {
         $user = Auth::user();
+        // Jika view lengkapi_profile juga menggunakan $data['profile'], ubah juga bagian ini.
+        // Tapi jika masih pakai $user, biarkan seperti ini.
         return view('auth.lengkapi_profile', compact('user'));
     }
 
@@ -118,7 +127,7 @@ class LoginController extends Controller
         ]);
 
         $user->update([
-            'nama_lengkap' => $request->nama_lengkap,
+            'name' => $request->nama_lengkap, // Pastikan kolom di DB 'name' atau sesuaikan
             'tgl_lahir' => $request->tgl_lahir,
             'alamat' => $request->alamat
         ]);
@@ -132,6 +141,7 @@ class LoginController extends Controller
     // =======================
     public function update_profile(Request $request)
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         $request->validate([
@@ -139,8 +149,10 @@ class LoginController extends Controller
             'alamat' => 'required'
         ]);
 
+        // Perhatikan: Kolom di tabel users defaultnya adalah 'name', bukan 'nama_lengkap'
+        // Jika di DB kolomnya 'name', ganti 'nama_lengkap' di bawah jadi 'name'
         $user->update([
-            'nama_lengkap' => $request->nama_lengkap,
+            'name' => $request->nama_lengkap, 
             'alamat' => $request->alamat
         ]);
 
