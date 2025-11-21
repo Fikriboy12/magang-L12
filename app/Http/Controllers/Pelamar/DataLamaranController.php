@@ -23,18 +23,30 @@ class DataLamaranController extends Controller
         $this->middleware('auth');
     }
     
+    // =================================================================
+    // BAGIAN INI YANG SAYA PERBAIKI (FUNGSI INDEX)
+    // =================================================================
     public function index()
     {
         $id_users = Auth::user()->id;
-        $data = [
-            'title' => "Data Lamaran",
-            'data_lamaran' => Pendaftaran::join('users', 'pendaftaran.id_users', '=', 'users.id')->leftjoin('detail_users', 'detail_users.id_users', '=', 'users.id')->where('pendaftaran.id_users', $id_users)->get(),
-            'data_sertifikat' => Sertifikat::join('users', 'sertifikat.created_by', '=', 'users.id')->where('sertifikat.created_by', $id_users)->get(),
-        ];
 
-        return view('pelamar/datalamaran')->with('data', $data);
+        // Menggunakan 'with(user)' agar bisa dipanggil $item->user->name di View
+        $data_lamaran = Pendaftaran::with('user')
+                                   ->where('id_users', $id_users)
+                                   ->orderBy('created_at', 'desc')
+                                   ->get();
+
+        // Mengambil data sertifikat
+        $data_sertifikat = Sertifikat::where('created_by', $id_users)->get();
+
+        // Kirim variable menggunakan compact (agar tidak Undefined variable di View)
+        return view('pelamar/datalamaran', compact('data_lamaran', 'data_sertifikat'));
     }
+    // =================================================================
 
+
+    // FUNGSI DI BAWAH INI TIDAK SAYA UBAH (SESUAI PERMINTAAN)
+    
     public function detail($id_pendaftaran)
     {
         $data = [
@@ -64,7 +76,7 @@ class DataLamaranController extends Controller
 
         $pdf = PDF::loadview('pelamar/cetaklamaran', $data);
         //mendownload laporan.pdf
-    	return $pdf->stream('laporan.pdf');
+        return $pdf->stream('laporan.pdf');
     }
 
 }
