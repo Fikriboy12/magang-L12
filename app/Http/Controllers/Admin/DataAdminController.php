@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -27,21 +26,26 @@ class DataAdminController extends Controller
         return view('admin/dataadmin')->with('data', $data);
     }
 
-
-
     public function insert(Request $request){
+
+        // Validasi input agar lebih aman
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+            'no_telp' => 'required',
+        ]);
 
         $data = [
             'name' => $request->name,
             'email' => $request->email,
             'no_telp' => $request->no_telp,
-            'alamat' => $request->alamat,
+            // 'alamat' => $request->alamat, // SUDAH DIHAPUS AGAR TIDAK ERROR
             'role' => 'admin',
             'status' => '1',
             'password' => Hash::make($request->password),
             'created_at' => Carbon::now(),
         ];
-
 
         User::insert($data);
 
@@ -56,9 +60,13 @@ class DataAdminController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'no_telp' => $request->no_telp,
-            'password' => Hash::make($request->password),
-            'alamat' => $request->alamat,
+            // 'alamat' => $request->alamat, // SUDAH DIHAPUS DI SINI JUGA
         ];
+
+        // Cek jika password diisi baru di-hash (jika kosong, password lama tetap dipakai)
+        if($request->filled('password')){
+             $data['password'] = Hash::make($request->password);
+        }
 
         User::where('id', $id)->update($data);
 
@@ -69,7 +77,6 @@ class DataAdminController extends Controller
 
         $id = $request->id;
       
-            
         $data = [
             'status' => $request->aktiv,
         ];

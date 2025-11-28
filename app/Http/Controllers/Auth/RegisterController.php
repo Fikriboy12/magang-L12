@@ -6,61 +6,65 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Events\Registered; 
 
 class RegisterController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('guest'); // Hanya guest bisa akses
+        $this->middleware('guest');
     }
 
     // Tampilkan form register
     public function showRegistrationForm()
     {
-        return view('auth.register'); // Blade register
+        return view('auth.register');
     }
 
     // Proses register
     public function register(Request $request)
     {
-        // 1. Validasi (TIDAK SAYA UBAH, SESUAI PERMINTAAN)
+        // 1. Validasi
         $validated = $request->validate([
             'nama_lengkap' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
+            
+            // Biodata
             'no_telp' => 'required|string|max:20',
-            'alamat' => 'required|string|max:255',
             'nim' => 'required|string|max:50',
-            'nik' => 'required|string|max:50',
             'tempat_lahir' => 'required|string|max:100',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|string',
-            'agama' => 'required|string',
             'alamat_lengkap' => 'required|string',
+            
             'agree' => 'accepted',
         ]);
 
-        // 2. Simpan Data (TIDAK SAYA UBAH, SESUAI PERMINTAAN)
-        User::create([
+        // 2. Simpan Data
+        $user = User::create([
             'name' => $validated['nama_lengkap'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => 'pelamar', // selalu pelamar
+            'role' => 'pelamar', 
             'status' => 1, 
+            
             'no_telp' => $validated['no_telp'],
-            'alamat' => $validated['alamat'],
             'nim' => $validated['nim'],
-            'nik' => $validated['nik'],
             'tempat_lahir' => $validated['tempat_lahir'],
             'tanggal_lahir' => $validated['tanggal_lahir'],
             'jenis_kelamin' => $validated['jenis_kelamin'],
-            'agama' => $validated['agama'],
             'alamat_lengkap' => $validated['alamat_lengkap'],
         ]);
 
-        // 3. PERUBAHAN DI SINI:
-        // - Redirect pakai back() (tetap di halaman register)
-        // - Nama session jadi 'success' (agar muncul hijau di view register)
-        return redirect()->back()->with('success', 'Registrasi berhasil! Silakan loginAkun Anda');
+        // Panggil event Registered (standar Laravel) untuk proses framework
+        event(new Registered($user));
+
+        // PENTING: Kita TIDAK melakukan Auth::login() agar user tidak langsung masuk.
+        // Hapus kode logout paksa.
+
+        // 3. Arahkan kembali ke halaman register dengan notifikasi sukses
+        return redirect()->route('register')->with('success', 'Akun anda berhasil dibuat!.');
     }
 }

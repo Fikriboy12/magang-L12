@@ -35,7 +35,7 @@
 
         <div class="card">
             <div class="card-body table-responsive p-0">
-                {{-- PERBAIKAN TAMPILAN TABEL --}}
+                {{-- PERBAIKAN: KOLOM ALAMAT SUDAH DIHAPUS --}}
                 <table id="table" class="table table-striped table-hover text-nowrap">
                     <thead class="bg-light">
                         <tr>
@@ -43,7 +43,7 @@
                             <th>Nama</th>
                             <th>Email</th>
                             <th>No Telepon</th>
-                            <th>Alamat</th>
+                            {{-- Kolom Alamat Dihapus --}}
                             <th class="text-center" style="width: 15%">Action</th>
                         </tr>
                     </thead>
@@ -56,13 +56,9 @@
                                 <td>{{$item->email}}</td>
                                 <td>{{$item->no_telp}}</td>
                                 
-                                {{-- Agar alamat panjang turun ke bawah rapi --}}
-                                <td style="white-space: normal; max-width: 250px;">
-                                    {{$item->alamat}}
-                                </td>
+                                {{-- Data Alamat Dihapus --}}
 
                                 <td class="text-center">
-                                    {{-- Grouping tombol agar sejajar dan rapi --}}
                                     <div class="btn-group" role="group">
                                         <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#Update{{$item->id}}" title="Edit">
                                             <i class="fa fa-edit"></i> 
@@ -113,10 +109,8 @@
                         </div>
                     </div>
                   
-                    <div class="form-group">
-                        <label for="">Alamat</label>
-                        <textarea name="alamat" class="form-control" required cols="30" rows="4"></textarea>
-                    </div>
+                    {{-- INPUT ALAMAT DIHAPUS --}}
+                    
                     <div class="form-group">
                         <label for="">Password</label>
                         <input type="password" name="password" class="form-control" required>
@@ -168,10 +162,8 @@
                             </div>
                         </div>
                       
-                        <div class="form-group">
-                            <label for="">Alamat</label>
-                            <textarea name="alamat" class="form-control" required cols="30" rows="4">{{$item->alamat}}</textarea>
-                        </div>
+                        {{-- INPUT ALAMAT DIHAPUS --}}
+
                         <div class="form-group">
                             <label for="">Password (Kosongkan jika tidak diubah)</label>
                             <input type="password" name="password" class="form-control">

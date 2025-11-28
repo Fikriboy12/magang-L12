@@ -24,8 +24,22 @@ class DataPendaftaranController extends Controller
     
     public function index()
     {
-        // Data untuk tabel utama
-        $data_pendaftaran = Pendaftaran::join('users', 'pendaftaran.id_users', '=', 'users.id')->leftjoin('detail_users', 'detail_users.id_users', '=', 'users.id')->where('status_pendaftaran', 'pengajuan')->get();
+        // PERBAIKAN: Hapus leftjoin ke detail_users dan tambahkan select eksplisit
+        $data_pendaftaran = Pendaftaran::select(
+                'pendaftaran.*', // Ambil semua dari pendaftaran (termasuk universitas, jurusan, prodi)
+                'users.email', 
+                'users.name as nama_lengkap', // Nama lengkap
+                'users.nim',
+                'users.tempat_lahir',
+                'users.tanggal_lahir',
+                'users.jenis_kelamin', // Jenis kelamin
+                'users.alamat_lengkap',
+                'users.no_telp'
+            )
+            ->join('users', 'pendaftaran.id_users', '=', 'users.id')
+            // HAPUS: ->leftjoin('detail_users', 'detail_users.id_users', '=', 'users.id')
+            ->where('status_pendaftaran', 'pengajuan')
+            ->get();
 
         // Data penghitung untuk sidebar
         $counts = [
@@ -54,7 +68,22 @@ class DataPendaftaranController extends Controller
             'tidak_diterima' => Pendaftaran::where('status_pendaftaran', 'tidak diterima')->count(),
         ];
 
-        $detail = Pendaftaran::join('users', 'pendaftaran.id_users', '=', 'users.id')->leftjoin('detail_users', 'detail_users.id_users', '=', 'users.id')->where('id_pendaftaran', $id_pendaftaran)->first();
+        // PERBAIKAN: Hapus leftjoin ke detail_users dan tambahkan select eksplisit
+        $detail = Pendaftaran::select(
+                'pendaftaran.*', // Ambil semua dari pendaftaran (termasuk universitas, jurusan, prodi)
+                'users.email', 
+                'users.name as nama_lengkap', // Nama lengkap
+                'users.nim',
+                'users.tempat_lahir',
+                'users.tanggal_lahir',
+                'users.jenis_kelamin', // Jenis kelamin
+                'users.alamat_lengkap',
+                'users.no_telp'
+            )
+            ->join('users', 'pendaftaran.id_users', '=', 'users.id')
+            // HAPUS: ->leftjoin('detail_users', 'detail_users.id_users', '=', 'users.id')
+            ->where('id_pendaftaran', $id_pendaftaran)
+            ->first();
 
         $data = [
             'title' => "Detail Data Pendaftaran",

@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Models\Pendaftaran;
 use App\Models\Informasi;
 use App\Models\Sertifikat;
-use App\Models\DetailUsers;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -24,58 +23,109 @@ class DataLamaranController extends Controller
     }
     
     // =================================================================
-    // BAGIAN INI YANG SAYA PERBAIKI (FUNGSI INDEX)
+    // FUNGSI INDEX
     // =================================================================
     public function index()
     {
         $id_users = Auth::user()->id;
 
-        // Menggunakan 'with(user)' agar bisa dipanggil $item->user->name di View
         $data_lamaran = Pendaftaran::with('user')
                                    ->where('id_users', $id_users)
                                    ->orderBy('created_at', 'desc')
                                    ->get();
 
-        // Mengambil data sertifikat
         $data_sertifikat = Sertifikat::where('created_by', $id_users)->get();
 
-        // Kirim variable menggunakan compact (agar tidak Undefined variable di View)
         return view('pelamar/datalamaran', compact('data_lamaran', 'data_sertifikat'));
     }
+
+
     // =================================================================
-
-
-    // FUNGSI DI BAWAH INI TIDAK SAYA UBAH (SESUAI PERMINTAAN)
-    
+    // FUNGSI DETAIL
+    // =================================================================
     public function detail($id_pendaftaran)
     {
+        $detail = Pendaftaran::select(
+                'pendaftaran.*', 
+                'users.email',
+                'users.name as nama_lengkap', 
+                'users.nim',
+                'users.tempat_lahir',
+                'users.tanggal_lahir',
+                'users.jenis_kelamin',
+                'users.alamat_lengkap',
+                'users.no_telp'
+            )
+            ->join('users', 'pendaftaran.id_users', '=', 'users.id')
+            ->where('id_pendaftaran', $id_pendaftaran)
+            ->first();
+
+        if (!$detail) {
+            return redirect()->back()->with('err_message', 'Data lamaran tidak ditemukan.');
+        }
+
         $data = [
             'title' => "Detail Data Pendaftaran",
-            'detail_pendaftaran' => Pendaftaran::join('users', 'pendaftaran.id_users', '=', 'users.id')->leftjoin('detail_users', 'detail_users.id_users', '=', 'users.id')->where('id_pendaftaran', $id_pendaftaran)->first(),
+            'detail_pendaftaran' => $detail,
         ];
 
         return view('pelamar/detaillamaran')->with('data', $data);
     }
 
 
+    // =================================================================
+    // FUNGSI DETAIL INFORMASI (DIPERBAIKI)
+    // =================================================================
     public function detail_informasi($id_informasi){
+        
+        // PERBAIKAN UTAMA:
+        // Hanya cari berdasarkan 'id_informasi'.
+        // Hapus logika 'OR where id' karena kolom id tidak ada.
+        $informasi = Informasi::where('id_informasi', $id_informasi)->first();
+        
+        // Jika data tidak ditemukan (NULL), kembalikan user agar tidak error di View
+        if (!$informasi) {
+            return redirect()->route('pelamar.lamaran.index')->with('err_message', 'Maaf, data informasi tidak ditemukan.');
+        }
+
         $data = [
             'title' => "Detail Informasi ",
-            'informasi' => Informasi::where('id_informasi', $id_informasi)->first(),
+            'informasi' => $informasi,
         ];
 
         return view('pelamar/detailinformasi')->with('data', $data);
     }
 
+    // =================================================================
+    // FUNGSI CETAK
+    // =================================================================
     public function cetak($id_pendaftaran){
+        
+        $detail = Pendaftaran::select(
+                'pendaftaran.*',
+                'users.email',
+                'users.name as nama_lengkap',
+                'users.nim',
+                'users.tempat_lahir',
+                'users.tanggal_lahir',
+                'users.jenis_kelamin',
+                'users.alamat_lengkap',
+                'users.no_telp'
+            )
+            ->join('users', 'pendaftaran.id_users', '=', 'users.id')
+            ->where('id_pendaftaran', $id_pendaftaran)
+            ->first();
+
+        if (!$detail) {
+             return redirect()->back()->with('err_message', 'Data tidak ditemukan.');
+        }
+
         $data = [
             'title' => "Detail Data Pendaftaran",
-            'detail_pendaftaran' => Pendaftaran::join('users', 'pendaftaran.id_users', '=', 'users.id')->leftjoin('detail_users', 'detail_users.id_users', '=', 'users.id')->where('id_pendaftaran', $id_pendaftaran)->first(),
+            'detail_pendaftaran' => $detail,
         ];
 
-
         $pdf = PDF::loadview('pelamar/cetaklamaran', $data);
-        //mendownload laporan.pdf
         return $pdf->stream('laporan.pdf');
     }
 

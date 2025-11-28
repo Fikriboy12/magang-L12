@@ -9,28 +9,20 @@ class LaporanHarian extends Model
 {
     use HasFactory;
 
-    /**
-     * Nama tabel di database
-     */
-    protected $table = 'laporan_harian';
+    // WAJIB ADA: Karena nama tabel Anda 'laporan_harian' (bukan laporan_harians)
+    protected $table = 'laporan_harian'; 
 
-    /**
-     * Kolom yang boleh diisi secara massal (mass assignable).
-     */
     protected $fillable = [
-        'user_id',
+        'user_id',  // Pastikan ini user_id
         'tanggal',
         'kegiatan',
-        'foto',
+        'foto',     // Pastikan ini foto (sesuai DB)
         'catatan',
+        'status',
     ];
 
-    /**
-     * Relasi: Satu Laporan Harian dimiliki oleh SATU User (Mahasiswa).
-     */
-    public function mahasiswa()
+    public function user()
     {
-        // 'user_id' adalah nama kolom di tabel 'laporan_harian'
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

@@ -103,12 +103,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/update-admin', [DataAdminController::class, 'update'])->name('admin.data.update');
     Route::get('/delete-admin/{id}', [DataAdminController::class, 'delete'])->name('admin.data.delete');
     
-    // DATA PEMBIMBING (BARU DITAMBAHKAN)
-    // Route ini sesuai dengan sidebar: url('/data-pembimbing')
+    // DATA PEMBIMBING
     Route::get('/data-pembimbing', [DataPembimbingController::class, 'index'])->name('admin.pembimbing.index');
-    // Route ini untuk menyimpan data (create), arahkan form action ke sini
     Route::post('/insert-pembimbing', [DataPembimbingController::class, 'store'])->name('admin.pembimbing.store');
-
+    Route::post('/update-pembimbing', [DataPembimbingController::class, 'update'])->name('admin.pembimbing.update');
+    Route::get('/delete-pembimbing/{id}', [DataPembimbingController::class, 'delete'])->name('admin.pembimbing.delete');
 
     // PROFILE ADMIN
     Route::get('/data-profile', [DataProfileController::class, 'index'])->name('admin.profile.index');
@@ -126,10 +125,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/update-informasi', [DataInformasiController::class, 'update'])->name('admin.informasi.update');
     Route::get('/delete-informasi/{id}', [DataInformasiController::class, 'delete'])->name('admin.informasi.delete');
 
-    // SERTIFIKAT
+    // SERTIFIKAT (ADMIN)
     Route::get('/data-sertifikat', [DataSertifikatController::class, 'index'])->name('admin.sertifikat.index');
     Route::post('/approve-sertifikat', [DataSertifikatController::class, 'approve'])->name('admin.sertifikat.approve');
-
+    
+    // PERBAIKAN DI SINI: MENGGUNAKAN 'DELETE' UNTUK HAPUS SERTIFIKAT
+    Route::delete('admin/delete-sertifikat/{id}', [DataSertifikatController::class, 'delete'])->name('admin.sertifikat.delete');
+    
     // ALUR
     Route::get('/data-alur', [DataAlurController::class, 'index'])->name('admin.alur.index');
     Route::post('/insert-alur', [DataAlurController::class, 'insert'])->name('admin.alur.insert');
@@ -147,6 +149,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/detail-diterima/{id}', [DataDiterimaController::class, 'detail'])->name('admin.diterima.detail');
 
     Route::get('/data-tidak-diterima', [DataTidakDiterimaController::class, 'index'])->name('admin.tidak_diterima.index');
+    Route::get('/detail-tidak-diterima/{id}', [DataTidakDiterimaController::class, 'detail'])->name('admin.tidak_diterima.detail');
 });
 
 
@@ -158,5 +161,11 @@ Route::middleware(['auth', 'pembimbing'])->prefix('pembimbing')->name('pembimbin
     
     // Halaman untuk melihat detail laporan satu mahasiswa
     Route::get('/laporan/mahasiswa/{mahasiswa_id}', [PembimbingDashboardController::class, 'lihatLaporan'])->name('laporan.mahasiswa');
+
+    // [BARU] Route untuk Acc Laporan (Sesuai Permintaan)
+    Route::post('/laporan/approve/{id}', [PembimbingDashboardController::class, 'approveLaporan'])->name('laporan.approve');
+    
+    // [BARU] Route untuk Tolak Laporan (Opsional)
+    Route::post('/laporan/reject/{id}', [PembimbingDashboardController::class, 'rejectLaporan'])->name('laporan.reject');
 
 });

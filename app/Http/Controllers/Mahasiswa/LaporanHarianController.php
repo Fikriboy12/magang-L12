@@ -4,67 +4,63 @@ namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;     // Untuk ID mahasiswa yg login
-use App\Models\LaporanHarian;            // Untuk menyimpan laporan
-use Illuminate\Support\Facades\Storage;  // Untuk mengelola file upload
+use App\Models\LaporanHarian;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class LaporanHarianController extends Controller
 {
-    /**
-     * Menampilkan daftar laporan harian yg PERNAH di-upload oleh mahasiswa.
-     */
     public function index()
     {
-        // Ambil semua laporan milik user yg sedang login
-        $laporanList = LaporanHarian::where('user_id', Auth::id())
-                                    ->orderBy('tanggal', 'desc')
-                                    ->get();
+        // 1. Ambil ID User yang sedang login
+        $userId = Auth::id();
 
-        return view('mahasiswa.laporan_index', compact('laporanList'));
+        // 2. Ambil data laporan milik user tersebut
+        // PENTING: Menggunakan 'user_id' sesuai screenshot database Anda
+        $laporan = LaporanHarian::where('user_id', $userId)
+                    ->orderBy('tanggal', 'desc')
+                    ->get();
+
+        // DEBUG: Jika data tetap kosong, uncomment baris bawah ini untuk cek ID user
+        // dd("ID Login: " . $userId, "Data Laporan:", $laporan);
+
+        return view('mahasiswa.laporan_harian.index', compact('laporan'));
     }
 
-    /**
-     * Menampilkan form untuk membuat laporan harian baru.
-     */
     public function create()
     {
-        // Mengambil history laporan juga untuk ditampilkan di halaman create
-        $laporanList = LaporanHarian::where('user_id', Auth::id())
-                                    ->orderBy('tanggal', 'desc')
-                                    ->get();
-
-        return view('mahasiswa.laporan_create', compact('laporanList'));
+        return view('mahasiswa.laporan_harian.create');
     }
 
-    /**
-     * Menyimpan laporan harian baru ke database.
-     */
     public function store(Request $request)
     {
-        // 1. Validasi input
         $request->validate([
             'tanggal' => 'required|date',
-            'kegiatan' => 'required|string|min:10',
-            'foto' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048', // maks 2MB
-            'catatan' => 'nullable|string',
+            'kegiatan' => 'required',
+            'foto' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // 2. Handle upload foto (PERBAIKAN UTAMA DI SINI)
-        // Parameter 1: Nama Folder ('laporan_harian')
-        // Parameter 2: Nama Disk ('public') <- Wajib ada agar bisa diakses browser
-        $path = $request->file('foto')->store('laporan_harian', 'public');
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $foto = $request->file('foto');
+            $namaFoto = time() . '_' . $foto->getClientOriginalName();
+            
+            // Simpan ke folder public/laporan_harian
+            $foto->move(public_path('laporan_harian'), $namaFoto);
+            
+            // Simpan path ke database (contoh: laporan_harian/namafile.jpg)
+            $fotoPath = 'laporan_harian/' . $namaFoto;
+        }
 
-        // 3. Simpan ke database
         LaporanHarian::create([
-            'user_id' => Auth::id(), // ID mahasiswa yg sedang login
+            'user_id' => Auth::id(), // Pastikan pakai 'user_id'
             'tanggal' => $request->tanggal,
             'kegiatan' => $request->kegiatan,
-            'foto' => $path, // Hasilnya akan bersih: "laporan_harian/namafile.jpg"
+            'foto' => $fotoPath,     // Pastikan pakai 'foto' (sesuai kolom DB)
             'catatan' => $request->catatan,
+            'status' => 'pending',
         ]);
 
-        // 4. Kembali ke halaman daftar laporan
-        return redirect()->route('mahasiswa.laporan.index')
-                         ->with('success', 'Laporan harian berhasil disimpan.');
+        return redirect()->route('mahasiswa.laporan.index')->with('success', 'Laporan berhasil dikirim!');
     }
 }

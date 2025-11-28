@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Pembimbing; // Perhatikan namespace-nya
+namespace App\Http\Controllers\Pembimbing; 
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // Untuk mengambil data user yg login
-use App\Models\User;                 // Untuk mengambil data mahasiswa
-use App\Models\LaporanHarian;        // Untuk mengambil data laporan
+use Illuminate\Support\Facades\Auth; 
+use App\Models\User;                
+use App\Models\LaporanHarian;       
 
 class DashboardController extends Controller
 {
@@ -19,7 +19,7 @@ class DashboardController extends Controller
         $pembimbingId = Auth::id();
 
         // 2. Ambil semua mahasiswa yg dibimbing oleh dia
-        //    (Kita menggunakan relasi 'mahasiswaYangDibimbing' yg kita buat di Model User)
+        //    (Pastikan relasi 'mahasiswaYangDibimbing' ada di Model User)
         $mahasiswaList = Auth::user()->mahasiswaYangDibimbing;
 
         // 3. Tampilkan view dashboard, kirim data mahasiswa
@@ -43,10 +43,44 @@ class DashboardController extends Controller
         }
 
         // 4. Ambil semua laporan harian milik mahasiswa tsb
-        //    (Kita gunakan relasi 'laporanHarian' yg ada di Model User)
-        $laporanList = $mahasiswa->laporanHarian()->orderBy('tanggal', 'desc')->get();
+        //    PERBAIKAN: Menggunakan 'user_id' agar sesuai database Anda
+        $laporan = LaporanHarian::where('user_id', $mahasiswa_id)
+                    ->orderBy('tanggal', 'desc')
+                    ->get();
 
         // 5. Tampilkan view detail laporan
-        return view('pembimbing.laporan_detail', compact('mahasiswa', 'laporanList'));
+        return view('pembimbing.laporan_detail', compact('mahasiswa', 'laporan'));
+    }
+
+    // ==========================================
+    // [BARU] FUNGSI ACC (APPROVE) LAPORAN
+    // ==========================================
+    public function approveLaporan($id)
+    {
+        // Cari laporan berdasarkan ID
+        $laporan = LaporanHarian::findOrFail($id);
+        
+        // Update status menjadi 'approved'
+        $laporan->update([
+            'status' => 'approved'
+        ]);
+
+        return redirect()->back()->with('success', 'Laporan kegiatan berhasil disetujui (ACC)!');
+    }
+
+    // ==========================================
+    // [BARU] FUNGSI TOLAK (REJECT) LAPORAN
+    // ==========================================
+    public function rejectLaporan($id)
+    {
+        // Cari laporan berdasarkan ID
+        $laporan = LaporanHarian::findOrFail($id);
+        
+        // Update status menjadi 'rejected'
+        $laporan->update([
+            'status' => 'rejected'
+        ]);
+
+        return redirect()->back()->with('error', 'Laporan kegiatan telah ditolak.');
     }
 }

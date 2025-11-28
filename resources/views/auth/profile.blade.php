@@ -193,21 +193,11 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-6 mb-4">
-                                        <div class="form-group">
-                                            <label class="form-label">NIM</label>
-                                            <input type="text" name="nim" class="form-control" required
-                                                   value="{{ old('nim', $data['profile']->nim) }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-4">
-                                        <div class="form-group">
-                                            <label class="form-label">NIK</label>
-                                            <input type="text" name="nik" class="form-control" required
-                                                   value="{{ old('nik', $data['profile']->nik) }}">
-                                        </div>
-                                    </div>
+                                {{-- BAGIAN NIM (NIK SUDAH DIHAPUS) --}}
+                                <div class="form-group mb-4">
+                                    <label class="form-label">NIM</label>
+                                    <input type="text" name="nim" class="form-control" required
+                                           value="{{ old('nim', $data['profile']->nim) }}">
                                 </div>
 
                                 <div class="row">
@@ -227,7 +217,6 @@
                                     </div>
                                 </div>
 
-                                {{-- PERBAIKAN TAMPILAN SELECT JENIS KELAMIN --}}
                                 <div class="form-group mb-4">
                                     <label class="form-label">Jenis Kelamin</label>
                                     <select name="jenis_kelamin" class="form-control">
@@ -237,22 +226,7 @@
                                     </select>
                                 </div>
 
-                                <div class="form-group mb-4">
-                                    <label class="form-label">Agama</label>
-                                    {{-- Dibuat select agar lebih rapi daripada input text manual --}}
-                                    <select name="agama" class="form-control" required>
-                                        <option value="">-- Pilih Agama --</option>
-                                        <option value="Islam" {{ (old('agama', $data['profile']->agama) == 'Islam') ? 'selected' : '' }}>Islam</option>
-                                        <option value="Kristen" {{ (old('agama', $data['profile']->agama) == 'Kristen') ? 'selected' : '' }}>Kristen</option>
-                                        <option value="Hindu" {{ (old('agama', $data['profile']->agama) == 'Hindu') ? 'selected' : '' }}>Hindu</option>
-                                        <option value="Buddha" {{ (old('agama', $data['profile']->agama) == 'Buddha') ? 'selected' : '' }}>Buddha</option>
-                                        <option value="Konghucu" {{ (old('agama', $data['profile']->agama) == 'Konghucu') ? 'selected' : '' }}>Konghucu</option>
-                                        {{-- Fallback jika data lama bukan dari list --}}
-                                        @if(!in_array($data['profile']->agama, ['Islam','Kristen','Hindu','Buddha','Konghucu']) && $data['profile']->agama)
-                                            <option value="{{ $data['profile']->agama }}" selected>{{ $data['profile']->agama }}</option>
-                                        @endif
-                                    </select>
-                                </div>
+                                {{-- BAGIAN AGAMA SUDAH DIHAPUS DARI SINI --}}
 
                                 <div class="form-group mb-4">
                                     <label class="form-label">Alamat Lengkap</label>

@@ -6,9 +6,24 @@
 
 <div class="content-wrapper">
     
-    <!-- Main Content -->
     <section class="content pt-4">
       <div class="container-fluid">
+        
+        {{-- Alert Notifikasi --}}
+        @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle mr-1"></i> {{ session('success') }}
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+        </div>
+        @endif
+        
+        @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="fas fa-times-circle mr-1"></i> {{ session('error') }}
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+        </div>
+        @endif
+
         <div class="row">
             <div class="col-12">
                 <div class="card card-primary card-outline">
@@ -19,86 +34,115 @@
                         </h3>
                     </div>
                     <div class="card-body">
-                        @if ($laporanList->isEmpty())
+                        @if ($laporan->isEmpty())
                             <div class="alert alert-warning text-center">
                                 <i class="fas fa-info-circle"></i> Mahasiswa ini belum meng-upload laporan harian.
                             </div>
                         @else
-                            <table id="example1" class="table table-bordered table-striped table-hover">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th style="width: 5%">No</th>
-                                        {{-- Judul Kolom diganti jadi Tanggal saja --}}
-                                        <th style="width: 15%">Tanggal</th>
-                                        <th style="width: 35%">Kegiatan</th>
-                                        <th style="width: 20%">Catatan</th>
-                                        <th style="width: 25%">Foto Dokumentasi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($laporanList as $laporan)
+                            <div class="table-responsive">
+                                <table id="example1" class="table table-bordered table-striped table-hover">
+                                    <thead class="thead-light">
                                         <tr>
-                                            <td class="text-center align-middle">{{ $loop->iteration }}</td>
-                                            <td class="align-middle">
-                                                {{-- PERUBAHAN DI SINI: Jam sudah dihapus --}}
-                                                <strong>{{ \Carbon\Carbon::parse($laporan->tanggal)->translatedFormat('d M Y') }}</strong>
-                                            </td>
-                                            <td class="align-middle">
-                                                {{ $laporan->kegiatan }}
-                                            </td>
-                                            <td class="align-middle">
-                                                @if($laporan->catatan)
-                                                    {{ $laporan->catatan }}
-                                                @else
-                                                    <span class="text-muted text-sm font-italic">- Tidak ada catatan -</span>
-                                                @endif
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                @if($laporan->foto)
-                                                    @php
-                                                        $fotoUrl = asset('storage/' . str_replace('public/', '', $laporan->foto));
-                                                    @endphp
-                                                    
-                                                    {{-- TAMPILAN FOTO KECIL DI TABEL --}}
-                                                    <a href="#" data-toggle="modal" data-target="#modalFoto{{ $laporan->id }}" title="Klik untuk memperbesar">
-                                                        <img src="{{ $fotoUrl }}" alt="Foto Laporan" class="img-fluid rounded shadow-sm" style="max-height: 100px; cursor: pointer;">
-                                                    </a>
+                                            <th style="width: 5%">No</th>
+                                            <th style="width: 15%">Tanggal</th>
+                                            <th>Kegiatan</th>
+                                            <th style="width: 20%">Catatan</th>
+                                            <th style="width: 15%">Foto</th>
+                                            <th style="width: 10%" class="text-center">Status</th>
+                                            <th style="width: 15%" class="text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($laporan as $item)
+                                            <tr>
+                                                <td class="text-center align-middle">{{ $loop->iteration }}</td>
+                                                <td class="align-middle">
+                                                    <strong>{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}</strong>
+                                                </td>
+                                                <td class="align-middle">{{ $item->kegiatan }}</td>
+                                                <td class="align-middle">
+                                                    @if($item->catatan)
+                                                        {{ $item->catatan }}
+                                                    @else
+                                                        <span class="text-muted text-sm font-italic">- Tidak ada catatan -</span>
+                                                    @endif
+                                                </td>
+                                                
+                                                {{-- BAGIAN FOTO DENGAN MODAL POPUP --}}
+                                                <td class="align-middle text-center">
+                                                    @if(!empty($item->foto))
+                                                        @php
+                                                            // Logika Path Foto agar tidak broken
+                                                            $pathFoto = $item->foto;
+                                                            if (!str_contains($pathFoto, 'laporan_harian')) {
+                                                                $pathFoto = 'laporan_harian/' . $pathFoto;
+                                                            }
+                                                            $fotoUrl = asset($pathFoto);
+                                                        @endphp
+                                                        
+                                                        {{-- Thumbnail (Klik untuk membuka Modal) --}}
+                                                        <a href="#" data-toggle="modal" data-target="#modalFoto{{ $item->id }}">
+                                                            <img src="{{ $fotoUrl }}" alt="Foto" class="img-fluid rounded shadow-sm" style="max-height: 80px; cursor: pointer; border: 1px solid #ddd;">
+                                                        </a>
 
-                                                    {{-- MODAL POP-UP --}}
-                                                    <div class="modal fade" id="modalFoto{{ $laporan->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                                            <div class="modal-content" style="border-radius: 10px; border: none;">
-                                                                
-                                                                <div class="modal-header border-0 pb-0">
-                                                                    <h5 class="modal-title font-weight-bold text-primary" style="font-size: 1.2rem;">
-                                                                        Dokumentasi Kegiatan
-                                                                    </h5>
-                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                        <span aria-hidden="true">&times;</span>
-                                                                    </button>
+                                                        {{-- MODAL PREVIEW FOTO --}}
+                                                        <div class="modal fade" id="modalFoto{{ $item->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header border-0 pb-0">
+                                                                        <h6 class="modal-title">Dokumentasi: {{ $item->kegiatan }}</h6>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body text-center">
+                                                                        <img src="{{ $fotoUrl }}" class="img-fluid rounded" style="max-height: 80vh;">
+                                                                    </div>
                                                                 </div>
-
-                                                                <div class="modal-body text-center pt-3 pb-4">
-                                                                    <img src="{{ $fotoUrl }}" class="img-fluid rounded shadow-lg" style="max-height: 75vh; width: auto;">
-                                                                    
-                                                                    <p class="mt-4 mb-0 text-muted font-italic font-weight-light" style="font-size: 1.1rem;">
-                                                                        {{ $laporan->kegiatan }}
-                                                                    </p>
-                                                                </div>
-
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    {{-- End Modal --}}
+                                                        {{-- End Modal --}}
 
-                                                @else
-                                                    <span class="badge badge-secondary">Tidak ada foto</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                                    @else
+                                                        <span class="badge badge-secondary">Tidak ada foto</span>
+                                                    @endif
+                                                </td>
+                                                
+                                                <td class="align-middle text-center">
+                                                    @if($item->status == 'approved')
+                                                        <span class="badge badge-success">Disetujui</span>
+                                                    @elseif($item->status == 'rejected')
+                                                        <span class="badge badge-danger">Ditolak</span>
+                                                    @else
+                                                        <span class="badge badge-warning">Menunggu</span>
+                                                    @endif
+                                                </td>
+
+                                                <td class="align-middle text-center">
+                                                    @if($item->status == 'pending')
+                                                        <div class="btn-group">
+                                                            <form action="{{ route('pembimbing.laporan.approve', $item->id) }}" method="POST">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Setujui laporan ini?')" title="Acc">
+                                                                    <i class="fas fa-check"></i>
+                                                                </button>
+                                                            </form>
+                                                            <form action="{{ route('pembimbing.laporan.reject', $item->id) }}" method="POST" class="ml-1">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tolak laporan ini?')" title="Tolak">
+                                                                    <i class="fas fa-times"></i>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    @else
+                                                        <button class="btn btn-secondary btn-sm" disabled><i class="fas fa-lock"></i> Selesai</button>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         @endif
                     </div>
                 </div>

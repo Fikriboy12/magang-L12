@@ -57,7 +57,7 @@
                             <th>Nama</th>
                             <th>Email</th>
                             <th>No Telepon</th>
-                            <th>Alamat</th>
+                            {{-- KOLOM ALAMAT DIHAPUS --}}
                             <th class="text-center" style="width: 15%">Action</th>
                         </tr>
                     </thead>
@@ -69,12 +69,10 @@
                                 <td>{{$no++}}</td>
                                 <td>{{$item->name}}</td>
                                 <td>{{$item->email}}</td>
-                                {{-- Menggunakan null coalescing operator (??) untuk mencegah error jika data kosong --}}
+                                {{-- Menggunakan null coalescing operator (??) --}}
                                 <td>{{$item->no_telp ?? '-'}}</td>
                                 
-                                <td style="white-space: normal; max-width: 250px;">
-                                    {{$item->alamat ?? '-'}}
-                                </td>
+                                {{-- DATA ALAMAT DIHAPUS DARI SINI --}}
 
                                 <td class="text-center">
                                     <div class="btn-group" role="group">
@@ -105,33 +103,31 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             
-            {{-- PENTING: Action form mengarah ke route store pembimbing --}}
+            {{-- Action form mengarah ke route store pembimbing --}}
             <form action="{{ route('admin.pembimbing.store') }}" method="post">
                 <div class="modal-body">
                     @csrf
                     <div class="form-group">
                         <label for="">Nama</label>
-                        <input type="text" name="name" class="form-control" required placeholder="Nama Lengkap">
+                        <input type="text" name="name" class="form-control" required placeholder="Nama Lengkap" value="{{ old('name') }}">
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="">Email</label>
-                                <input type="email" name="email" class="form-control" required placeholder="email@contoh.com">
+                                <input type="email" name="email" class="form-control" required placeholder="email@contoh.com" value="{{ old('email') }}">
                             </div>   
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="">No Telepon</label>
-                                <input type="number" name="no_telp" class="form-control" required placeholder="08xxxx">
+                                <input type="number" name="no_telp" class="form-control" required placeholder="08xxxx" value="{{ old('no_telp') }}">
                             </div> 
                         </div>
                     </div>
                   
-                    <div class="form-group">
-                        <label for="">Alamat</label>
-                        <textarea name="alamat" class="form-control" required cols="30" rows="4" placeholder="Alamat Lengkap"></textarea>
-                    </div>
+                    {{-- INPUT ALAMAT DIHAPUS DARI SINI --}}
+                    
                     <div class="form-group">
                         <label for="">Password</label>
                         <input type="password" name="password" class="form-control" required minlength="8" placeholder="Minimal 8 karakter">
@@ -150,36 +146,54 @@
 {{-- MODAL UPDATE & DELETE --}}
 @foreach ($data['pembimbings'] as $item)
 
-    {{-- MODAL UPDATE (Hanya Tampilan, Fungsi Edit belum aktif agar tidak error) --}}
+    {{-- MODAL UPDATE --}}
     <div class="modal fade" id="Update{{$item->id}}">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Detail Data Pembimbing</h4>
+                    <h4 class="modal-title">Update Data Pembimbing</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    {{-- Form dimatikan sementara agar tidak error route not found --}}
-                    <form action="#" method="post"> 
+                    <form action="{{ route('admin.pembimbing.update') }}" method="post"> 
+                        @csrf
+                        <input type="hidden" name="id" value="{{$item->id}}">
                         <div class="form-group">
                             <label>Nama</label>
-                            <input type="text" class="form-control" value="{{ $item->name }}" readonly>
+                            <input type="text" name="name" class="form-control" value="{{ $item->name }}" required>
                         </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" name="email" class="form-control" value="{{ $item->email }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>No Telepon</label>
+                                    <input type="number" name="no_telp" class="form-control" value="{{ $item->no_telp }}" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {{-- INPUT ALAMAT DIHAPUS DARI SINI --}}
+
                         <div class="form-group">
-                            <label>Email</label>
-                            <input type="text" class="form-control" value="{{ $item->email }}" readonly>
+                            <label>Password (Kosongkan jika tidak diubah)</label>
+                            <input type="password" name="password" class="form-control" placeholder="Isi hanya jika ingin mengubah password">
                         </div>
-                        <p class="text-muted">*Fitur Edit dan Hapus bisa diaktifkan setelah route ditambahkan.</p>
-                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Update</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- MODAL DELETE (Hanya Tampilan) --}}
+    {{-- MODAL DELETE --}}
     <div class="modal fade" id="Delete{{$item->id}}">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -192,8 +206,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    {{-- Tombol Hapus dinonaktifkan sementara --}}
-                    <button type="button" class="btn btn-danger" disabled>Hapus (Belum Aktif)</button>
+                    <a href="{{ route('admin.pembimbing.delete', ['id' => $item->id]) }}" class="btn btn-danger">Hapus</a>
                 </div>
             </div>
         </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -58,7 +59,7 @@ class LoginController extends Controller
                     ->with('success', 'Selamat datang Pelamar!');
             }
 
-            // --- Logic Pembimbing (Sesuai kode Anda) ---
+            // --- Logic Pembimbing ---
             if ($user->role === 'pembimbing') {
                 return redirect()->route('pembimbing.dashboard')
                     ->with('success', 'Selamat datang Pembimbing!');
@@ -86,14 +87,13 @@ class LoginController extends Controller
     }
 
     // =======================
-    // 👤 PROFILE (BAGIAN YANG DIPERBAIKI)
+    // 👤 PROFILE
     // =======================
     public function profile()
     {
-        // PERBAIKAN: View profile.blade.php membutuhkan variable $data['profile']
-        // Sebelumnya Anda hanya mengirim compact('user'), makanya error "Undefined variable $data"
-        
         $user = Auth::user();
+        
+        // Kita bungkus dalam array $data agar sesuai dengan View profile.blade.php
         $data = [
             'title' => 'Profile Saya',
             'profile' => $user
@@ -108,8 +108,6 @@ class LoginController extends Controller
     public function lengkapi_profile()
     {
         $user = Auth::user();
-        // Jika view lengkapi_profile juga menggunakan $data['profile'], ubah juga bagian ini.
-        // Tapi jika masih pakai $user, biarkan seperti ini.
         return view('auth.lengkapi_profile', compact('user'));
     }
 
@@ -127,9 +125,10 @@ class LoginController extends Controller
         ]);
 
         $user->update([
-            'name' => $request->nama_lengkap, // Pastikan kolom di DB 'name' atau sesuaikan
-            'tgl_lahir' => $request->tgl_lahir,
-            'alamat' => $request->alamat
+            'name' => $request->nama_lengkap,
+            // Mapping kolom DB yang benar:
+            'tanggal_lahir' => $request->tgl_lahir,  
+            'alamat_lengkap' => $request->alamat     
         ]);
 
         return redirect()->route('profile.view')
@@ -137,23 +136,42 @@ class LoginController extends Controller
     }
 
     // =======================
-    // ✏ UPDATE PROFILE
+    // ✏ UPDATE PROFILE (YANG DIPERBAIKI)
     // =======================
     public function update_profile(Request $request)
     {
         /** @var \App\Models\User $user */
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
 
+        // 1. Validasi
         $request->validate([
             'nama_lengkap' => 'required',
-            'alamat' => 'required'
+            'email' => 'required|email',
+            'no_telp' => 'required',
+            'nim' => 'required',
+            'tempat_lahir' => 'required',
+            'tanggal_lahir' => 'required',
+            'jenis_kelamin' => 'required',
+            'alamat' => 'required', // input name="alamat"
         ]);
 
-        // Perhatikan: Kolom di tabel users defaultnya adalah 'name', bukan 'nama_lengkap'
-        // Jika di DB kolomnya 'name', ganti 'nama_lengkap' di bawah jadi 'name'
+        // 2. Cek Password Baru
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        // 3. Update Database (Mapping Input -> Kolom DB)
         $user->update([
-            'name' => $request->nama_lengkap, 
-            'alamat' => $request->alamat
+            'name'           => $request->nama_lengkap,
+            'email'          => $request->email,
+            'no_telp'        => $request->no_telp,
+            'nim'            => $request->nim,
+            'tempat_lahir'   => $request->tempat_lahir,
+            'tanggal_lahir'  => $request->tanggal_lahir,
+            'jenis_kelamin'  => $request->jenis_kelamin,
+            
+            // Perbaikan: Simpan input 'alamat' ke kolom 'alamat_lengkap'
+            'alamat_lengkap' => $request->alamat 
         ]);
 
         return back()->with('success', 'Profil berhasil diperbarui!');

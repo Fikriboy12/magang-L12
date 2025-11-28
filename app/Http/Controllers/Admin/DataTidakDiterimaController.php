@@ -18,14 +18,20 @@ class DataTidakDiterimaController extends Controller
     {
         $data = [
             'title' => "Data Tidak Diterima",
-            'data_pendaftaran' => Pendaftaran::join('users', 'pendaftaran.id_users', '=', 'users.id')
-                ->leftJoin('detail_users', 'detail_users.id_users', '=', 'users.id')
-                ->where('pendaftaran.status_pendaftaran', 'Tidak Diterima')
-                ->select(
-                    'pendaftaran.*',
-                    'users.name',
-                    'users.email'
+            'data_pendaftaran' => Pendaftaran::select(
+                    'pendaftaran.*', 
+                    'users.email', 
+                    'users.name as nama_lengkap', 
+                    'users.nim', 
+                    'users.tempat_lahir', 
+                    'users.tanggal_lahir', 
+                    'users.alamat_lengkap', 
+                    'users.no_telp',
+                    // PERBAIKAN: MENAMBAHKAN KOLOM JENIS KELAMIN
+                    'users.jenis_kelamin'
                 )
+                ->join('users', 'pendaftaran.id_users', '=', 'users.id')
+                ->where('pendaftaran.status_pendaftaran', 'tidak diterima') 
                 ->get(),
         ];
 
@@ -36,14 +42,20 @@ class DataTidakDiterimaController extends Controller
     {
         $data = [
             'title' => "Detail Data Tidak Diterima",
-            'detail_pendaftaran' => Pendaftaran::join('users', 'pendaftaran.id_users', '=', 'users.id')
-                ->leftJoin('detail_users', 'detail_users.id_users', '=', 'users.id')
-                ->where('pendaftaran.id_pendaftaran', $id_pendaftaran)
-                ->select(
-                    'pendaftaran.*',
-                    'users.name',
-                    'users.email'
+            'detail_tidak_diterima' => Pendaftaran::select(
+                    'pendaftaran.*', 
+                    'users.email', 
+                    'users.name as nama_lengkap', 
+                    'users.nim', 
+                    'users.tempat_lahir', 
+                    'users.tanggal_lahir', 
+                    'users.alamat_lengkap', 
+                    'users.no_telp',
+                    // PERBAIKAN: MENAMBAHKAN KOLOM JENIS KELAMIN DI SINI JUGA
+                    'users.jenis_kelamin'
                 )
+                ->join('users', 'pendaftaran.id_users', '=', 'users.id')
+                ->where('pendaftaran.id_pendaftaran', $id_pendaftaran)
                 ->first(),
         ];
 

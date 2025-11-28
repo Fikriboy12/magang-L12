@@ -10,31 +10,31 @@ class Pendaftaran extends Model
     use HasFactory;
 
     protected $table = 'pendaftaran';
+    protected $primaryKey = 'id_pendaftaran'; // Pastikan Primary Key didefinisikan jika bukan 'id'
 
     protected $fillable = [
-        'id_users',             // SAYA SESUAIKAN JADI 'id_users' AGAR COCOK DGN CONTROLLER
+        'id_users',
         'universitas',
         'jurusan',
-        'program_studi',
+        'prodi',            // PERBAIKAN: Sesuai nama kolom database (bukan program_studi)
         'dari_tanggal',
         'sampai_tanggal',
-        'gambar',               // foto/scan
+        'gambar',           // foto profil
         'cv',
         'surat_rekomendasi',
-        'ktp_ktm',
+        'ktp',              // PERBAIKAN: Sesuai nama kolom database (bukan ktp_ktm)
         'proposal',
-        // 'sertifikat',        // SAYA HAPUS SESUAI PERMINTAAN SEBELUMNYA
-        'status_pendaftaran',   // misal: pending, diterima, ditolak
-        'keterangan',           // catatan admin
+        'status_pendaftaran',
+        'keterangan',
     ];
 
     // ==========================================
-    // TAMBAHAN PENTING: RELASI KE USER
+    // RELASI KE USER
     // ==========================================
     public function user()
     {
-        // Ini menghubungkan kolom 'id_users' di tabel pendaftaran 
-        // dengan kolom 'id' di tabel users.
+        // Parameter ke-2: FK di tabel pendaftaran (id_users)
+        // Parameter ke-3: PK di tabel users (id)
         return $this->belongsTo(User::class, 'id_users', 'id');
     }
 }

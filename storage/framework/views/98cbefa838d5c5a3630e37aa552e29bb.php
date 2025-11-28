@@ -6,6 +6,7 @@
 
 
 <style>
+    /* Header Biru Modern */
     .hd-header {
         background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
         color: white !important;
@@ -47,44 +48,28 @@
     }
 
     .date-box {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        font-size: 0.85rem;
+        display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem;
     }
     
     .date-item {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        white-space: nowrap;
+        display: flex; align-items: center; gap: 6px; white-space: nowrap;
     }
 
     .badge-status {
-        padding: 6px 12px;
-        border-radius: 50px;
-        font-weight: 600;
-        font-size: 0.75rem;
-        display: inline-flex;
-        align-items: center;
-        white-space: nowrap;
+        padding: 6px 12px; border-radius: 50px; font-weight: 600;
+        font-size: 0.75rem; display: inline-flex; align-items: center; white-space: nowrap;
     }
     
     .bg-success-soft { background-color: #d1fae5; color: #065f46; }
     .bg-danger-soft { background-color: #fee2e2; color: #991b1b; }
     .bg-warning-soft { background-color: #fef3c7; color: #92400e; }
 
+    /* Action Buttons */
     .btn-action {
-        width: 32px;
-        height: 32px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
-        transition: 0.3s;
-        border: none;
-        margin: 0 2px;
-        font-size: 0.85rem;
+        width: 32px; height: 32px; display: inline-flex;
+        align-items: center; justify-content: center;
+        border-radius: 8px; transition: 0.3s; border: none; margin: 0 2px; font-size: 0.85rem;
+        text-decoration: none !important;
     }
     
     .btn-view { background: #eff6ff; color: #2563eb; }
@@ -93,8 +78,10 @@
     .btn-print { background: #fffbeb; color: #d97706; }
     .btn-print:hover { background: #d97706; color: white; }
 
-    .btn-info-custom { background: #ecfdf5; color: #059669; }
-    .btn-info-custom:hover { background: #059669; color: white; }
+    /* Tombol Ajukan Sertifikat */
+    .btn-ajukan { background: #ecfdf5; color: #059669; cursor: pointer; }
+    .btn-ajukan:hover { background: #059669; color: white; }
+
 </style>
 
 <div class="content-wrapper" style="background-color: #f8fafc; min-height: 90vh;">
@@ -117,6 +104,15 @@
                     </div>
 
                     <div class="card-body p-4">
+                        
+                        <?php if(session('success')): ?>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <?php echo e(session('success')); ?>
+
+                                <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+                            </div>
+                        <?php endif; ?>
+
                         <div class="table-responsive">
                             <table id="example1" class="table table-hd table-hover w-100" style="min-width: 900px;">
                                 <thead>
@@ -135,14 +131,12 @@
                                     <tr>
                                         <td class="text-center font-weight-bold text-muted"><?php echo e($loop->iteration); ?></td>
                                         
-                                        
                                         <td>
                                             <span class="font-weight-bold text-primary" style="font-size: 0.95rem;">
                                                 <?php echo e($item->user->name ?? Auth::user()->name); ?>
 
                                             </span>
                                         </td>
-                                        
                                         
                                         <td>
                                             <div style="display: flex; flex-direction: column; gap: 3px;">
@@ -159,7 +153,6 @@
                                             </div>
                                         </td>
                                         
-                                        
                                         <td>
                                             <div class="date-box">
                                                 <div class="date-item text-success">
@@ -173,7 +166,6 @@
                                             </div>
                                         </td>
 
-                                        
                                         <td>
                                             <span class="text-muted" style="font-size: 0.85rem; font-style: italic;">
                                                 <?php echo e($item->keterangan ?? '-'); ?>
@@ -181,7 +173,6 @@
                                             </span>
                                         </td>
 
-                                        
                                         <td class="text-center">
                                             <?php if($item->status_pendaftaran == 'diterima'): ?>
                                                 <span class="badge-status bg-success-soft">
@@ -198,7 +189,6 @@
                                             <?php endif; ?>
                                         </td>
 
-                                        
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center">
                                                 
@@ -206,16 +196,51 @@
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 
+                                                
                                                 <a href="<?php echo e(url('cetak-lamaran/'.$item->id_pendaftaran)); ?>" class="btn-action btn-print" target="_blank" title="Cetak Bukti" data-toggle="tooltip">
                                                     <i class="fas fa-print"></i>
                                                 </a>
 
                                                 
-                                                
-                                                <a href="<?php echo e(url('detail-informasi/'.$item->id_pendaftaran)); ?>" class="btn-action btn-info-custom" title="Informasi" data-toggle="tooltip">
-                                                    <i class="fas fa-info"></i>
-                                                </a>
+                                                <?php if($item->status_pendaftaran == 'diterima'): ?>
+                                                    <button type="button" class="btn-action btn-ajukan" data-toggle="modal" data-target="#modalAjukan<?php echo e($item->id_pendaftaran); ?>" title="Ajukan Sertifikat">
+                                                        <i class="fas fa-file-signature"></i>
+                                                    </button>
+                                                <?php else: ?>
+                                                    <button class="btn-action btn-secondary" disabled style="cursor: not-allowed; opacity: 0.5;" title="Menunggu Diterima">
+                                                        <i class="fas fa-lock"></i>
+                                                    </button>
+                                                <?php endif; ?>
                                             </div>
+
+                                            
+                                            <div class="modal fade" id="modalAjukan<?php echo e($item->id_pendaftaran); ?>" tabindex="-1" role="dialog" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
+                                                        <div class="modal-header bg-primary text-white" style="border-radius: 15px 15px 0 0;">
+                                                            <h5 class="modal-title font-weight-bold">Ajukan Sertifikat</h5>
+                                                            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body text-center py-4">
+                                                            <i class="fas fa-certificate fa-3x text-warning mb-3"></i>
+                                                            <p class="mb-0 font-weight-bold text-dark">Apakah Anda yakin ingin mengajukan sertifikat?</p>
+                                                            <p class="small text-muted">Pastikan Anda telah menyelesaikan periode magang.</p>
+                                                        </div>
+                                                        <div class="modal-footer justify-content-center border-0 pb-4">
+                                                            <button type="button" class="btn btn-secondary rounded-pill px-4" data-dismiss="modal">Batal</button>
+                                                            
+                                                            <form action="<?php echo e(url('insert-sertifikat')); ?>" method="POST">
+                                                                <?php echo csrf_field(); ?>
+                                                                <input type="hidden" name="id_pendaftaran" value="<?php echo e($item->id_pendaftaran); ?>">
+                                                                <button type="submit" class="btn btn-primary rounded-pill px-4">Ya, Ajukan</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                         </td>
                                     </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
@@ -268,11 +293,23 @@
                                             <td class="text-center"><?php echo e($loop->iteration); ?></td>
                                             <td><?php echo e($sertifikat->nama_sertifikat ?? 'Sertifikat Magang'); ?></td>
                                             <td><?php echo e(\Carbon\Carbon::parse($sertifikat->created_at)->format('d M Y')); ?></td>
-                                            <td><span class="badge badge-primary">PDF</span></td>
+                                            <td><span class="badge badge-primary">PDF / Image</span></td>
                                             <td class="text-center">
-                                                <a href="<?php echo e(asset('storage/'.$sertifikat->file)); ?>" target="_blank" class="btn btn-sm btn-primary shadow-sm px-3" style="border-radius: 20px;">
-                                                    <i class="fas fa-download mr-1"></i> Download
-                                                </a>
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                <?php if(!empty($sertifikat->file_path)): ?>
+                                                    <a href="<?php echo e(asset('sertifikat/'.$sertifikat->file_path)); ?>" target="_blank" class="btn btn-sm btn-primary shadow-sm px-3" style="border-radius: 20px;">
+                                                        <i class="fas fa-download mr-1"></i> Download
+                                                    </a>
+                                                <?php else: ?>
+                                                    <button class="btn btn-sm btn-secondary shadow-sm px-3" disabled style="border-radius: 20px; opacity: 0.6;">
+                                                        <i class="fas fa-spinner mr-1"></i> Proses
+                                                    </button>
+                                                <?php endif; ?>
+
                                             </td>
                                         </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>

@@ -43,7 +43,7 @@
                             <th>Nama</th>
                             <th>Email</th>
                             <th>No Telepon</th>
-                            <th>Alamat</th>
+                            
                             <th class="text-center" style="width: 15%">Action</th>
                         </tr>
                     </thead>
@@ -57,13 +57,8 @@
                                 <td><?php echo e($item->no_telp); ?></td>
                                 
                                 
-                                <td style="white-space: normal; max-width: 250px;">
-                                    <?php echo e($item->alamat); ?>
-
-                                </td>
 
                                 <td class="text-center">
-                                    
                                     <div class="btn-group" role="group">
                                         <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#Update<?php echo e($item->id); ?>" title="Edit">
                                             <i class="fa fa-edit"></i> 
@@ -114,10 +109,8 @@
                         </div>
                     </div>
                   
-                    <div class="form-group">
-                        <label for="">Alamat</label>
-                        <textarea name="alamat" class="form-control" required cols="30" rows="4"></textarea>
-                    </div>
+                    
+                    
                     <div class="form-group">
                         <label for="">Password</label>
                         <input type="password" name="password" class="form-control" required>
@@ -169,10 +162,8 @@
                             </div>
                         </div>
                       
-                        <div class="form-group">
-                            <label for="">Alamat</label>
-                            <textarea name="alamat" class="form-control" required cols="30" rows="4"><?php echo e($item->alamat); ?></textarea>
-                        </div>
+                        
+
                         <div class="form-group">
                             <label for="">Password (Kosongkan jika tidak diubah)</label>
                             <input type="password" name="password" class="form-control">
