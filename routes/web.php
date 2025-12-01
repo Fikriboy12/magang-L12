@@ -145,8 +145,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/update-diterima', [DataPendaftaranController::class, 'diterima'])->name('admin.pendaftaran.diterima');
     Route::post('/update-tidak-diterima', [DataPendaftaranController::class, 'tidak_diterima'])->name('admin.pendaftaran.tidak_diterima');
 
+    // --- DATA DITERIMA (MODIFIKASI DI SINI) ---
     Route::get('/data-diterima', [DataDiterimaController::class, 'index'])->name('admin.diterima.index');
     Route::get('/detail-diterima/{id}', [DataDiterimaController::class, 'detail'])->name('admin.diterima.detail');
+    // TAMBAHAN: Route khusus untuk update pembimbing di halaman data diterima
+    Route::put('/update-pembimbing-mahasiswa/{id}', [DataDiterimaController::class, 'aturPembimbing'])->name('admin.diterima.atur_pembimbing');
 
     Route::get('/data-tidak-diterima', [DataTidakDiterimaController::class, 'index'])->name('admin.tidak_diterima.index');
     Route::get('/detail-tidak-diterima/{id}', [DataTidakDiterimaController::class, 'detail'])->name('admin.tidak_diterima.detail');

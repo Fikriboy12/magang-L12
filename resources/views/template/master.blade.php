@@ -1,98 +1,286 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-  <title>Aplikasi Magang </title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
-
-  <!-- Favicons -->
-  <link href="{{ asset('') }}assets_admin/img/logonew.png" rel="icon">
-  <link href="{{ asset('') }}assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-  <link rel="stylesheet" href="{{ asset('assets_admin/datatables/datatables.min.css');  }}">
-  <link rel="stylesheet" href="{{ asset('assets_admin/datatables/dataTables.bootstrap4.min.css');  }}">
-  <link rel="stylesheet" href="{{ asset('assets_admin/datatables/buttons.dataTables.min.css');  }}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,600,700|Raleway:300,400,400i,500,500i,700,800,900" rel="stylesheet">
-
+  <title>E-Magang</title>
+  
+  <!-- Font Keren -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CDN Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <!-- Vendor CSS Files -->
-  <link href="{{ asset('') }}assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="{{ asset('') }}assets/vendor/icofont/icofont.min.css" rel="stylesheet">
-  <link href="{{ asset('') }}assets/vendor/animate.css/animate.min.css" rel="stylesheet">
-  <link href="{{ asset('') }}assets/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-  <link href="{{ asset('') }}assets/vendor/nivo-slider/css/nivo-slider.css" rel="stylesheet">
-  <link href="{{ asset('') }}assets/vendor/owl.carousel/assets_admin/owl.carousel.min.css" rel="stylesheet">
-  <link href="{{ asset('') }}assets/vendor/venobox/venobox.css" rel="stylesheet">
-
-  <link rel="stylesheet" href="{{ asset('assets_admin/datatables/datatables.min.css');  }}">
-  <link rel="stylesheet" href="{{ asset('assets_admin/datatables/dataTables.bootstrap4.min.css');  }}">
-  <link rel="stylesheet" href="{{ asset('assets_admin/datatables/buttons.dataTables.min.css');  }}">
+  <link href="{{ asset('assets') }}/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="{{ asset('assets') }}/vendor/icofont/icofont.min.css" rel="stylesheet">
+  <link href="{{ asset('assets') }}/vendor/animate.css/animate.min.css" rel="stylesheet">
+  <link href="{{ asset('assets') }}/vendor/nivo-slider/css/nivo-slider.css" rel="stylesheet">
+  <link href="{{ asset('assets') }}/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
+  <link href="{{ asset('assets') }}/vendor/venobox/venobox.css" rel="stylesheet">
+  
+  <!-- CSS Library Tambahan -->
+  <link rel="stylesheet" href="{{ asset('assets_admin/datatables/datatables.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets_admin/datatables/dataTables.bootstrap4.min.css') }}">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
-  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 
   <!-- Template Main CSS File -->
-  <link href="{{ asset('') }}assets/css/style.css" rel="stylesheet">
+  <link href="{{ asset('assets') }}/css/style.css" rel="stylesheet">
+  <link href="{{ asset('assets') }}/css/responsive.css" rel="stylesheet">
+  
+  <!-- Custom Style Navbar (RESPONSIF FIXED) -->
+  <style>
+      /* --- 1. SETTING UTAMA --- */
+      :root {
+          --nav-blue: #005bea;
+          --nav-cyan: #00c6fb;
+          --nav-dark: #0f172a;
+      }
+
+      body {
+          font-family: 'Plus Jakarta Sans', sans-serif !important;
+          overflow-x: hidden;
+      }
+
+      /* --- 2. NAVBAR UTAMA --- */
+      #header {
+          transition: all 0.4s ease-in-out;
+          background: rgba(0,0,0,0.6); 
+          padding: 0;
+          height: auto;
+          min-height: 70px;
+          z-index: 999;
+          position: fixed;
+          width: 100%;
+          top: 0;
+          backdrop-filter: blur(5px);
+      }
+
+      /* Saat Scroll */
+      #header.header-scrolled {
+          background: rgba(255, 255, 255, 0.98);
+          box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      }
+
+      /* --- 3. LOGO --- */
+      .navbar-brand {
+          color: #fff !important;
+          font-size: 24px;
+          font-weight: 800;
+          letter-spacing: 0.5px;
+          text-transform: uppercase;
+      }
+      .navbar-brand span { color: var(--nav-cyan); }
+      
+      #header.header-scrolled .navbar-brand { color: var(--nav-dark) !important; }
+
+      /* --- 4. MENU NAVIGASI (DESKTOP) --- */
+      .navbar-nav .nav-item {
+          padding: 0 5px;
+      }
+
+      .navbar-nav .nav-link {
+          color: #fff !important;
+          font-size: 12px;
+          font-weight: 700;
+          text-transform: uppercase;
+          transition: 0.3s;
+          letter-spacing: 0.3px;
+          position: relative;
+      }
+
+      #header.header-scrolled .navbar-nav .nav-link { color: #444 !important; }
+
+      /* Hover Effect */
+      .navbar-nav .nav-link:hover, .navbar-nav .active > .nav-link { color: var(--nav-cyan) !important; }
+      #header.header-scrolled .navbar-nav .nav-link:hover { color: var(--nav-blue) !important; }
+
+      /* --- 5. DROPDOWN USER (RESPONSIF) --- */
+      .dropdown-menu {
+          border: none;
+          border-top: 3px solid var(--nav-cyan);
+          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+          border-radius: 8px;
+          font-size: 13px;
+          min-width: 180px;
+          margin-top: 10px;
+      }
+
+      .dropdown-item {
+          padding: 10px 20px;
+          font-weight: 600;
+          color: #333;
+      }
+      
+      .dropdown-item:hover {
+          background: #f8f9fa;
+          color: var(--nav-blue);
+      }
+
+      /* --- 6. TOMBOL TOGGLER (HAMBURGER MENU HP) --- */
+      .navbar-toggler {
+          border: none;
+          outline: none !important;
+      }
+      .navbar-toggler-icon {
+          background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      }
+      #header.header-scrolled .navbar-toggler-icon {
+          background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(0, 0, 0, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      }
+
+      /* --- 7. TOMBOL LOGIN --- */
+      .btn-login-nav {
+          border: 1px solid #fff; 
+          padding: 5px 20px !important;
+          border-radius: 50px; 
+          margin-left: 10px; 
+          font-size: 12px !important;
+      }
+      .btn-login-nav:hover { background: #fff; color: var(--nav-blue) !important; }
+      
+      #header.header-scrolled .btn-login-nav { border-color: var(--nav-blue); color: var(--nav-blue) !important; }
+      #header.header-scrolled .btn-login-nav:hover { background: var(--nav-blue); color: #fff !important; }
+
+      /* PENGATURAN MODE HP (MOBILE) */
+      @media (max-width: 991px) {
+          #header { background: rgba(15, 23, 42, 0.95); } /* Background gelap di HP biar menu kebaca */
+          .navbar-collapse {
+              background: #fff;
+              padding: 20px;
+              border-radius: 10px;
+              margin-top: 15px;
+              box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+          }
+          .navbar-nav .nav-link { color: #333 !important; padding: 10px 0; }
+          .btn-login-nav { margin-left: 0; margin-top: 10px; display: inline-block; border-color: var(--nav-blue); color: var(--nav-blue) !important; }
+      }
+  </style>
+
+  <!-- Script Jquery & Plugins -->
+  <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 </head>
+
 <body data-spy="scroll" data-target="#navbar-example">
 
-@include('template.navbar')
+  <!-- ============================================ -->
+  <!-- NAVBAR BOOTSTRAP (RESPONSIF) -->
+  <!-- ============================================ -->
+  <header id="header">
+    <div class="container-fluid" style="padding-left: 40px; padding-right: 40px;">
+        <nav class="navbar navbar-expand-lg navbar-dark p-0">
+            
+            <!-- LOGO -->
+            <a class="navbar-brand" href="{{ url('/') }}">
+                <span>E</span>-Magang
+            </a>
 
-@yield('contents')
+            <!-- TOMBOL HAMBURGER (MUNCUL DI HP) -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-@include('template.footer')
+            <!-- MENU ITEM -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto align-items-lg-center">
+                    <li class="nav-item active"><a class="nav-link page-scroll" href="{{ url('/') }}#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link page-scroll" href="{{ url('/') }}#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link page-scroll" href="{{ url('/') }}#services">Information</a></li>
+                    <li class="nav-item"><a class="nav-link page-scroll" href="{{ url('/') }}#portfolio">Gallery</a></li>
+                    <li class="nav-item"><a class="nav-link page-scroll" href="{{ url('/') }}#contact">Contact</a></li>
 
+                    @auth
+                        <li class="nav-item"><a class="nav-link page-scroll" href="{{ route('pendaftaran.index') }}">Pendaftaran</a></li>
+                        <li class="nav-item"><a class="nav-link page-scroll" href="{{ route('pelamar.lamaran.index') }}">Lamaran</a></li>
+                        <li class="nav-item"><a class="nav-link page-scroll" href="{{ route('mahasiswa.laporan.index') }}">Laporan</a></li>
 
-<a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
-<div id="preloader"></div>
+                        <!-- DROPDOWN USER (NO RIPPLE / ANIMASI BERLEBIH) -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="display: flex; align-items: center;">
+                                {{ Auth::user()->name }}
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{{ route('profile.view') }}">
+                                    <i class="fa-solid fa-user mr-2"></i> My Profile
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-danger" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fa-solid fa-right-from-bracket mr-2"></i> Logout
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+                            </div>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link btn-login-nav" href="{{ route('login') }}">Login</a>
+                        </li>
+                    @endauth
+                </ul>
+            </div>
+        </nav>
+    </div>
+  </header>
+  <!-- End Header -->
 
-<!-- Vendor JS Files -->
-<script src="{{ asset('')}}assets/vendor/jquery/jquery.min.js"></script>
-<script src="{{ asset('')}}assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('')}}assets/vendor/jquery.easing/jquery.easing.min.js"></script>
-<script src="{{ asset('')}}assets/vendor/php-email-form/validate.js"></script>
-<script src="{{ asset('')}}assets/vendor/appear/jquery.appear.js"></script>
-<script src="{{ asset('')}}assets/vendor/knob/jquery.knob.js"></script>
-<script src="{{ asset('')}}assets/vendor/parallax/parallax.js"></script>
-<script src="{{ asset('')}}assets/vendor/wow/wow.min.js"></script>
-<script src="{{ asset('')}}assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-<script src="{{ asset('')}}assets/vendor/nivo-slider/js/jquery.nivo.slider.js"></script>
-<script src="{{ asset('')}}assets/vendor/owl.carousel/owl.carousel.min.js"></script>
-<script src="{{ asset('')}}assets/vendor/venobox/venobox.min.js"></script>
-<script src="{{ asset('')}}assets_admin/js/plugin/datatables/datatables.min.js"></script>
+  @yield('contents')
 
+  @include('template.footer')
 
-<script src="{{ asset('assets_admin/datatables/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('assets_admin/datatables/datatables.min.js') }}"></script>
-<script src="{{ asset('assets_admin/datatables/dataTables.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('assets_admin/datatables/dataTables.buttons.min.js') }}"></script>
-<script src="{{ asset('assets_admin/datatables/jszip.min.js') }}"></script>
-<script src="{{ asset('assets_admin/datatables/pdfmake.min.js') }}"></script>
-<script src="{{ asset('assets_admin/datatables/vfs_fonts.js') }}"></script>
-<script src="{{ asset('assets_admin/datatables/buttons.html5.min.js') }}"></script>
+  <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+  <div id="preloader"></div>
 
-<!-- Template Main JS File -->
-<script src="{{ asset('')}}assets/js/main.js"></script>
+  <!-- Vendor JS Files -->
+  <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/jquery.easing/jquery.easing.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
+  <script src="{{ asset('assets/vendor/appear/jquery.appear.js') }}"></script>
+  <script src="{{ asset('assets/vendor/knob/jquery.knob.js') }}"></script>
+  <script src="{{ asset('assets/vendor/parallax/parallax.js') }}"></script>
+  <script src="{{ asset('assets/vendor/wow/wow.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/nivo-slider/js/jquery.nivo.slider.js') }}"></script>
+  <script src="{{ asset('assets/vendor/owl.carousel/owl.carousel.min.js') }}"></script>
+  <script src="{{ asset('assets/vendor/venobox/venobox.min.js') }}"></script>
 
-<script>
-$(document).ready(function() {
-    $('.table').DataTable({
-    dom: 'lBfrtip',
-    buttons: [
-        'copyHtml5',
-        'excelHtml5',
-        'csvHtml5',
-        'pdfHtml5'
-    ],
-    "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+  <!-- DataTables JS -->
+  <script src="{{ asset('assets_admin/js/plugin/datatables/datatables.min.js') }}"></script>
+  <script src="{{ asset('assets_admin/datatables/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('assets_admin/datatables/dataTables.bootstrap4.min.js') }}"></script>
+  <script src="{{ asset('assets_admin/datatables/dataTables.buttons.min.js') }}"></script>
+  <script src="{{ asset('assets_admin/datatables/jszip.min.js') }}"></script>
+  <script src="{{ asset('assets_admin/datatables/pdfmake.min.js') }}"></script>
+  <script src="{{ asset('assets_admin/datatables/vfs_fonts.js') }}"></script>
+  <script src="{{ asset('assets_admin/datatables/buttons.html5.min.js') }}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{{ asset('assets/js/main.js') }}"></script>
+
+  <script>
+    // Inisialisasi DataTable
+    $(document).ready(function() {
+        if ($('.table').length > 0) {
+            $('.table').DataTable({
+                dom: 'lBfrtip',
+                buttons: ['copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5'],
+                "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+            });
+        }
     });
-});
-</script>
-</body>
 
+    // Script Animasi Navbar (Ganti Warna saat Scroll)
+    window.addEventListener('scroll', function() {
+        const header = document.getElementById('header');
+        if (window.scrollY > 50) {
+            header.classList.add('header-scrolled');
+        } else {
+            header.classList.remove('header-scrolled');
+        }
+    });
+  </script>
+
+</body>
 </html>
