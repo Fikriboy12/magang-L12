@@ -6,13 +6,10 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>E-Magang</title>
   
-  <!-- Font Keren -->
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- CDN Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Vendor CSS Files -->
   <link href="{{ asset('assets') }}/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="{{ asset('assets') }}/vendor/icofont/icofont.min.css" rel="stylesheet">
   <link href="{{ asset('assets') }}/vendor/animate.css/animate.min.css" rel="stylesheet">
@@ -20,233 +17,326 @@
   <link href="{{ asset('assets') }}/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
   <link href="{{ asset('assets') }}/vendor/venobox/venobox.css" rel="stylesheet">
   
-  <!-- CSS Library Tambahan -->
   <link rel="stylesheet" href="{{ asset('assets_admin/datatables/datatables.min.css') }}">
   <link rel="stylesheet" href="{{ asset('assets_admin/datatables/dataTables.bootstrap4.min.css') }}">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
 
-  <!-- Template Main CSS File -->
   <link href="{{ asset('assets') }}/css/style.css" rel="stylesheet">
   <link href="{{ asset('assets') }}/css/responsive.css" rel="stylesheet">
   
-  <!-- Custom Style Navbar (RESPONSIF FIXED) -->
   <style>
-      /* --- 1. SETTING UTAMA --- */
-      :root {
-          --nav-blue: #005bea;
-          --nav-cyan: #00c6fb;
-          --nav-dark: #0f172a;
-      }
-
+      /* --- GLOBAL --- */
       body {
           font-family: 'Plus Jakarta Sans', sans-serif !important;
+          color: #334155;
           overflow-x: hidden;
+          background-color: #f8fafc;
       }
 
-      /* --- 2. NAVBAR UTAMA --- */
+      /* --- NAVBAR --- */
       #header {
-          transition: all 0.4s ease-in-out;
-          background: rgba(0,0,0,0.6); 
-          padding: 0;
-          height: auto;
-          min-height: 70px;
-          z-index: 999;
+          background: #ffffff;
+          height: 80px;
+          transition: all 0.5s;
+          z-index: 997;
+          box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+          padding: 15px 0;
           position: fixed;
-          width: 100%;
-          top: 0;
-          backdrop-filter: blur(5px);
+          top: 0; width: 100%;
       }
-
-      /* Saat Scroll */
-      #header.header-scrolled {
-          background: rgba(255, 255, 255, 0.98);
-          box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      .logo-container { display: flex; align-items: center; text-decoration: none !important; }
+      .logo-box {
+          width: 40px; height: 40px; background: #2563eb; color: white;
+          font-size: 24px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+          border-radius: 8px; margin-right: 10px;
       }
+      .logo-text { font-size: 22px; font-weight: 800; color: #0f172a; text-transform: uppercase; }
 
-      /* --- 3. LOGO --- */
-      .navbar-brand {
-          color: #fff !important;
-          font-size: 24px;
-          font-weight: 800;
-          letter-spacing: 0.5px;
-          text-transform: uppercase;
+      /* MENU TENGAH */
+      .nav-menu { margin-left: 40px; }
+      .nav-menu ul { margin: 0; padding: 0; list-style: none; display: flex; }
+      .nav-menu li { margin: 0 5px; }
+      .nav-menu a {
+          color: #64748b; font-size: 14px; font-weight: 600;
+          text-decoration: none; display: flex; align-items: center; gap: 5px;
       }
-      .navbar-brand span { color: var(--nav-cyan); }
-      
-      #header.header-scrolled .navbar-brand { color: var(--nav-dark) !important; }
+      .nav-menu a:hover, .nav-menu .active > a { color: #2563eb; }
 
-      /* --- 4. MENU NAVIGASI (DESKTOP) --- */
-      .navbar-nav .nav-item {
-          padding: 0 5px;
-      }
-
-      .navbar-nav .nav-link {
-          color: #fff !important;
-          font-size: 12px;
-          font-weight: 700;
-          text-transform: uppercase;
+      /* TOMBOL USER LOGIN */
+      .header-right-btn {
+          background: #0f172a; color: white !important; padding: 8px 20px;
+          border-radius: 50px; font-size: 13px; font-weight: 700;
+          text-decoration: none; display: flex; align-items: center; gap: 5px;
           transition: 0.3s;
-          letter-spacing: 0.3px;
+      }
+      .header-right-btn:hover { background: #2563eb; transform: translateY(-2px); }
+
+      .user-dropdown { position: relative; display: inline-block; }
+      .user-toggle {
+          display: flex; align-items: center; gap: 8px; padding: 5px 12px;
+          border-radius: 50px; background: #f1f5f9; color: #0f172a !important;
+          font-weight: 700; font-size: 13px; cursor: pointer; text-decoration: none;
+      }
+      .user-avatar {
+          width: 28px; height: 28px; background: #2563eb; color: white;
+          border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;
+      }
+      .dropdown-menu-custom {
+          position: absolute; right: 0; top: 110%; background: white; min-width: 180px;
+          box-shadow: 0 5px 20px rgba(0,0,0,0.1); border-radius: 10px; padding: 5px 0;
+          opacity: 0; visibility: hidden; transform: translateY(10px); transition: 0.3s;
+          border: 1px solid #f1f5f9; z-index: 9999;
+      }
+      .user-dropdown:hover .dropdown-menu-custom { opacity: 1; visibility: visible; transform: translateY(0); }
+      .dropdown-item-custom {
+          display: flex; align-items: center; gap: 8px; padding: 8px 15px;
+          color: #64748b; font-size: 13px; font-weight: 500; text-decoration: none;
+      }
+      .dropdown-item-custom:hover { background: #f8fafc; color: #2563eb; }
+
+      /* ======================================= */
+      /* 💎 FOOTER SESUAI GAMBAR 💎              */
+      /* ======================================= */
+      #footer {
+          /* Warna Biru Solid Cerah */
+          background-color: #2563eb !important; 
+          background: #2563eb !important;
+          padding: 70px 0 0 0;
+          color: #ffffff;
           position: relative;
-      }
-
-      #header.header-scrolled .navbar-nav .nav-link { color: #444 !important; }
-
-      /* Hover Effect */
-      .navbar-nav .nav-link:hover, .navbar-nav .active > .nav-link { color: var(--nav-cyan) !important; }
-      #header.header-scrolled .navbar-nav .nav-link:hover { color: var(--nav-blue) !important; }
-
-      /* --- 5. DROPDOWN USER (RESPONSIF) --- */
-      .dropdown-menu {
-          border: none;
-          border-top: 3px solid var(--nav-cyan);
-          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-          border-radius: 8px;
-          font-size: 13px;
-          min-width: 180px;
-          margin-top: 10px;
-      }
-
-      .dropdown-item {
-          padding: 10px 20px;
-          font-weight: 600;
-          color: #333;
+          z-index: 10;
+          border-top: none;
       }
       
-      .dropdown-item:hover {
-          background: #f8f9fa;
-          color: var(--nav-blue);
+      .footer-row { display: flex; flex-wrap: wrap; align-items: flex-start; }
+      .footer-col { padding-bottom: 40px; }
+
+      /* Logo Footer Putih */
+      .footer-logo-text { 
+          font-size: 28px; font-weight: 800; color: #ffffff; 
+          display: flex; align-items: center; gap: 10px; margin-bottom: 20px; 
+      }
+      /* Kotak E Putih, Huruf Biru */
+      .footer-logo-box {
+          width: 45px; height: 45px; background: #ffffff; color: #2563eb;
+          display: flex; align-items: center; justify-content: center;
+          border-radius: 8px; font-size: 26px; font-weight: 900;
       }
 
-      /* --- 6. TOMBOL TOGGLER (HAMBURGER MENU HP) --- */
-      .navbar-toggler {
-          border: none;
-          outline: none !important;
-      }
-      .navbar-toggler-icon {
-          background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-      }
-      #header.header-scrolled .navbar-toggler-icon {
-          background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(0, 0, 0, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      /* Judul Kolom (INFORMASI, KONTAK KAMI) */
+      .footer-title {
+          font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+          color: #e0f2fe; /* Putih agak biru dikit */
+          margin-bottom: 20px; display: block; border-bottom: 1px solid rgba(255,255,255,0.2);
+          padding-bottom: 10px; width: fit-content;
       }
 
-      /* --- 7. TOMBOL LOGIN --- */
-      .btn-login-nav {
-          border: 1px solid #fff; 
-          padding: 5px 20px !important;
-          border-radius: 50px; 
-          margin-left: 10px; 
-          font-size: 12px !important;
+      /* Teks Deskripsi */
+      .footer-desc { font-size: 14px; color: #ffffff; line-height: 1.8; margin-bottom: 20px; text-align: justify; }
+
+      /* Tombol Login Admin (Kotak Putih, Teks Biru) */
+      .btn-admin-footer {
+          display: inline-flex; align-items: center; gap: 10px;
+          background: #ffffff; color: #2563eb !important; /* Warna Teks Biru */
+          padding: 12px 25px;
+          border-radius: 8px; font-size: 14px; font-weight: 700;
+          text-decoration: none; transition: 0.3s; 
+          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       }
-      .btn-login-nav:hover { background: #fff; color: var(--nav-blue) !important; }
+      .btn-admin-footer:hover { background: #f1f5f9; transform: translateY(-2px); }
+      .btn-admin-footer i { color: #2563eb; font-size: 16px; }
+
+      /* List Kontak */
+      .footer-links { list-style: none; padding: 0; margin: 0; }
+      .footer-links li { margin-bottom: 15px; }
+      .footer-links a {
+          color: #ffffff; font-size: 14px; text-decoration: none; transition: 0.2s;
+          display: flex; align-items: flex-start; gap: 15px;
+      }
+      .footer-links a:hover { opacity: 0.8; }
       
-      #header.header-scrolled .btn-login-nav { border-color: var(--nav-blue); color: var(--nav-blue) !important; }
-      #header.header-scrolled .btn-login-nav:hover { background: var(--nav-blue); color: #fff !important; }
+      /* Ikon Lingkaran Putih, Simbol Biru */
+      .footer-links i { 
+          color: #2563eb; font-size: 16px; margin-top: 2px; 
+          background: #ffffff; padding: 8px; border-radius: 50%; 
+          width: 32px; height: 32px; flex-shrink: 0;
+          display: flex; align-items: center; justify-content: center;
+      }
 
-      /* PENGATURAN MODE HP (MOBILE) */
+      /* Copyright */
+      .footer-bottom {
+          background: rgba(0, 0, 0, 0.1); /* Sedikit lebih gelap */
+          padding: 25px 0; margin-top: 20px;
+          text-align: center; font-size: 13px; color: #ffffff;
+          border-top: 1px solid rgba(255,255,255,0.1);
+      }
+      .footer-bottom strong { color: #ffffff; }
+
+      /* ======================================= */
+      /* 📱 MOBILE FIX (Tombol Biru & Rapi) 📱   */
+      /* ======================================= */
       @media (max-width: 991px) {
-          #header { background: rgba(15, 23, 42, 0.95); } /* Background gelap di HP biar menu kebaca */
-          .navbar-collapse {
-              background: #fff;
-              padding: 20px;
-              border-radius: 10px;
-              margin-top: 15px;
-              box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+          #header { height: 60px; padding: 10px 0; }
+          .nav-menu { display: none; }
+          .header-right-btn { display: none; } 
+          
+          /* TOMBOL BURGER MENU HP */
+          .mobile-nav-toggle {
+              display: block !important;
+              color: #2563eb !important; /* WARNA BIRU AGAR KELIHATAN */
+              font-size: 28px;
+              cursor: pointer;
+              position: fixed; right: 20px; top: 18px; z-index: 9999;
+              background: transparent; border: none;
           }
-          .navbar-nav .nav-link { color: #333 !important; padding: 10px 0; }
-          .btn-login-nav { margin-left: 0; margin-top: 10px; display: inline-block; border-color: var(--nav-blue); color: var(--nav-blue) !important; }
+          .mobile-nav-toggle i { color: #2563eb !important; }
+
+          .logo-text { font-size: 18px; }
+          .logo-box { width: 32px; height: 32px; font-size: 16px; }
+
+          /* Footer HP Rata Tengah */
+          #footer { padding-top: 40px; }
+          .footer-col { text-align: center !important; margin-bottom: 40px; padding: 0 20px; }
+          .footer-logo-text { justify-content: center; }
+          .footer-desc { text-align: center; font-size: 13px; }
+          .footer-links a { justify-content: center; font-size: 13px; align-items: center; }
+          .btn-admin-footer { margin: 0 auto; }
+          .footer-title { margin: 0 auto 20px auto; }
       }
   </style>
 
-  <!-- Script Jquery & Plugins -->
   <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 </head>
 
-<body data-spy="scroll" data-target="#navbar-example">
+<body>
 
-  <!-- ============================================ -->
-  <!-- NAVBAR BOOTSTRAP (RESPONSIF) -->
-  <!-- ============================================ -->
+  <button type="button" class="mobile-nav-toggle d-lg-none">
+      <i class="fa-solid fa-bars"></i>
+  </button>
+
   <header id="header">
-    <div class="container-fluid" style="padding-left: 40px; padding-right: 40px;">
-        <nav class="navbar navbar-expand-lg navbar-dark p-0">
-            
-            <!-- LOGO -->
-            <a class="navbar-brand" href="{{ url('/') }}">
-                <span>E</span>-Magang
-            </a>
+    <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
+      <a href="{{ url('/') }}" class="logo-container">
+          <div class="logo-box">E</div>
+          <span class="logo-text">MAGANG</span>
+      </a>
 
-            <!-- TOMBOL HAMBURGER (MUNCUL DI HP) -->
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+      <nav class="nav-menu d-none d-lg-block">
+        <ul>
+          <li class="active"><a href="{{ url('/') }}#home"><i class="fa-solid fa-house"></i> Beranda</a></li>
+          <li><a href="{{ url('/') }}#about"><i class="fa-solid fa-circle-info"></i> Tentang</a></li>
+          <li><a href="{{ url('/') }}#services"><i class="fa-solid fa-list-check"></i> Alur Proses</a></li>
+          <li><a href="{{ url('/') }}#portfolio"><i class="fa-solid fa-images"></i> Galeri</a></li>
+          <li><a href="{{ url('/') }}#blog"><i class="fa-solid fa-newspaper"></i> Berita</a></li>
+          @auth
+            @php
+                $bolehDaftar = true;
+                $cek = \App\Models\Pendaftaran::where('id_users', Auth::id())->first();
+                if($cek && (strtolower($cek->status_pendaftaran) == 'diterima')) { $bolehDaftar = false; }
+            @endphp
+            @if($bolehDaftar) <li><a href="{{ route('pendaftaran.index') }}">Pendaftaran</a></li> @endif
+            <li><a href="{{ route('pelamar.lamaran.index') }}">Lamaran</a></li>
+            <li><a href="{{ route('mahasiswa.laporan.index') }}">Laporan</a></li>
+          @endauth
+        </ul>
+      </nav>
 
-            <!-- MENU ITEM -->
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto align-items-lg-center">
-                    <li class="nav-item active"><a class="nav-link page-scroll" href="{{ url('/') }}#home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link page-scroll" href="{{ url('/') }}#about">About</a></li>
-                    <li class="nav-item"><a class="nav-link page-scroll" href="{{ url('/') }}#services">Information</a></li>
-                    <li class="nav-item"><a class="nav-link page-scroll" href="{{ url('/') }}#portfolio">Gallery</a></li>
-                    <li class="nav-item"><a class="nav-link page-scroll" href="{{ url('/') }}#contact">Contact</a></li>
-
-                    @auth
-                        <li class="nav-item"><a class="nav-link page-scroll" href="{{ route('pendaftaran.index') }}">Pendaftaran</a></li>
-                        <li class="nav-item"><a class="nav-link page-scroll" href="{{ route('pelamar.lamaran.index') }}">Lamaran</a></li>
-                        <li class="nav-item"><a class="nav-link page-scroll" href="{{ route('mahasiswa.laporan.index') }}">Laporan</a></li>
-
-                        <!-- DROPDOWN USER (NO RIPPLE / ANIMASI BERLEBIH) -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="display: flex; align-items: center;">
-                                {{ Auth::user()->name }}
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('profile.view') }}">
-                                    <i class="fa-solid fa-user mr-2"></i> My Profile
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item text-danger" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    <i class="fa-solid fa-right-from-bracket mr-2"></i> Logout
-                                </a>
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
-                            </div>
-                        </li>
-                    @else
-                        <li class="nav-item">
-                            <a class="nav-link btn-login-nav" href="{{ route('login') }}">Login</a>
-                        </li>
-                    @endauth
-                </ul>
-            </div>
-        </nav>
+      <div class="header-right d-flex align-items-center">
+          @auth
+              <div class="user-dropdown">
+                  <a href="#" class="user-toggle">
+                      <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+                      <span class="d-none d-md-block">{{ Auth::user()->name }}</span>
+                  </a>
+                  <div class="dropdown-menu-custom">
+                      <a href="{{ route('profile.view') }}" class="dropdown-item-custom"><i class="fa-regular fa-id-card"></i> Profil Saya</a>
+                      <div style="border-top: 1px solid #f1f5f9; margin: 5px 0;"></div>
+                      <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item-custom" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar</a>
+                      <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
+                  </div>
+              </div>
+          @else
+              <a href="{{ route('login') }}" class="login-link-mobile" style="font-weight: 600; color: #2563eb; margin-right: 50px; text-decoration: none;">Masuk</a>
+              <a href="#contact" class="header-right-btn">Hubungi Kami</a>
+          @endauth
+      </div>
     </div>
   </header>
-  <!-- End Header -->
 
   @yield('contents')
 
-  @include('template.footer')
+  <footer id="footer">
+      <div class="container">
+          <div class="footer-row row">
+              
+              <div class="col-lg-5 col-md-5 col-sm-12 footer-col">
+                  <div class="footer-logo-text">
+                      <div class="footer-logo-box">E</div>
+                      MAGANG
+                  </div>
+                  <p class="footer-desc">
+                      Silahkan Masuk ke admin jika anda adalah admin dari website ini. Kelola data magang dengan mudah dan efisien.
+                  </p>
+                  <a href="{{ url('login') }}" class="btn-admin-footer">
+                      <i class="fa-solid fa-user-shield"></i> Login Admin
+                  </a>
+              </div>
+
+              <div class="col-lg-4 col-md-4 col-sm-12 footer-col">
+                  <span class="footer-title">INFORMASI</span>
+                  <p class="footer-desc">
+                      PT. Aditama Net Media Solusindo di Bengkalis merupakan perusahaan nasional yang bergerak di bidang teknologi informasi dan media.
+                  </p>
+              </div>
+
+              <div class="col-lg-3 col-md-3 col-sm-12 footer-col">
+                  <span class="footer-title">KONTAK KAMI</span>
+                  <ul class="footer-links">
+                      <li>
+                          <a href="#">
+                              <i class="fa-solid fa-location-dot"></i> 
+                              <span>Jl. Wonosari Timur, Bengkalis</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="#">
+                              <i class="fa-solid fa-clock"></i> 
+                              <span>07.00 - 15.00 WIB</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="#">
+                              <i class="fa-solid fa-phone"></i> 
+                              <span>+62 812 3456 7890</span>
+                          </a>
+                      </li>
+                  </ul>
+              </div>
+
+          </div>
+      </div>
+
+      <div class="footer-bottom">
+          <div class="container">
+             
+          </div>
+      </div>
+  </footer>
 
   <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
   <div id="preloader"></div>
 
-  <!-- Vendor JS Files -->
-  <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-  <script src="{{ asset('assets/vendor/jquery.easing/jquery.easing.min.js') }}"></script>
-  <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
-  <script src="{{ asset('assets/vendor/appear/jquery.appear.js') }}"></script>
-  <script src="{{ asset('assets/vendor/knob/jquery.knob.js') }}"></script>
-  <script src="{{ asset('assets/vendor/parallax/parallax.js') }}"></script>
-  <script src="{{ asset('assets/vendor/wow/wow.min.js') }}"></script>
-  <script src="{{ asset('assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
-  <script src="{{ asset('assets/vendor/nivo-slider/js/jquery.nivo.slider.js') }}"></script>
-  <script src="{{ asset('assets/vendor/owl.carousel/owl.carousel.min.js') }}"></script>
-  <script src="{{ asset('assets/vendor/venobox/venobox.min.js') }}"></script>
-
-  <!-- DataTables JS -->
+  <script src="{{ asset('assets') }}/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ asset('assets') }}/vendor/jquery.easing/jquery.easing.min.js"></script>
+  <script src="{{ asset('assets') }}/vendor/php-email-form/validate.js"></script>
+  <script src="{{ asset('assets') }}/vendor/appear/jquery.appear.js"></script>
+  <script src="{{ asset('assets') }}/vendor/knob/jquery.knob.js"></script>
+  <script src="{{ asset('assets') }}/vendor/parallax/parallax.js"></script>
+  <script src="{{ asset('assets') }}/vendor/wow/wow.min.js"></script>
+  <script src="{{ asset('assets') }}/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="{{ asset('assets') }}/vendor/nivo-slider/js/jquery.nivo.slider.js"></script>
+  <script src="{{ asset('assets') }}/vendor/owl.carousel/owl.carousel.min.js"></script>
+  <script src="{{ asset('assets') }}/vendor/venobox/venobox.min.js"></script>
   <script src="{{ asset('assets_admin/js/plugin/datatables/datatables.min.js') }}"></script>
   <script src="{{ asset('assets_admin/datatables/jquery.dataTables.min.js') }}"></script>
   <script src="{{ asset('assets_admin/datatables/dataTables.bootstrap4.min.js') }}"></script>
@@ -255,12 +345,10 @@
   <script src="{{ asset('assets_admin/datatables/pdfmake.min.js') }}"></script>
   <script src="{{ asset('assets_admin/datatables/vfs_fonts.js') }}"></script>
   <script src="{{ asset('assets_admin/datatables/buttons.html5.min.js') }}"></script>
-
-  <!-- Template Main JS File -->
+  
   <script src="{{ asset('assets/js/main.js') }}"></script>
 
   <script>
-    // Inisialisasi DataTable
     $(document).ready(function() {
         if ($('.table').length > 0) {
             $('.table').DataTable({
@@ -268,16 +356,6 @@
                 buttons: ['copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5'],
                 "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
             });
-        }
-    });
-
-    // Script Animasi Navbar (Ganti Warna saat Scroll)
-    window.addEventListener('scroll', function() {
-        const header = document.getElementById('header');
-        if (window.scrollY > 50) {
-            header.classList.add('header-scrolled');
-        } else {
-            header.classList.remove('header-scrolled');
         }
     });
   </script>

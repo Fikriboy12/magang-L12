@@ -15,12 +15,38 @@
                 <li><a href="{{ url('/#blog') }}">Information</a></li>
                 <li><a href="{{ url('/#contact') }}">Contact</a></li>
                 <li><a href="{{ url('/#portfolio') }}">Gallery</a></li>
-                <li class="{{ request()->is('pendaftaran') ? 'active' : '' }}"><a href="{{ url('pendaftaran')}}">Pendaftaran</a></li>
+                
+                {{-- LOGIKA BARU UNTUK PENDAFTARAN --}}
+                @php
+                    $showPendaftaran = true; // Default tampil (untuk guest/belum login)
+
+                    if(Auth::check()){
+                        // Cek status di database jika user sudah login
+                        // Sesuaikan 'App\Models\Pendaftaran' dengan nama Model Anda
+                        $dataPendaftaran = \App\Models\Pendaftaran::where('user_id', Auth::id())->first();
+                        
+                        // Jika ada data DAN statusnya 'Diterima', maka sembunyikan pendaftaran
+                        if($dataPendaftaran && $dataPendaftaran->status == 'Diterima'){
+                            $showPendaftaran = false;
+                        }
+                    }
+                @endphp
+
+                {{-- TAMPILKAN MENU PENDAFTARAN SESUAI KONDISI DI ATAS --}}
+                @if($showPendaftaran)
+                    <li class="{{ request()->is('pendaftaran') ? 'active' : '' }}">
+                        <a href="{{ url('pendaftaran')}}">Pendaftaran</a>
+                    </li>
+                @endif
+
+                {{-- Menu Lamaran (Selalu muncul atau sesuaikan kebutuhan) --}}
                 <li class="{{ request()->is('data-lamaran') ? 'active' : '' }}"><a href="{{ url('data-lamaran')}}">Lamaran</a></li>
 
-                {{-- Menu Khusus Pelamar Diterima --}}
+
+                {{-- Menu Khusus Pelamar Diterima (Laporan) --}}
                 @auth
-                    @if(Auth::user()->role == 'pelamar' && Auth::user()->status == 'diterima')
+                    {{-- Kita pakai pengecekan $showPendaftaran == false artinya dia sudah Diterima --}}
+                    @if(!$showPendaftaran || (Auth::user()->role == 'pelamar' && Auth::user()->status == 'diterima')) 
                         <li class="{{ request()->routeIs('mahasiswa.laporan*') ? 'active' : '' }}">
                             <a href="{{ route('mahasiswa.laporan.index') }}">Laporan Harian</a>
                         </li>
