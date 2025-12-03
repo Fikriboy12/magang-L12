@@ -29,7 +29,7 @@
     }
 
     .login-card img {
-        width: 180px;
+        width: 180px; /* Diperbesar dari 90px menjadi 120px */
         margin-bottom: 10px;
     }
 
@@ -50,7 +50,7 @@
     .input-group {
         position: relative;
         margin-bottom: 12px;
-        max-width: 100%;
+        max-width: 100%; /* tidak melebihi card */
     }
 
     .input-group i {
@@ -62,13 +62,13 @@
     }
 
     .input-group input {
-        width: 100%;
+        width: 100%; /* maksimal sesuai card */
         padding: 8px 12px 8px 35px;
         border-radius: 8px;
         border: 1px solid #ccc;
         outline: none;
         font-size: 14px;
-        box-sizing: border-box;
+        box-sizing: border-box; /* pastikan input tidak melebihi card */
     }
 
     .input-group input:focus {
@@ -108,27 +108,14 @@
         text-decoration: underline;
     }
 
-    /* Alert Style (Diperbaiki) */
+    /* Alert */
     .alert {
-        padding: 10px;
-        margin-bottom: 15px;
-        border-radius: 6px;
-        font-size: 13px;
-        text-align: left;
-    }
-    .alert-danger {
         background: #ffe6e6;
         color: #cc0000;
-        border: 1px solid #ffcccc;
-    }
-    .alert-success {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-    .alert ul {
-        margin: 0;
-        padding-left: 20px;
+        padding: 10px;
+        margin-bottom: 12px;
+        border-radius: 6px;
+        font-size: 14px;
     }
 </style>
 </head>
@@ -139,38 +126,15 @@
     <div class="company-name">PT. Aditama Net media Solusindo</div>
     <h2>Login</h2>
 
-    
-    <?php if(session('success')): ?>
-        <div class="alert alert-success">
-            <i class="fas fa-check-circle"></i> <?php echo e(session('success')); ?>
-
-        </div>
-    <?php endif; ?>
-
-    
-    <?php if(session('error')): ?>
-        <div class="alert alert-danger">
-            <i class="fas fa-exclamation-triangle"></i> <?php echo e(session('error')); ?>
-
-        </div>
-    <?php endif; ?>
-
-    
-    <?php if($errors->any()): ?>
-        <div class="alert alert-danger">
-            <ul>
-                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <li><?php echo e($error); ?></li>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-            </ul>
-        </div>
+    <?php if(session()->has('err_message')): ?>
+        <div class="alert"><?php echo e(session()->get('err_message')); ?></div>
     <?php endif; ?>
 
     <form method="POST" action="<?php echo e(url('action-login')); ?>">
         <?php echo csrf_field(); ?>
         <div class="input-group">
             <i class="fas fa-envelope"></i>
-            <input type="email" name="email" placeholder="Email" required value="<?php echo e(old('email')); ?>">
+            <input type="email" name="email" placeholder="Email" required>
         </div>
         <div class="input-group">
             <i class="fas fa-lock"></i>
