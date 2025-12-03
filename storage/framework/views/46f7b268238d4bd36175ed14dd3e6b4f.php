@@ -4,12 +4,15 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>E-Magang</title>
+  <title>E-Magang - Professional Platform</title>
   
+  <!-- Font Modern -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
+  <!-- Icon Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <!-- Vendor CSS Files -->
   <link href="<?php echo e(asset('assets')); ?>/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="<?php echo e(asset('assets')); ?>/vendor/icofont/icofont.min.css" rel="stylesheet">
   <link href="<?php echo e(asset('assets')); ?>/vendor/animate.css/animate.min.css" rel="stylesheet">
@@ -17,13 +20,16 @@
   <link href="<?php echo e(asset('assets')); ?>/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
   <link href="<?php echo e(asset('assets')); ?>/vendor/venobox/venobox.css" rel="stylesheet">
   
+  <!-- CSS Tambahan -->
   <link rel="stylesheet" href="<?php echo e(asset('assets_admin/datatables/datatables.min.css')); ?>">
   <link rel="stylesheet" href="<?php echo e(asset('assets_admin/datatables/dataTables.bootstrap4.min.css')); ?>">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
 
+  <!-- Template Main CSS File -->
   <link href="<?php echo e(asset('assets')); ?>/css/style.css" rel="stylesheet">
   <link href="<?php echo e(asset('assets')); ?>/css/responsive.css" rel="stylesheet">
   
+  <!-- CUSTOM STYLE: FIX MOBILE HERO ZOOM & NAVBAR OVERLAP -->
   <style>
       /* --- GLOBAL --- */
       body {
@@ -32,6 +38,8 @@
           overflow-x: hidden;
           background-color: #f8fafc;
       }
+
+      img { max-width: 100%; height: auto; }
 
       /* --- NAVBAR --- */
       #header {
@@ -43,6 +51,7 @@
           padding: 15px 0;
           position: fixed;
           top: 0; width: 100%;
+          display: flex; align-items: center;
       }
       .logo-container { display: flex; align-items: center; text-decoration: none !important; }
       .logo-box {
@@ -52,17 +61,17 @@
       }
       .logo-text { font-size: 22px; font-weight: 800; color: #0f172a; text-transform: uppercase; }
 
-      /* MENU TENGAH */
+      /* MENU DESKTOP */
       .nav-menu { margin-left: 40px; }
       .nav-menu ul { margin: 0; padding: 0; list-style: none; display: flex; }
-      .nav-menu li { margin: 0 5px; }
+      .nav-menu li { margin: 0 2px; }
       .nav-menu a {
           color: #64748b; font-size: 14px; font-weight: 600;
           text-decoration: none; display: flex; align-items: center; gap: 5px;
       }
       .nav-menu a:hover, .nav-menu .active > a { color: #2563eb; }
 
-      /* TOMBOL USER LOGIN */
+      /* TOMBOL & USER */
       .header-right-btn {
           background: #0f172a; color: white !important; padding: 8px 20px;
           border-radius: 50px; font-size: 13px; font-weight: 700;
@@ -94,114 +103,129 @@
       }
       .dropdown-item-custom:hover { background: #f8fafc; color: #2563eb; }
 
-      /* ======================================= */
-      /* 💎 FOOTER SESUAI GAMBAR 💎              */
-      /* ======================================= */
+      /* FOOTER BIRU CERAH (SOLID) */
       #footer {
-          /* Warna Biru Solid Cerah */
           background-color: #2563eb !important; 
           background: #2563eb !important;
-          padding: 70px 0 0 0;
+          padding: 60px 0 0 0;
           color: #ffffff;
           position: relative;
           z-index: 10;
           border-top: none;
+          width: 100%;
       }
-      
       .footer-row { display: flex; flex-wrap: wrap; align-items: flex-start; }
       .footer-col { padding-bottom: 40px; }
-
-      /* Logo Footer Putih */
-      .footer-logo-text { 
-          font-size: 28px; font-weight: 800; color: #ffffff; 
-          display: flex; align-items: center; gap: 10px; margin-bottom: 20px; 
-      }
-      /* Kotak E Putih, Huruf Biru */
-      .footer-logo-box {
-          width: 45px; height: 45px; background: #ffffff; color: #2563eb;
-          display: flex; align-items: center; justify-content: center;
-          border-radius: 8px; font-size: 26px; font-weight: 900;
-      }
-
-      /* Judul Kolom (INFORMASI, KONTAK KAMI) */
-      .footer-title {
-          font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-          color: #e0f2fe; /* Putih agak biru dikit */
-          margin-bottom: 20px; display: block; border-bottom: 1px solid rgba(255,255,255,0.2);
-          padding-bottom: 10px; width: fit-content;
-      }
-
-      /* Teks Deskripsi */
-      .footer-desc { font-size: 14px; color: #ffffff; line-height: 1.8; margin-bottom: 20px; text-align: justify; }
-
-      /* Tombol Login Admin (Kotak Putih, Teks Biru) */
-      .btn-admin-footer {
-          display: inline-flex; align-items: center; gap: 10px;
-          background: #ffffff; color: #2563eb !important; /* Warna Teks Biru */
-          padding: 12px 25px;
-          border-radius: 8px; font-size: 14px; font-weight: 700;
-          text-decoration: none; transition: 0.3s; 
-          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      }
+      .footer-logo-text { font-size: 28px; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 5px; margin-bottom: 20px; }
+      .footer-logo-box { width: 40px; height: 40px; background: #ffffff; color: #2563eb; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 24px; font-weight: 900; }
+      .footer-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #bfdbfe; margin-bottom: 25px; display: block; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; width: fit-content; }
+      .footer-desc { font-size: 14px; color: #f1f5f9; line-height: 1.7; margin-bottom: 20px; text-align: justify; }
+      .btn-admin-footer { display: inline-flex; align-items: center; gap: 8px; background: #ffffff; color: #2563eb; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; text-decoration: none; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
       .btn-admin-footer:hover { background: #f1f5f9; transform: translateY(-2px); }
-      .btn-admin-footer i { color: #2563eb; font-size: 16px; }
-
-      /* List Kontak */
       .footer-links { list-style: none; padding: 0; margin: 0; }
       .footer-links li { margin-bottom: 15px; }
-      .footer-links a {
-          color: #ffffff; font-size: 14px; text-decoration: none; transition: 0.2s;
-          display: flex; align-items: flex-start; gap: 15px;
-      }
-      .footer-links a:hover { opacity: 0.8; }
-      
-      /* Ikon Lingkaran Putih, Simbol Biru */
-      .footer-links i { 
-          color: #2563eb; font-size: 16px; margin-top: 2px; 
-          background: #ffffff; padding: 8px; border-radius: 50%; 
-          width: 32px; height: 32px; flex-shrink: 0;
-          display: flex; align-items: center; justify-content: center;
-      }
-
-      /* Copyright */
-      .footer-bottom {
-          background: rgba(0, 0, 0, 0.1); /* Sedikit lebih gelap */
-          padding: 25px 0; margin-top: 20px;
-          text-align: center; font-size: 13px; color: #ffffff;
-          border-top: 1px solid rgba(255,255,255,0.1);
-      }
+      .footer-links a { color: #f1f5f9; font-size: 14px; text-decoration: none; display: flex; align-items: flex-start; gap: 10px; }
+      .footer-links a:hover { color: #ffffff; padding-left: 5px; }
+      .footer-links i { color: #2563eb; font-size: 14px; margin-top: 3px; background: #ffffff; padding: 6px; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
+      .footer-bottom { background: rgba(0, 0, 0, 0.2); padding: 20px 0; margin-top: 20px; text-align: center; font-size: 13px; color: #e2e8f0; width: 100%; }
       .footer-bottom strong { color: #ffffff; }
 
       /* ======================================= */
-      /* 📱 MOBILE FIX (Tombol Biru & Rapi) 📱   */
+      /* 📱 FIX TAMPILAN HP (MOBILE) 📱          */
       /* ======================================= */
       @media (max-width: 991px) {
-          #header { height: 60px; padding: 10px 0; }
+          #header { height: 70px; padding: 10px 0; }
           .nav-menu { display: none; }
           .header-right-btn { display: none; } 
           
-          /* TOMBOL BURGER MENU HP */
+          /* 1. TOMBOL BURGER MENU (Biru, Kanan Pojok) */
           .mobile-nav-toggle {
               display: block !important;
-              color: #2563eb !important; /* WARNA BIRU AGAR KELIHATAN */
-              font-size: 28px;
-              cursor: pointer;
-              position: fixed; right: 20px; top: 18px; z-index: 9999;
-              background: transparent; border: none;
+              color: #2563eb !important; 
+              font-size: 28px; cursor: pointer;
+              position: fixed; 
+              right: 15px; /* Pojok kanan */
+              top: 20px;   /* Sejajar vertikal dengan logo */
+              z-index: 9999;
+              background: transparent; border: none; padding: 0;
           }
           .mobile-nav-toggle i { color: #2563eb !important; }
+
+          /* 2. PROFIL USER (Geser ke kiri agar tidak nabrak burger) */
+          .user-dropdown { 
+              position: fixed; 
+              right: 65px; /* Jarak aman dari burger (15px + lebar burger + spasi) */
+              top: 18px; 
+              z-index: 9998; 
+          }
+          .user-toggle span { display: none; } /* Sembunyikan nama user di HP, cukup avatar */
+          .user-avatar { width: 32px; height: 32px; }
+
+          /* Tombol Masuk (Geser juga) */
+          .login-link-mobile { 
+              font-size: 13px !important; margin-right: 55px !important; 
+              font-weight: 700 !important; color: #2563eb !important; 
+          }
 
           .logo-text { font-size: 18px; }
           .logo-box { width: 32px; height: 32px; font-size: 16px; }
 
-          /* Footer HP Rata Tengah */
+          /* 3. FIX GAMBAR NGEZOOM (SLIDER) */
+          .slider-area, #home {
+              height: auto !important;
+              min-height: 600px !important; /* Tidak memaksa 100vh, cukup 600px agar gambar aman */
+              padding-top: 70px; /* Kompensasi navbar fixed */
+          }
+          
+          .nivoSlider {
+              position: relative;
+              height: 600px !important; /* Samakan dengan parent */
+          }
+
+          /* Gambar Slider di HP */
+          .nivoSlider img {
+              width: auto !important;
+              height: 100% !important;
+              max-width: none !important; /* Izinkan gambar melebar */
+              position: absolute;
+              left: 50%;
+              transform: translateX(-50%); /* Center gambar secara horizontal */
+              object-fit: cover !important; 
+          }
+
+          /* Fix Konten Hero */
+          .slider-content {
+              height: 100%;
+              display: flex; align-items: center; justify-content: center;
+          }
+          .slider-glass-card {
+              width: 90% !important; padding: 30px 20px !important; margin-top: 20px !important;
+          }
+          .title2-hero { font-size: 28px !important; line-height: 1.3 !important; }
+
+          /* Footer HP */
           #footer { padding-top: 40px; }
-          .footer-col { text-align: center !important; margin-bottom: 40px; padding: 0 20px; }
+          .footer-col { text-align: center !important; margin-bottom: 30px; padding: 0 20px; width: 100%; }
           .footer-logo-text { justify-content: center; }
           .footer-desc { text-align: center; font-size: 13px; }
           .footer-links a { justify-content: center; font-size: 13px; align-items: center; }
           .btn-admin-footer { margin: 0 auto; }
           .footer-title { margin: 0 auto 20px auto; }
+          
+          /* Fix Gambar Konten Lain */
+          #hero, #about, #services, #portfolio, #blog, #contact {
+              text-align: center !important;
+              padding-left: 15px !important; padding-right: 15px !important;
+              width: 100% !important; box-sizing: border-box !important;
+          }
+          
+          /* Gambar biasa di konten (bukan slider) agar tidak gepeng */
+          img:not(.nivo-main-image) {
+              max-width: 100% !important;
+              height: auto !important;
+              display: inline-block !important;
+              margin: 0 auto !important;
+          }
       }
   </style>
 
@@ -210,17 +234,19 @@
 
 <body>
 
+  <!-- TOMBOL MENU MOBILE MANUAL -->
   <button type="button" class="mobile-nav-toggle d-lg-none">
       <i class="fa-solid fa-bars"></i>
   </button>
 
   <header id="header">
-    <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
+    <div class="container-fluid px-4 d-flex justify-content-between align-items-center h-100">
       <a href="<?php echo e(url('/')); ?>" class="logo-container">
           <div class="logo-box">E</div>
           <span class="logo-text">MAGANG</span>
       </a>
 
+      <!-- Menu Desktop -->
       <nav class="nav-menu d-none d-lg-block">
         <ul>
           <li class="active"><a href="<?php echo e(url('/')); ?>#home"><i class="fa-solid fa-house"></i> Beranda</a></li>
@@ -256,6 +282,7 @@
                   </div>
               </div>
           <?php else: ?>
+              <!-- Login Link -->
               <a href="<?php echo e(route('login')); ?>" class="login-link-mobile" style="font-weight: 600; color: #2563eb; margin-right: 50px; text-decoration: none;">Masuk</a>
               <a href="#contact" class="header-right-btn">Hubungi Kami</a>
           <?php endif; ?>
@@ -263,8 +290,21 @@
     </div>
   </header>
 
+  <!-- NOTIFIKASI -->
+  <?php if(session('success')): ?>
+    <div class="alert alert-success alert-dismissible fade show alert-floating" role="alert" style="position: fixed; top: 100px; right: 20px; z-index: 99999;">
+        <i class="fa-solid fa-check-circle"></i> <strong>Berhasil!</strong> <?php echo e(session('success')); ?>
+
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+  <?php endif; ?>
+
+  <!-- CONTENT -->
   <?php echo $__env->yieldContent('contents'); ?>
 
+  <!-- FOOTER -->
   <footer id="footer">
       <div class="container">
           <div class="footer-row row">
@@ -292,24 +332,9 @@
               <div class="col-lg-3 col-md-3 col-sm-12 footer-col">
                   <span class="footer-title">KONTAK KAMI</span>
                   <ul class="footer-links">
-                      <li>
-                          <a href="#">
-                              <i class="fa-solid fa-location-dot"></i> 
-                              <span>Jl. Wonosari Timur, Bengkalis</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="#">
-                              <i class="fa-solid fa-clock"></i> 
-                              <span>07.00 - 15.00 WIB</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="#">
-                              <i class="fa-solid fa-phone"></i> 
-                              <span>+62 812 3456 7890</span>
-                          </a>
-                      </li>
+                      <li><a href="#"><i class="fa-solid fa-location-dot"></i><span>Jl. Wonosari Timur, Bengkalis</span></a></li>
+                      <li><a href="#"><i class="fa-solid fa-clock"></i><span>07.00 - 15.00 WIB</span></a></li>
+                      <li><a href="#"><i class="fa-solid fa-phone"></i><span>+62 812 3456 7890</span></a></li>
                   </ul>
               </div>
 
@@ -318,7 +343,7 @@
 
       <div class="footer-bottom">
           <div class="container">
-             
+              &copy; 2024 <strong>E-Magang</strong>. All Rights Reserved.
           </div>
       </div>
   </footer>
@@ -326,6 +351,7 @@
   <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
   <div id="preloader"></div>
 
+  <!-- Scripts -->
   <script src="<?php echo e(asset('assets')); ?>/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="<?php echo e(asset('assets')); ?>/vendor/jquery.easing/jquery.easing.min.js"></script>
   <script src="<?php echo e(asset('assets')); ?>/vendor/php-email-form/validate.js"></script>
