@@ -30,48 +30,63 @@ class LoginController extends Controller
     }
 
     // =======================
-    // 🔐 PROSES LOGIN
+    // 🔐 PROSES LOGIN (DIPERBAIKI)
     // =======================
     public function action_login(Request $request)
     {
+        // 1. Validasi Input Kosong
         $request->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
 
+        // 2. CEK EMAIL DULU (Manual)
+        // Kita cari apakah ada user dengan email ini
+        $cekUser = User::where('email', $request->email)->first();
+
+        if (!$cekUser) {
+            // JIKA EMAIL TIDAK DITEMUKAN DI DATABASE
+            return back()->with('error', 'Email yang Anda masukkan tidak terdaftar.');
+        }
+
+        // 3. CEK PASSWORD (Auth Attempt)
+        // Jika kode sampai sini, berarti Email BENAR. Sekarang cek Password.
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
 
             $request->session()->regenerate();
             $user = Auth::user();
+            
+            // Pesan Sukses
+            $pesan = 'Berhasil Login! Selamat datang ' . $user->name;
 
             // =================================
             // 🔄 REDIRECT BERDASARKAN ROLE
             // =================================
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard')
-                    ->with('success', 'Selamat datang Admin!');
+                    ->with('success', $pesan);
             }
 
             if ($user->role === 'pelamar') {
                 return redirect()->route('home.auth')
-                    ->with('success', 'Selamat datang Pelamar!');
+                    ->with('success', $pesan);
             }
 
             // --- Logic Pembimbing ---
             if ($user->role === 'pembimbing') {
                 return redirect()->route('pembimbing.dashboard')
-                    ->with('success', 'Selamat datang Pembimbing!');
+                    ->with('success', $pesan);
             }
             // -------------------------------------------
 
-            return redirect()->route('home.auth');
+            return redirect()->route('home.auth')->with('success', $pesan);
         }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah!',
-        ]);
+        // 4. JIKA PASSWORD SALAH
+        // Karena Email sudah dicek di tahap 2 dan ada, berarti Passwordnya yang salah
+        return back()->with('error', 'Kata sandi yang Anda masukkan salah.');
     }
 
     // =======================
@@ -93,7 +108,6 @@ class LoginController extends Controller
     {
         $user = Auth::user();
         
-        // Kita bungkus dalam array $data agar sesuai dengan View profile.blade.php
         $data = [
             'title' => 'Profile Saya',
             'profile' => $user
@@ -126,7 +140,6 @@ class LoginController extends Controller
 
         $user->update([
             'name' => $request->nama_lengkap,
-            // Mapping kolom DB yang benar:
             'tanggal_lahir' => $request->tgl_lahir,  
             'alamat_lengkap' => $request->alamat     
         ]);
@@ -136,7 +149,7 @@ class LoginController extends Controller
     }
 
     // =======================
-    // ✏ UPDATE PROFILE (YANG DIPERBAIKI)
+    // ✏ UPDATE PROFILE
     // =======================
     public function update_profile(Request $request)
     {
@@ -152,7 +165,7 @@ class LoginController extends Controller
             'tempat_lahir' => 'required',
             'tanggal_lahir' => 'required',
             'jenis_kelamin' => 'required',
-            'alamat' => 'required', // input name="alamat"
+            'alamat' => 'required', 
         ]);
 
         // 2. Cek Password Baru
@@ -160,7 +173,7 @@ class LoginController extends Controller
             $user->password = Hash::make($request->password);
         }
 
-        // 3. Update Database (Mapping Input -> Kolom DB)
+        // 3. Update Database
         $user->update([
             'name'           => $request->nama_lengkap,
             'email'          => $request->email,
@@ -169,8 +182,6 @@ class LoginController extends Controller
             'tempat_lahir'   => $request->tempat_lahir,
             'tanggal_lahir'  => $request->tanggal_lahir,
             'jenis_kelamin'  => $request->jenis_kelamin,
-            
-            // Perbaikan: Simpan input 'alamat' ke kolom 'alamat_lengkap'
             'alamat_lengkap' => $request->alamat 
         ]);
 
