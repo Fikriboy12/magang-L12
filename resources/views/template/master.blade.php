@@ -4,15 +4,14 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>E-Magang - Professional Platform</title>
-  
-  <!-- Font Modern -->
+  <title>PT. MEDIA BALAI NUSA</title>
+
+  <link rel="icon" href="{{ asset('gambar/AMS-logo.png') }}" type="image/png">
+  <link rel="shortcut icon" href="{{ asset('gambar/AMS-logo.png') }}" type="image/png">
+
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Icon Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Vendor CSS Files -->
   <link href="{{ asset('assets') }}/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="{{ asset('assets') }}/vendor/icofont/icofont.min.css" rel="stylesheet">
   <link href="{{ asset('assets') }}/vendor/animate.css/animate.min.css" rel="stylesheet">
@@ -20,16 +19,13 @@
   <link href="{{ asset('assets') }}/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
   <link href="{{ asset('assets') }}/vendor/venobox/venobox.css" rel="stylesheet">
   
-  <!-- CSS Tambahan -->
   <link rel="stylesheet" href="{{ asset('assets_admin/datatables/datatables.min.css') }}">
   <link rel="stylesheet" href="{{ asset('assets_admin/datatables/dataTables.bootstrap4.min.css') }}">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
 
-  <!-- Template Main CSS File -->
   <link href="{{ asset('assets') }}/css/style.css" rel="stylesheet">
   <link href="{{ asset('assets') }}/css/responsive.css" rel="stylesheet">
   
-  <!-- CUSTOM STYLE: FIX MOBILE HERO ZOOM & NAVBAR OVERLAP -->
   <style>
       /* --- GLOBAL --- */
       body {
@@ -53,18 +49,23 @@
           top: 0; width: 100%;
           display: flex; align-items: center;
       }
-      .logo-container { display: flex; align-items: center; text-decoration: none !important; }
-      .logo-box {
-          width: 40px; height: 40px; background: #2563eb; color: white;
+      /* Gaya untuk Logo E-Magang (Header & Footer) */
+      .logo-container-custom { display: flex; align-items: center; text-decoration: none !important; }
+      .logo-box-custom {
+          width: 40px; height: 40px; background: #ffffff; color: #2563eb; /* Warna dibalik untuk footer */
           font-size: 24px; font-weight: 800; display: flex; align-items: center; justify-content: center;
           border-radius: 8px; margin-right: 10px;
       }
-      .logo-text { font-size: 22px; font-weight: 800; color: #0f172a; text-transform: uppercase; }
+      /* Logo text di header */
+      #header .logo-text-custom { font-size: 22px; font-weight: 800; color: #0f172a; text-transform: uppercase; }
+      /* Logo text di footer */
+      #footer .logo-text-custom { font-size: 22px; font-weight: 800; color: #ffffff; text-transform: uppercase; }
+
 
       /* MENU DESKTOP */
       .nav-menu { margin-left: 40px; }
       .nav-menu ul { margin: 0; padding: 0; list-style: none; display: flex; }
-      .nav-menu li { margin: 0 2px; }
+      .nav-menu li { margin: 0 5px; }
       .nav-menu a {
           color: #64748b; font-size: 14px; font-weight: 600;
           text-decoration: none; display: flex; align-items: center; gap: 5px;
@@ -116,8 +117,12 @@
       }
       .footer-row { display: flex; flex-wrap: wrap; align-items: flex-start; }
       .footer-col { padding-bottom: 40px; }
-      .footer-logo-text { font-size: 28px; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 5px; margin-bottom: 20px; }
-      .footer-logo-box { width: 40px; height: 40px; background: #ffffff; color: #2563eb; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 24px; font-weight: 900; }
+      
+      /* Container Logo Footer */
+      .footer-logo-text { 
+          display: flex; align-items: center; margin-bottom: 20px; 
+      }
+      
       .footer-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #bfdbfe; margin-bottom: 25px; display: block; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; width: fit-content; }
       .footer-desc { font-size: 14px; color: #f1f5f9; line-height: 1.7; margin-bottom: 20px; text-align: justify; }
       .btn-admin-footer { display: inline-flex; align-items: center; gap: 8px; background: #ffffff; color: #2563eb; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; text-decoration: none; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -138,94 +143,61 @@
           .nav-menu { display: none; }
           .header-right-btn { display: none; } 
           
-          /* 1. TOMBOL BURGER MENU (Biru, Kanan Pojok) */
+          /* 1. TOMBOL BURGER MENU */
           .mobile-nav-toggle {
               display: block !important;
               color: #2563eb !important; 
-              font-size: 28px; cursor: pointer;
-              position: fixed; 
-              right: 15px; /* Pojok kanan */
-              top: 20px;   /* Sejajar vertikal dengan logo */
-              z-index: 9999;
+              font-size: 30px; cursor: pointer;
+              position: fixed; right: 15px; top: 20px; z-index: 9999;
               background: transparent; border: none; padding: 0;
           }
           .mobile-nav-toggle i { color: #2563eb !important; }
 
-          /* 2. PROFIL USER (Geser ke kiri agar tidak nabrak burger) */
+          /* 2. PROFIL USER */
           .user-dropdown { 
-              position: fixed; 
-              right: 65px; /* Jarak aman dari burger (15px + lebar burger + spasi) */
-              top: 18px; 
-              z-index: 9998; 
+              position: fixed; right: 65px; top: 18px; z-index: 9998; 
           }
-          .user-toggle span { display: none; } /* Sembunyikan nama user di HP, cukup avatar */
+          .user-toggle span { display: none; } 
           .user-avatar { width: 32px; height: 32px; }
 
-          /* Tombol Masuk (Geser juga) */
-          .login-link-mobile { 
-              font-size: 13px !important; margin-right: 55px !important; 
-              font-weight: 700 !important; color: #2563eb !important; 
-          }
+          .login-link-mobile { font-size: 13px !important; margin-right: 55px !important; font-weight: 700 !important; color: #2563eb !important; }
 
-          .logo-text { font-size: 18px; }
-          .logo-box { width: 32px; height: 32px; font-size: 16px; }
+          /* Styling Logo di Mobile */
+          .logo-text-custom { font-size: 18px !important; }
+          .logo-box-custom { width: 32px; height: 32px; font-size: 16px; }
 
-          /* 3. FIX GAMBAR NGEZOOM (SLIDER) */
+          /* 3. FIX GAMBAR NGEZOOM */
           .slider-area, #home {
-              height: auto !important;
-              min-height: 600px !important; /* Tidak memaksa 100vh, cukup 600px agar gambar aman */
-              padding-top: 70px; /* Kompensasi navbar fixed */
+              height: auto !important; min-height: 600px !important; padding-top: 70px;
           }
-          
-          .nivoSlider {
-              position: relative;
-              height: 600px !important; /* Samakan dengan parent */
-          }
-
-          /* Gambar Slider di HP */
+          .nivoSlider { position: relative; height: 600px !important; }
           .nivoSlider img {
-              width: auto !important;
-              height: 100% !important;
-              max-width: none !important; /* Izinkan gambar melebar */
-              position: absolute;
-              left: 50%;
-              transform: translateX(-50%); /* Center gambar secara horizontal */
-              object-fit: cover !important; 
+              width: auto !important; height: 100% !important; max-width: none !important;
+              position: absolute; left: 50%; transform: translateX(-50%); object-fit: cover !important; 
           }
 
           /* Fix Konten Hero */
-          .slider-content {
-              height: 100%;
-              display: flex; align-items: center; justify-content: center;
-          }
-          .slider-glass-card {
-              width: 90% !important; padding: 30px 20px !important; margin-top: 20px !important;
-          }
+          .slider-content { height: 100%; display: flex; align-items: center; justify-content: center; }
+          .slider-glass-card { width: 90% !important; padding: 30px 20px !important; margin-top: 20px !important; }
           .title2-hero { font-size: 28px !important; line-height: 1.3 !important; }
 
           /* Footer HP */
           #footer { padding-top: 40px; }
           .footer-col { text-align: center !important; margin-bottom: 30px; padding: 0 20px; width: 100%; }
+          
+          /* Logo Footer Center */
           .footer-logo-text { justify-content: center; }
+          
           .footer-desc { text-align: center; font-size: 13px; }
           .footer-links a { justify-content: center; font-size: 13px; align-items: center; }
           .btn-admin-footer { margin: 0 auto; }
           .footer-title { margin: 0 auto 20px auto; }
           
-          /* Fix Gambar Konten Lain */
           #hero, #about, #services, #portfolio, #blog, #contact {
-              text-align: center !important;
-              padding-left: 15px !important; padding-right: 15px !important;
+              text-align: center !important; padding-left: 15px !important; padding-right: 15px !important;
               width: 100% !important; box-sizing: border-box !important;
           }
-          
-          /* Gambar biasa di konten (bukan slider) agar tidak gepeng */
-          img:not(.nivo-main-image) {
-              max-width: 100% !important;
-              height: auto !important;
-              display: inline-block !important;
-              margin: 0 auto !important;
-          }
+          img:not(.nivo-main-image) { max-width: 100% !important; height: auto !important; display: inline-block !important; margin: 0 auto !important; }
       }
   </style>
 
@@ -234,19 +206,17 @@
 
 <body>
 
-  <!-- TOMBOL MENU MOBILE MANUAL -->
   <button type="button" class="mobile-nav-toggle d-lg-none">
       <i class="fa-solid fa-bars"></i>
   </button>
 
   <header id="header">
     <div class="container-fluid px-4 d-flex justify-content-between align-items-center h-100">
-      <a href="{{ url('/') }}" class="logo-container">
-          <div class="logo-box">E</div>
-          <span class="logo-text">MAGANG</span>
+      <a href="{{ url('/') }}" class="logo-container-custom">
+          <div class="logo-box-custom" style="background: #2563eb; color: white;">E</div>
+          <span class="logo-text-custom">MAGANG</span>
       </a>
 
-      <!-- Menu Desktop -->
       <nav class="nav-menu d-none d-lg-block">
         <ul>
           <li class="active"><a href="{{ url('/') }}#home"><i class="fa-solid fa-house"></i> Beranda</a></li>
@@ -260,9 +230,23 @@
                 $cek = \App\Models\Pendaftaran::where('id_users', Auth::id())->first();
                 if($cek && (strtolower($cek->status_pendaftaran) == 'diterima')) { $bolehDaftar = false; }
             @endphp
-            @if($bolehDaftar) <li><a href="{{ route('pendaftaran.index') }}">Pendaftaran</a></li> @endif
-            <li><a href="{{ route('pelamar.lamaran.index') }}">Lamaran</a></li>
-            <li><a href="{{ route('mahasiswa.laporan.index') }}">Laporan</a></li>
+            @if($bolehDaftar) 
+                <li>
+                    <a href="{{ route('pendaftaran.index') }}">
+                        <i class="fa-solid fa-file-signature"></i> Pendaftaran
+                    </a>
+                </li> 
+            @endif
+            <li>
+                <a href="{{ route('pelamar.lamaran.index') }}">
+                    <i class="fa-solid fa-briefcase"></i> Lamaran
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('mahasiswa.laporan.index') }}">
+                    <i class="fa-solid fa-file-lines"></i> Laporan
+                </a>
+            </li>
           @endauth
         </ul>
       </nav>
@@ -282,7 +266,6 @@
                   </div>
               </div>
           @else
-              <!-- Login Link -->
               <a href="{{ route('login') }}" class="login-link-mobile" style="font-weight: 600; color: #2563eb; margin-right: 50px; text-decoration: none;">Masuk</a>
               <a href="#contact" class="header-right-btn">Hubungi Kami</a>
           @endauth
@@ -290,7 +273,6 @@
     </div>
   </header>
 
-  <!-- NOTIFIKASI -->
   @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show alert-floating" role="alert" style="position: fixed; top: 100px; right: 20px; z-index: 99999;">
         <i class="fa-solid fa-check-circle"></i> <strong>Berhasil!</strong> {{ session('success') }}
@@ -300,18 +282,18 @@
     </div>
   @endif
 
-  <!-- CONTENT -->
   @yield('contents')
 
-  <!-- FOOTER -->
   <footer id="footer">
       <div class="container">
           <div class="footer-row row">
               
               <div class="col-lg-5 col-md-5 col-sm-12 footer-col">
                   <div class="footer-logo-text">
-                      <div class="footer-logo-box">E</div>
-                      MAGANG
+                      <a href="{{ url('/') }}" class="logo-container-custom">
+                          <div class="logo-box-custom">E</div>
+                          <span class="logo-text-custom">MAGANG</span>
+                      </a>
                   </div>
                   <p class="footer-desc">
                       Silahkan Masuk ke admin jika anda adalah admin dari website ini. Kelola data magang dengan mudah dan efisien.
@@ -324,16 +306,16 @@
               <div class="col-lg-4 col-md-4 col-sm-12 footer-col">
                   <span class="footer-title">INFORMASI</span>
                   <p class="footer-desc">
-                      PT. Aditama Net Media Solusindo di Bengkalis merupakan perusahaan nasional yang bergerak di bidang teknologi informasi dan media.
+                      PT MEDIA BALAI NUSA (ASTRONET.ID) merupakan perusahaan penyedia layanan internet (ISP) berbasis fiber optik yang resmi dan terpercaya, melayani kebutuhan internet rumah serta bisnis di wilayah Tanjungbalai dan sekitarnya.
                   </p>
               </div>
 
               <div class="col-lg-3 col-md-3 col-sm-12 footer-col">
                   <span class="footer-title">KONTAK KAMI</span>
                   <ul class="footer-links">
-                      <li><a href="#"><i class="fa-solid fa-location-dot"></i><span>Jl. Wonosari Timur, Bengkalis</span></a></li>
-                      <li><a href="#"><i class="fa-solid fa-clock"></i><span>07.00 - 15.00 WIB</span></a></li>
-                      <li><a href="#"><i class="fa-solid fa-phone"></i><span>+62 812 3456 7890</span></a></li>
+                      <li><a href="#"><i class="fa-solid fa-location-dot"></i><span>Jl. Letjend. Kec. Teluk Nibung, Kota Tanjung Balai.</span></a></li>
+                      <li><a href="#"><i class="fa-solid fa-clock"></i><span>08.00 - 17.00 WIB</span></a></li>
+                      <li><a href="#"><i class="fa-solid fa-phone"></i><span>+62 851-5712-7721</span></a></li>
                   </ul>
               </div>
 
@@ -342,15 +324,12 @@
 
       <div class="footer-bottom">
           <div class="container">
-              &copy; 2024 <strong>E-Magang</strong>. All Rights Reserved.
+              &copy; 2025 <strong>E-Magang</strong>. All Rights Reserved.
           </div>
       </div>
-  </footer>
-
-  <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+  </footer><a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
   <div id="preloader"></div>
 
-  <!-- Scripts -->
   <script src="{{ asset('assets') }}/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="{{ asset('assets') }}/vendor/jquery.easing/jquery.easing.min.js"></script>
   <script src="{{ asset('assets') }}/vendor/php-email-form/validate.js"></script>
@@ -362,6 +341,7 @@
   <script src="{{ asset('assets') }}/vendor/nivo-slider/js/jquery.nivo.slider.js"></script>
   <script src="{{ asset('assets') }}/vendor/owl.carousel/owl.carousel.min.js"></script>
   <script src="{{ asset('assets') }}/vendor/venobox/venobox.min.js"></script>
+  
   <script src="{{ asset('assets_admin/js/plugin/datatables/datatables.min.js') }}"></script>
   <script src="{{ asset('assets_admin/datatables/jquery.dataTables.min.js') }}"></script>
   <script src="{{ asset('assets_admin/datatables/dataTables.bootstrap4.min.js') }}"></script>

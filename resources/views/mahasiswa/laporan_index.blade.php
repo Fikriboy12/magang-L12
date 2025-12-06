@@ -115,7 +115,7 @@
                         <div style="z-index: 2;">
                             <h3 class="m-0 font-weight-bold" style="font-size: 1.6rem;">Laporan Harian</h3>
                             <p class="m-0 mt-1" style="opacity: 0.9; font-size: 0.95rem;">
-                                Rekap aktivitas magang Anda di PT. Aditama Net Media Solusindo
+                                Rekap aktivitas magang Anda di PT. MEDIA BALAI NUSA astro net
                             </p>
                         </div>
                         

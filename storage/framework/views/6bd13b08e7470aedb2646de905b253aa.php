@@ -1,8 +1,5 @@
 <?php $__env->startSection('contents'); ?>
 
-<!-- ============================================ -->
-<!-- 💎 WORLD CLASS UI: BLUE OCEAN + BLURRED HERO -->
-<!-- ============================================ -->
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
@@ -216,7 +213,7 @@
               <div class="slider-content">
                 <div class="slider-glass-card">
                     <!-- Judul Kecil -->
-                    <span class="title1-hero">PT. ADITAMA NET MEDIA SOLUSINDO</span>
+                    <span class="title1-hero">PT. MEDIA BALAI NUSA astro net</span>
                     
                     <!-- Animasi Teks Satu per Satu -->
                     <h1 class="title2-hero">
@@ -224,14 +221,14 @@
                         <span class="stagger-word" style="animation-delay: 0.4s">Datang</span> 
                         <span class="stagger-word" style="animation-delay: 0.5s">di</span> <br>
                         <span class="stagger-word" style="animation-delay: 0.6s; color: #00c6fb;">PT.</span> 
-                        <span class="stagger-word" style="animation-delay: 0.7s; color: #00c6fb;">Aditama</span> 
-                        <span class="stagger-word" style="animation-delay: 0.8s; color: #00c6fb;">Net</span> 
-                        <span class="stagger-word" style="animation-delay: 0.9s; color: #00c6fb;">Media</span> 
-                        <span class="stagger-word" style="animation-delay: 1.0s; color: #00c6fb;">Solusindo</span>
+                        <span class="stagger-word" style="animation-delay: 0.7s; color: #00c6fb;">MEDIA</span> 
+                        <span class="stagger-word" style="animation-delay: 0.8s; color: #00c6fb;">BALAI </span> 
+                        <span class="stagger-word" style="animation-delay: 0.9s; color: #00c6fb;">NUSA</span> 
+                        <span class="stagger-word" style="animation-delay: 1.0s; color: #00c6fb;">astro net</span>
                     </h1>
                     
                     <div>
-                      <a class="btn-world-class ready-btn right-btn page-scroll" href="<?php echo e(url('register')); ?>">REGISTRATION</a>
+                      <a class="btn-world-class ready-btn right-btn page-scroll" href="<?php echo e(url('registrasi')); ?>">REGISTRATION</a>
                       <a class="btn-glass-outline ready-btn page-scroll" href="#contact">CONTACT US</a>
                     </div>
                 </div>
@@ -252,7 +249,7 @@
                     <h1 class="title2-hero">
                         <span class="stagger-word" style="animation-delay: 0.3s">Mudah</span> 
                         <span class="stagger-word" style="animation-delay: 0.4s">Cepat</span> 
-                        <span class="stagger-word" style="animation-delay: 0.5s">dan</span> 
+                        <span class="stagger-word" style="animation-delay: 0.5s">Dan</span> 
                         <span class="stagger-word" style="animation-delay: 0.6s">Efisien</span>
                     </h1>
                     <div>
@@ -281,7 +278,7 @@
                         <span class="stagger-word" style="animation-delay: 0.6s">Baik</span>
                     </h1>
                     <div>
-                        <a class="btn-world-class ready-btn right-btn page-scroll" href="<?php echo e(url('register')); ?>">DAFTAR</a>
+                        <a class="btn-world-class ready-btn right-btn page-scroll" href="<?php echo e(url('registrasi')); ?>">DAFTAR</a>
                         <a class="btn-glass-outline ready-btn page-scroll" href="#contact">CONTACT US</a>
                     </div>
                 </div>

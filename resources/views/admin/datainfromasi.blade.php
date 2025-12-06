@@ -50,8 +50,13 @@
                           <tr>
                             <td><?= $no++ ?></td>
                             <td><?= $value->judul?></td>
-                            <td><?= $value->tgl_informasi?></td>
+                            
+                            {{-- PERBAIKAN DI SINI: Deskripsi diletakkan di kolom ke-3 (sesuai header) --}}
                             <td> <?=(str_word_count("$value->deskripsi") > 10 ? substr("$value->deskripsi",0,140)." ...." : "$value->deskripsi")?></td>
+                            
+                            {{-- PERBAIKAN DI SINI: Tanggal diletakkan di kolom ke-4 (sesuai header) --}}
+                            <td><?= $value->tgl_informasi?></td>
+                            
                             <td width = "10%" class ="text-center"><img src="<?= asset('')?>assets_admin/img/informasi/<?= $value->gambar_informasi?>" alt="" width ="90%"></td>
                         
                             <td class ="text-center"> 
@@ -158,6 +163,5 @@
     </div>
 </div>
 @endforeach
-
 
 @endsection

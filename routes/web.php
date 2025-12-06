@@ -33,8 +33,16 @@ use App\Http\Controllers\Mahasiswa\LaporanHarianController as MahasiswaLaporanHa
 | Semua route utama untuk sistem magang
 */
 
+// ==========================================
+// 🌍 AREA PUBLIC (BISA DIAKSES TANPA LOGIN)
+// ==========================================
+
 // 🏠 HALAMAN UTAMA (PUBLIC)
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// 📖 DETAIL INFORMASI (PINDAH KESINI AGAR PUBLIC)
+// Menggunakan HomeController sesuai perbaikan controller sebelumnya
+Route::get('/detail-informasi/{id}', [HomeController::class, 'detail_informasi'])->name('pelamar.informasi.detail');
 
 // 🔐 LOGIN, LOGOUT & REGISTER (PUBLIC)
 Route::get('/login', [LoginController::class, 'login'])->name('login');
@@ -67,7 +75,8 @@ Route::middleware(['auth', 'pelamar'])->group(function () {
     Route::get('/data-lamaran', [DataLamaranController::class, 'index'])->name('pelamar.lamaran.index');
     Route::get('/detail-lamaran/{id}', [DataLamaranController::class, 'detail'])->name('pelamar.lamaran.detail');
     Route::get('/cetak-lamaran/{id}', [DataLamaranController::class, 'cetak'])->name('pelamar.lamaran.cetak');
-    Route::get('/detail-informasi/{id}', [DataLamaranController::class, 'detail_informasi'])->name('pelamar.informasi.detail');
+    
+    // ❌ Baris detail-informasi SAYA HAPUS DARI SINI (Sudah dipindah ke atas)
 
     // SERTIFIKAT PELAMAR
     Route::post('/insert-sertifikat', [SertifikatController::class, 'insert'])->name('sertifikat.insert');

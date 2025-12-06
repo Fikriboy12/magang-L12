@@ -12,19 +12,16 @@
 <div class="main-sidebar">
   <aside id="sidebar-wrapper">
     
-    <!-- BAGIAN LOGO -->
-    <div class="sidebar-brand">
-      <img src="<?php echo e(asset('gambar/ANMS-logo.png')); ?>" width="120px" alt="Logo ANMS" class="mt-3" style="height: auto;">
+   <div class="sidebar-brand">
+      <img src="<?php echo e(asset('gambar/ANMS-logo.png')); ?>" width="50px" alt="Logo ANMS" class="mt-3" style="height: auto;">
       <br>
       <a href="<?php echo e(url('admin/dashboard')); ?>">Aplikasi Magang</a>
     </div>
     
-    <!-- BAGIAN LOGO KECIL (SAAT SIDEBAR DITUTUP) -->
     <div class="sidebar-brand sidebar-brand-sm">
       <a href="<?php echo e(url('admin/dashboard')); ?>">AM</a>
     </div>
 
-    <!-- MENU SIDEBAR -->
     <ul class="sidebar-menu mt-3">
       
       <li class="menu-header">Dashboard</li>
@@ -99,19 +96,16 @@
 <div class="main-sidebar">
   <aside id="sidebar-wrapper">
     
-    <!-- BAGIAN LOGO -->
     <div class="sidebar-brand">
-      <img src="<?php echo e(asset('gambar/ANMS-logo.png')); ?>" width="120px" alt="Logo ANMS" class="mt-3" style="height: auto;">
+      <img src="<?php echo e(asset('gambar/ANMS-logo.png')); ?>" width="50px" alt="Logo ANMS" class="mt-3" style="height: auto;">
       <br>
       <a href="<?php echo e(url('admin/dashboard')); ?>">Aplikasi Magang</a>
     </div>
     
-    <!-- BAGIAN LOGO KECIL (SAAT SIDEBAR DITUTUP) -->
     <div class="sidebar-brand sidebar-brand-sm">
       <a href="<?php echo e(url('admin/dashboard')); ?>">AM</a>
     </div>
 
-    <!-- MENU SIDEBAR -->
     <ul class="sidebar-menu mt-3">
       
       <li class="menu-header">Dashboard</li>

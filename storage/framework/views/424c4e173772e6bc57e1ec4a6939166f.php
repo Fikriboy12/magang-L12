@@ -51,8 +51,13 @@
                           <tr>
                             <td><?= $no++ ?></td>
                             <td><?= $value->judul?></td>
-                            <td><?= $value->tgl_informasi?></td>
+                            
+                            
                             <td> <?=(str_word_count("$value->deskripsi") > 10 ? substr("$value->deskripsi",0,140)." ...." : "$value->deskripsi")?></td>
+                            
+                            
+                            <td><?= $value->tgl_informasi?></td>
+                            
                             <td width = "10%" class ="text-center"><img src="<?= asset('')?>assets_admin/img/informasi/<?= $value->gambar_informasi?>" alt="" width ="90%"></td>
                         
                             <td class ="text-center"> 
@@ -160,7 +165,5 @@
 </div>
 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('template_admin.master', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\magang-L12\resources\views/admin/datainfromasi.blade.php ENDPATH**/ ?>

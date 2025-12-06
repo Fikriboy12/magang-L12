@@ -45,10 +45,10 @@
            <tr>
                  {{-- <td width = "200px"><img src="{{ asset('') }}assets_admin/img/logonew.png" width="100%"></td> --}}
                  <td class="tengah">
-                       <h2>PT. Aditama Net Media Solusindo (Persero)</h2>
+                       <h2>PT.MEDIA NUSA BALAI astro net</h2>
                      
-                       <h4> Jl. Sungai Alam No.38-40, RT.4/RW.10, Kb. Bengkalis, </h4>
-                       <h4>Kec. Tj. Priok, Bengkalis, Daerah Khusus Ibukota Riau 14320</h4>
+                       <h4> Jl. Letjend. Suprapto (Titi Gantung), Beting Kuala Kapias, </h4>
+                       <h4>Kec. Teluk Nibung, Kota Tanjung Balai, Sumatera Utara 21335</h4>
                  </td>
             </tr>
             <hr>
@@ -63,17 +63,17 @@
              <tr>
                  <td style="width: 30%;">Nama</td>
                  <td style="width: 5%;">:</td>
-                 <td style="width: 65%;">HRD PT. Aditama Net Media Solusindo</td>
+                 <td style="width: 65%;">HRD PT.MEDIA NUSA BALAI astro net</td>
              </tr>
              <tr>
                 <td style="width: 30%;">No telp</td>
                 <td style="width: 5%;">:</td>
-                <td style="width: 65%;">(021) 4301017</td>
+                <td style="width: 65%;">+62 851-5712-7721</td>
             </tr>
              <tr>
                  <td style="width: 30%; vertical-align: top;">Alamat</td>
                  <td style="width: 5%; vertical-align: top;">:</td>
-                 <td style="width: 65%;">Jl. Wonosari No.38-40, RT.4/RW.10, Kb. Bawang, Kec. Tj. Priok, Bengkalis, Daerah Khusus Ibukota Riau 14320</td>
+                 <td style="width: 65%;">kantor pusat asli di Tanjung Balai, Sumatera Utara.</td>
              </tr>
             
          </table>
@@ -96,12 +96,12 @@
             </tr>
          
         </table>
-         <p align = "justify">Mahasiswa yang bersangkutan telah diterima magang kerja di PT. Aditama net Media Solusindo (Persero) Yang bersangkutan dapat melaksanakan magang kerja selama 6 bulan, 
+         <p align = "justify">Mahasiswa yang bersangkutan telah diterima magang kerja di PT.MEDIA NUSA BALAI astro net Yang bersangkutan dapat melaksanakan magang kerja selama 6 bulan, 
             Selama magang di PT. Nama Perusahaan, yang bersangkutan wajib menaati peraturan yang ada di perusahaan kami.</p>
      
          {{-- <div style="width: 50%; text-align: left; float: right;">Bengkalis, {{date('d-m-Y')}}</div><br> --}}
          <div style="width: 50%; text-align: left; float: right;">Yang bertanda tangan,</div><br><br><br><br><br>
-         <div style="width: 50%; text-align: left; float: right;">HRD  PT. Aditama Net Media Solusindo</div>
+         <div style="width: 50%; text-align: left; float: right;">HRD  PT. MEDIA NUSA BALAI astro net</div>
      
      </div>
 </div>

@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Aplikasi Magang</title>
-    
-    <!-- CSS Libraries --><link rel="stylesheet" href="{{ asset('assets_admin/modules/bootstrap/css/bootstrap.min.css') }}">
+    <title>Register - PT. MEDIA BALAI NUSA</title>
+
+    <link rel="icon" href="{{ asset('gambar/AMS-logo.png') }}" type="image/png">
+    <link rel="shortcut icon" href="{{ asset('gambar/AMS-logo.png') }}" type="image/png">
+    <link rel="stylesheet" href="{{ asset('assets_admin/modules/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets_admin/modules/fontawesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets_admin/modules/jquery-selectric/selectric.css') }}">
     <link rel="stylesheet" href="{{ asset('assets_admin/css/style.css') }}">
@@ -28,7 +30,7 @@
             background: #ffffff;
             border-radius: 20px; /* Lebih rounded */
             padding: 40px;
-            max-width: 450px; /* <--- DIUBAH: LEBAR MAKSIMAL CARD DIKECILKAN */
+            max-width: 450px; /* <--- LEBAR CARD SESUAI */
             width: 100%;
             box-shadow: 0 20px 50px rgba(0,0,0,0.2); /* Shadow lebih dalam */
             border: none;
@@ -147,8 +149,9 @@
     
     <div class="card-register">
         <div class="text-center mb-4">
-             {{-- Logo --}}
-             <img src="{{ asset('gambar/ANMS-logo.png') }}" alt="logo" width="180" style="height: auto;">
+             {{-- Logo DIPERKECIL DI SINI (width="100") --}}
+             <img src="{{ asset('gambar/ANMS-logo.png') }}" alt="logo" width="100" style="height: auto;">
+             
              <h4 class="mt-3" style="color: #1e3c72; font-weight: 800;">Daftar Akun Baru</h4>
              <p class="text-muted small">Silakan lengkapi data diri Anda di bawah ini</p>
         </div>

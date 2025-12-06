@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login Aplikasi Magang</title>
+<title>Login-PT. MEDIA BALAI NUSA</title>
+
+<link rel="icon" href="{{ asset('gambar/AMS-logo.png') }}" type="image/png">
+<link rel="shortcut icon" href="{{ asset('gambar/AMS-logo.png') }}" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <style>
@@ -17,33 +20,39 @@
         align-items: center;
     }
 
-    /* Card */
+    /* Card Login */
     .login-card {
         background: #fff;
         border-radius: 12px;
-        padding: 35px 25px;
-        width: 100%;
-        max-width: 360px; /* card tidak terlalu lebar */
+        padding: 30px 20px; /* Padding dikurangi sedikit biar tidak terlalu gemuk */
+        
+        /* PERBAIKAN UTAMA AGAR PAS DI HP */
+        width: 90%;          /* Agar ada jarak kiri-kanan di HP (tidak full layar) */
+        max-width: 340px;    /* Lebar maksimal dikecilkan sedikit (dari 360 ke 340) */
+        
         box-shadow: 0 15px 30px rgba(0,0,0,0.3);
         text-align: center;
     }
 
+    /* Logo */
     .login-card img {
-        width: 180px;
-        margin-bottom: 10px;
+        width: 100px; /* Diperkecil dari 180px jadi 100px agar rapi */
+        height: auto;
+        margin-bottom: 15px;
     }
 
     .company-name {
-        font-size: 17px;
+        font-size: 15px; /* Font diperkecil sedikit */
         font-weight: 500;
         color: #1e3c72;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
     }
 
     .login-card h2 {
         margin-bottom: 20px;
         color: #1e3c72;
         font-weight: 700;
+        font-size: 22px;
     }
 
     /* Input */
@@ -56,18 +65,19 @@
     .input-group i {
         position: absolute;
         top: 50%;
-        left: 10px;
+        left: 12px;
         transform: translateY(-50%);
         color: #1e3c72;
+        font-size: 14px;
     }
 
     .input-group input {
         width: 100%;
-        padding: 8px 12px 8px 35px;
+        padding: 10px 12px 10px 35px; /* Padding disesuaikan */
         border-radius: 8px;
         border: 1px solid #ccc;
         outline: none;
-        font-size: 14px;
+        font-size: 13px; /* Font input diperkecil agar pas */
         box-sizing: border-box;
     }
 
@@ -87,33 +97,36 @@
         font-weight: bold;
         cursor: pointer;
         margin-top: 15px;
-        font-size: 15px;
+        font-size: 14px;
+        transition: 0.3s;
     }
 
     .login-card button:hover {
         background: linear-gradient(135deg, #2a5298, #1e3c72);
+        transform: translateY(-2px);
     }
 
     /* Links */
     .login-card .links {
-        margin-top: 12px;
-        font-size: 14px;
+        margin-top: 15px;
+        font-size: 13px;
     }
     .login-card .links a {
         color: #1e3c72;
         text-decoration: none;
+        font-weight: 500;
     }
     .login-card .links a:hover {
         color: #2a5298;
         text-decoration: underline;
     }
 
-    /* Alert Style (Diperbaiki) */
+    /* Alert Style */
     .alert {
         padding: 10px;
         margin-bottom: 15px;
         border-radius: 6px;
-        font-size: 13px;
+        font-size: 12px; /* Font alert diperkecil */
         text-align: left;
     }
     .alert-danger {
@@ -135,25 +148,25 @@
 <body>
 
 <div class="login-card">
-     <img src="{{ asset('gambar/ANMS-logo.png') }}" alt="Logo ANMS">
-    <div class="company-name">PT. Aditama Net media Solusindo</div>
+    <img src="{{ asset('gambar/ANMS-logo.png') }}" alt="Logo ANMS">
+    <div class="company-name">PT.MEDIA BALAI NUSA astro net</div>
     <h2>Login</h2>
 
-    {{-- 1. Notifikasi SUKSES (Misal setelah logout atau register) --}}
+    {{-- 1. Notifikasi SUKSES --}}
     @if (session('success'))
         <div class="alert alert-success">
             <i class="fas fa-check-circle"></i> {{ session('success') }}
         </div>
     @endif
 
-    {{-- 2. Notifikasi ERROR (Password Salah / Email Tidak Terdaftar) --}}
+    {{-- 2. Notifikasi ERROR --}}
     @if (session('error'))
         <div class="alert alert-danger">
             <i class="fas fa-exclamation-triangle"></i> {{ session('error') }}
         </div>
     @endif
 
-    {{-- 3. Validasi Error (Misal email kosong) --}}
+    {{-- 3. Validasi Error --}}
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -164,7 +177,8 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ url('action-login') }}">
+    {{-- FORM LOGIN --}}
+    <form method="POST" action="{{ route('login.action') }}">
         @csrf
         <div class="input-group">
             <i class="fas fa-envelope"></i>
@@ -178,8 +192,8 @@
     </form>
 
     <div class="links">
-        <a href="{{ url('') }}">Halaman Utama</a> | 
-        <a href="{{ url('registrasi') }}">Registrasi</a>
+        <a href="{{ route('home') }}">Halaman Utama</a> | 
+        <a href="{{ route('register') }}">Registrasi</a>
     </div>
 </div>
 
