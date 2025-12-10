@@ -26,7 +26,7 @@
     }
 
     /* ======================================================== */
-    /* 2. SLIDER AREA (FIX BACKGROUND BLUR & RESPONSIF) */
+    /* 2. SLIDER AREA */
     /* ======================================================== */
     .slider-area {
         position: relative;
@@ -45,7 +45,6 @@
         overflow: hidden;
     }
 
-    /* GAMBAR BACKGROUND: Blur dikembalikan & Responsif */
     .nivoSlider img {
         width: 100vw !important;
         height: 100vh !important;
@@ -54,23 +53,19 @@
         position: absolute !important;
         top: 0; left: 0;
         max-width: none !important;
-        
-        /* [FIX] EFEK BLUR DIKEMBALIKAN LEBIH KUAT */
         filter: blur(6px) !important; 
         -webkit-filter: blur(6px) !important;
-        transform: scale(1.1); /* Zoom dikit biar pinggiran blur aman */
+        transform: scale(1.1); 
     }
 
     .nivo-slice, .nivo-box { display: none !important; }
     .nivo-main-image { display: block !important; width: 100vw !important; height: 100vh !important; opacity: 1 !important; }
 
-    /* Overlay Gelap */
     .slider-overlay {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(15, 23, 42, 0.4); z-index: 2; pointer-events: none;
     }
 
-    /* NAVIGASI GARIS */
     .nivo-controlNav {
         z-index: 100 !important;
         position: absolute;
@@ -91,7 +86,7 @@
     .nivo-controlNav a.active { background: #00c6fb; width: 50px; }
 
     /* ======================================================== */
-    /* 3. CARD SLIDER TENGAH (UKURAN SAMA & TITLE KONSISTEN) */
+    /* 3. CARD SLIDER TENGAH */
     /* ======================================================== */
     .nivo-caption {
         background: transparent !important;
@@ -112,20 +107,16 @@
         backdrop-filter: blur(10px); 
         border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 30px;
-        
-        /* [FIX] UKURAN CARD DIBUAT TETAP (MIN-HEIGHT) AGAR TIDAK BERUBAH SIZE */
         width: 90%;
         max-width: 700px; 
-        min-height: 500px; /* Tinggi Minimal Tetap */
+        min-height: 500px; 
         padding: 60px 40px;
-        
         display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
         box-shadow: 0 30px 60px rgba(0,0,0,0.5);
         animation: cardZoom 0.8s ease-out;
     }
     @keyframes cardZoom { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-    /* [FIX] UKURAN TITLE KONSISTEN */
     .title1-hero {
         font-size: 16px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #00c6fb;
         margin-bottom: 25px; display: inline-block;
@@ -157,7 +148,7 @@
     .btn-glass-outline:hover { background: #fff; color: #005bea !important; }
 
     /* ======================================================== */
-    /* 4. CONTENT STYLE (GLASS CARD, DLL) */
+    /* 4. CONTENT STYLE */
     /* ======================================================== */
     
     .glass-card {
@@ -167,11 +158,17 @@
         box-shadow: 0 10px 40px -10px rgba(0, 91, 234, 0.1);
         padding: 35px; 
         margin-bottom: 25px;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative; 
         height: auto; 
+        display: block;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
     }
-    .glass-card:hover { transform: translateY(-5px); box-shadow: 0 20px 50px -12px rgba(0, 91, 234, 0.2); border-color: #cce4ff; }
+    .glass-card:hover { 
+        transform: translateY(-15px) !important; 
+        box-shadow: 0 30px 60px -12px rgba(0, 91, 234, 0.25) !important; 
+        border-color: #00c6fb !important; 
+        z-index: 10;
+    }
     
     .section-headline h2 {
         font-size: 40px; font-weight: 800;
@@ -186,16 +183,27 @@
     }
 
     .floating-img-container {
-        border-radius: 20px; overflow: hidden; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        border-radius: 20px; overflow: hidden; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         height: 100%; min-height: 400px; 
     }
     .floating-img-container img { width: 100%; height: 100%; object-fit: cover; }
-    .floating-img { width: 100%; height: 250px; object-fit: cover; } 
+    
+    /* Overrides */
+    #portfolio .floating-img-container { min-height: 250px !important; height: 250px !important; }
+    #portfolio .floating-img { width: 100%; height: 100%; object-fit: cover; }
+    #blog .floating-img-container { min-height: 220px !important; height: 220px !important; border-radius: 20px 20px 0 0; }
 
     .icon-box-modern {
         width: 70px; height: 70px; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
         border-radius: 50%; display: flex; align-items: center; justify-content: center;
         margin: 0 auto 20px; color: #005bea; font-size: 28px;
+        transition: all 0.5s ease; flex-shrink: 0;
+    }
+    .glass-card:hover .icon-box-modern { 
+        transform: rotate(15deg) scale(1.1); 
+        background: linear-gradient(135deg, #005bea 0%, #00c6fb 100%); 
+        color: #fff; 
+        box-shadow: 0 10px 20px rgba(0, 91, 234, 0.3);
     }
 
     .animasi-masuk { opacity: 0; transform: translateY(40px); transition: 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
@@ -203,10 +211,36 @@
     .delay-100 { transition-delay: 0.1s; } .delay-200 { transition-delay: 0.2s; } 
     .area-padding { padding: 80px 0; }
 
+    /* =========================================================== */
+    /* 5. FIX KHUSUS BAGIAN BERITA (BLOG) AGAR SEJAJAR */
+    /* =========================================================== */
+    @media (min-width: 768px) {
+        /* Menggunakan Flexbox pada Row Blog agar tinggi box sama rata */
+        #blog .row {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        #blog .col-md-4 {
+            display: flex;
+        }
+        #blog .animasi-masuk {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        #blog .glass-card {
+            flex-grow: 1; /* Box memanjang mengisi ruang kosong */
+            height: 100% !important; /* Paksa tinggi 100% */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Tombol read more akan terdorong ke bawah */
+        }
+    }
+
     /* RESPONSIVE HP */
     @media (max-width: 768px) {
         .slider-area, .nivoSlider img { height: 100vh !important; }
-        .slider-glass-card { width: 90%; padding: 40px 20px; min-height: auto; }
+        .slider-glass-card { width: 90%; padding: 40px 20px; min-height: 450px; }
         .title1-hero { font-size: 11px; padding: 6px 15px; }
         .title2-hero { font-size: 28px; line-height: 1.3; }
         .btn-action-wrapper { width: 100%; }
@@ -217,6 +251,7 @@
 <!-- ======= SLIDER SECTION ======= -->
 <div id="home" class="slider-area">
     <div class="bend niceties preview-2">
+      <!-- Gambar Slider -->
       <div id="ensign-nivoslider" class="slides">
         <img src="{{ asset('assets') }}/img/slider/banner1.jpg" alt="" title="#slider-direction-1" />
         <img src="{{ asset('assets') }}/img/slider/banner2.jpg" alt="" title="#slider-direction-2" />
@@ -302,7 +337,7 @@
         </div>
         
         <div class="row">
-          <!-- KIRI: GAMBAR BESAR -->
+          <!-- KIRI: GAMBAR -->
           <div class="col-md-6 col-sm-6 col-xs-12">
             <div class="animasi-masuk" style="height: 100%;">
                 <div class="glass-card" style="padding: 15px; height: 100%;">
@@ -316,7 +351,7 @@
           <!-- KANAN: PROFIL, VISI, MISI -->
           <div class="col-md-6 col-sm-6 col-xs-12">
             
-            <!-- 1. BOX PROFILE -->
+            <!-- 1. PROFILE -->
             <div class="animasi-masuk delay-200">
               <div class="glass-card">
                   <h4 style="font-size: 26px; font-weight: 700; color: #0f172a; margin-bottom: 20px; border-left: 5px solid #005bea; padding-left: 15px;">
@@ -328,10 +363,10 @@
               </div>
             </div>
 
-            <!-- 2. ROW BARU: VISI & MISI (BERDAMPINGAN) -->
+            <!-- 2. VISI & MISI (BERDAMPINGAN) -->
             <div class="row" style="margin-top: 25px;">
-                <!-- Visi (Kiri) -->
-                <div class="col-md-6 col-sm-6 col-xs-6"> 
+                <!-- Visi -->
+                <div class="col-6 col-md-6"> 
                     <div class="animasi-masuk delay-100">
                         <div class="glass-card" style="margin-bottom: 0;"> 
                             <h4 style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 15px; border-left: 5px solid #005bea; padding-left: 15px;">
@@ -343,9 +378,9 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Misi (Kanan) -->
-                <div class="col-md-6 col-sm-6 col-xs-6">
+                
+                <!-- Misi -->
+                <div class="col-6 col-md-6">
                     <div class="animasi-masuk delay-200">
                         <div class="glass-card" style="margin-bottom: 0;">
                             <h4 style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 15px; border-left: 5px solid #005bea; padding-left: 15px;">
@@ -424,7 +459,7 @@
       </div>
     </div>
 
-    <!-- ======= BLOG SECTION ======= -->
+    <!-- ======= BLOG SECTION (FIXED EQUAL HEIGHT) ======= -->
     <div id="blog" class="blog-area area-padding">
       <div class="container">
         <div class="row">
@@ -434,11 +469,12 @@
             </div>
           </div>
         </div>
-        <div class="row">
+        <!-- CLASS ROW DITAMBAHKAN STYLE FLEX AGAR SAMA RATA -->
+        <div class="row" style="display: flex; flex-wrap: wrap;">
           @foreach ($data['informasi'] as $value)
-            <div class="col-md-4 col-sm-4 col-xs-12">
-              <div class="animasi-masuk delay-{{ ($loop->iteration % 3) * 100 }}">
-                <div class="glass-card" style="padding: 0; display: flex; flex-direction: column;">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-12" style="display: flex;"> <!-- Grid Responsif -->
+              <div class="animasi-masuk delay-{{ ($loop->iteration % 3) * 100 }}" style="width: 100%; display: flex; flex-direction: column;">
+                <div class="glass-card" style="padding: 0; flex-grow: 1; display: flex; flex-direction: column;">
                     <div class="floating-img-container" style="border-radius: 20px 20px 0 0; box-shadow: none;">
                         <img src="{{ asset('assets_admin/img/informasi/'.$value->gambar_informasi) }}" class="floating-img" style="height: 220px;" alt="">
                     </div>
@@ -451,10 +487,10 @@
                         <h4 style="font-size: 18px; margin-bottom: 15px; line-height: 1.5; font-weight: 700;">
                             <a href="#" style="color: #0f172a; text-decoration: none;">{{ $value->judul }}</a>
                         </h4>
-                        <p style="margin-bottom: 25px; font-size: 14px; flex-grow: 1; color: #64748b;">
+                        <p style="margin-bottom: 25px; font-size: 14px; color: #64748b; flex-grow: 1;"> <!-- flex-grow agar teks mendorong tombol ke bawah -->
                             {{(str_word_count("$value->deskripsi") > 15 ? substr("$value->deskripsi",0,100)."..." : "$value->deskripsi") }}
                         </p>
-                        <div style="text-align: right;">
+                        <div style="text-align: right; margin-top: auto;"> <!-- margin-top auto agar tombol mentok bawah -->
                             <a href="{{ url('detail-informasi/'.$value->id_informasi) }}" class="btn-world-class" style="font-size: 12px; padding: 10px 25px;">Read more</a>
                         </div>
                     </div>
@@ -529,7 +565,7 @@
         }, { threshold: 0.1 });
         elements.forEach(el => observer.observe(el));
 
-        // 2. Script Nivo Slider (Stabil)
+        // 2. Script Nivo Slider
         if (typeof jQuery != 'undefined') {
             jQuery('#ensign-nivoslider').nivoSlider({
                 effect: 'fade', 
