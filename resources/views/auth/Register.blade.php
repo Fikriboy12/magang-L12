@@ -21,7 +21,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 30px 0;
+            /* UBAH 1: Tambahkan padding kiri-kanan (15px) agar tidak mentok layar HP */
+            padding: 30px 15px; 
             font-family: 'Nunito', sans-serif;
         }
 
@@ -34,6 +35,18 @@
             width: 100%;
             box-shadow: 0 20px 50px rgba(0,0,0,0.2); /* Shadow lebih dalam */
             border: none;
+        }
+
+        /* UBAH 2: Media Query Khusus HP */
+        @media (max-width: 576px) {
+            .card-register {
+                /* Padding card dikecilkan sedikit di HP agar area input lebih lega */
+                padding: 30px 20px; 
+            }
+            
+            h4 {
+                font-size: 1.2rem; /* Ukuran font judul sedikit disesuaikan */
+            }
         }
 
         /* INPUT FIELDS */

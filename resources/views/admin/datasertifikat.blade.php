@@ -31,67 +31,72 @@
 
         <div class="card">
             <div class="card-body">
-                <table id="table" class="table table-striped table-hover" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                            <th width="5%">No</th>
-                            <th>Nama Mahasiswa</th>
-                            <th>File Sertifikat</th>
-                            <th>Status</th>
-                            <th class="text-center" width="20%">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($data['data_sertifikat'] as $item)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>
-                                <b class="text-primary">{{ $item->nama_mahasiswa }}</b><br>
-                                <small class="text-muted">{{ $item->universitas }}</small>
-                            </td>
-                            
-                            {{-- STATUS FILE --}}
-                            <td>
-                                @if($item->file_path)
-                                    <a href="{{ asset('sertifikat/' . $item->file_path) }}" target="_blank" class="btn btn-sm btn-outline-primary shadow-sm">
-                                        <i class="fas fa-file-pdf"></i> Lihat File
-                                    </a>
-                                @else
-                                    <span class="text-muted text-small font-italic">Belum diupload</span>
-                                @endif
-                            </td>
+                <!-- TAMBAHAN: Wrapper Responsive Table -->
+                <div class="table-responsive">
+                    <table id="table" class="table table-striped table-hover" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th width="5%">No</th>
+                                <th>Nama Mahasiswa</th>
+                                <th>File Sertifikat</th>
+                                <th>Status</th>
+                                <th class="text-center" width="20%">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($data['data_sertifikat'] as $item)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>
+                                    <b class="text-primary">{{ $item->nama_mahasiswa }}</b><br>
+                                    <small class="text-muted">{{ $item->universitas }}</small>
+                                </td>
+                                
+                                {{-- STATUS FILE --}}
+                                <td>
+                                    @if($item->file_path)
+                                        <a href="{{ asset('sertifikat/' . $item->file_path) }}" target="_blank" class="btn btn-sm btn-outline-primary shadow-sm">
+                                            <i class="fas fa-file-pdf"></i> Lihat File
+                                        </a>
+                                    @else
+                                        <span class="text-muted text-small font-italic">Belum diupload</span>
+                                    @endif
+                                </td>
 
-                            {{-- STATUS PENGAJUAN --}}
-                            <td>
-                                @if($item->status_pengajuan == 'acc' || $item->status_pengajuan == 'approved')
-                                    <span class="badge badge-success">Approved</span>
-                                @elseif($item->status_pengajuan == 'rejected')
-                                    <span class="badge badge-danger">Rejected</span>
-                                @else
-                                    <span class="badge badge-warning">Pending</span>
-                                @endif
-                            </td>
+                                {{-- STATUS PENGAJUAN --}}
+                                <td>
+                                    @if($item->status_pengajuan == 'acc' || $item->status_pengajuan == 'approved')
+                                        <span class="badge badge-success">Approved</span>
+                                    @elseif($item->status_pengajuan == 'rejected')
+                                        <span class="badge badge-danger">Rejected</span>
+                                    @else
+                                        <span class="badge badge-warning">Pending</span>
+                                    @endif
+                                </td>
 
-                            <td class="text-center">
-                                {{-- TOMBOL DETAIL --}}
-                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalDetail{{ $item->id }}" title="Detail Mahasiswa">
-                                    <i class="fas fa-eye"></i>
-                                </button>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center" style="gap: 5px;">
+                                        {{-- TOMBOL DETAIL --}}
+                                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalDetail{{ $item->id }}" title="Detail Mahasiswa">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
 
-                                {{-- TOMBOL EDIT/UPLOAD --}}
-                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updatedata{{ $item->id }}" title="Proses / Upload">
-                                    <i class="fas fa-edit"></i>
-                                </button>
+                                        {{-- TOMBOL EDIT/UPLOAD --}}
+                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updatedata{{ $item->id }}" title="Proses / Upload">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
 
-                                {{-- TOMBOL HAPUS --}}
-                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#Delete{{ $item->id }}" title="Hapus">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                                        {{-- TOMBOL HAPUS --}}
+                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#Delete{{ $item->id }}" title="Hapus">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div> <!-- End table-responsive -->
             </div>
         </div>
     </div>
@@ -104,7 +109,7 @@
     {{-- 1. MODAL DETAIL MAHASISWA --}}
     {{-- ========================================== --}}
     <div class="modal fade" id="modalDetail{{ $item->id }}">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered"> <!-- Modal Centered -->
             <div class="modal-content border-0 shadow-lg">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title font-weight-bold">
@@ -114,44 +119,46 @@
                 </div>
                 
                 <div class="modal-body p-0">
-                    <table class="table table-striped mb-0">
-                        <tbody>
-                            <tr>
-                                <th class="pl-4 py-3 text-primary" width="35%">Nama Lengkap</th>
-                                <td class="py-3 font-weight-bold">{{ $item->nama_mahasiswa }}</td>
-                            </tr>
-                            <tr>
-                                <th class="pl-4 py-3 text-primary">NIM</th>
-                                <td class="py-3">{{ $item->nim ?? '-' }}</td>
-                            </tr>
-                            <tr>
-                                <th class="pl-4 py-3 text-primary">Universitas / Sekolah</th>
-                                <td class="py-3">{{ $item->universitas }}</td>
-                            </tr>
-                            <tr>
-                                <th class="pl-4 py-3 text-primary">Jurusan</th>
-                                <td class="py-3">{{ $item->jurusan }}</td>
-                            </tr>
-                            <tr>
-                                <th class="pl-4 py-3 text-primary">Program Studi</th>
-                                <td class="py-3">{{ $item->program_studi ?? '-' }}</td>
-                            </tr>
-                            <tr>
-                                <th class="pl-4 py-3 text-primary">Periode Magang</th>
-                                <td class="py-3">
-                                    <span class="text-dark">
-                                        {{ \Carbon\Carbon::parse($item->dari_tanggal)->translatedFormat('d F Y') }} 
-                                        s/d 
-                                        {{ \Carbon\Carbon::parse($item->sampai_tanggal)->translatedFormat('d F Y') }}
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th class="pl-4 py-3 text-primary">Email</th>
-                                <td class="py-3">{{ $item->email }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0">
+                            <tbody>
+                                <tr>
+                                    <th class="pl-4 py-3 text-primary" width="35%">Nama Lengkap</th>
+                                    <td class="py-3 font-weight-bold">{{ $item->nama_mahasiswa }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="pl-4 py-3 text-primary">NIM</th>
+                                    <td class="py-3">{{ $item->nim ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="pl-4 py-3 text-primary">Universitas / Sekolah</th>
+                                    <td class="py-3">{{ $item->universitas }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="pl-4 py-3 text-primary">Jurusan</th>
+                                    <td class="py-3">{{ $item->jurusan }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="pl-4 py-3 text-primary">Program Studi</th>
+                                    <td class="py-3">{{ $item->program_studi ?? '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="pl-4 py-3 text-primary">Periode Magang</th>
+                                    <td class="py-3">
+                                        <span class="text-dark">
+                                            {{ \Carbon\Carbon::parse($item->dari_tanggal)->translatedFormat('d F Y') }} 
+                                            s/d 
+                                            {{ \Carbon\Carbon::parse($item->sampai_tanggal)->translatedFormat('d F Y') }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="pl-4 py-3 text-primary">Email</th>
+                                    <td class="py-3">{{ $item->email }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <div class="modal-footer bg-white border-top-0">
@@ -168,7 +175,7 @@
     {{-- 2. MODAL UPDATE / UPLOAD SERTIFIKAT --}}
     {{-- ========================================== --}}
     <div class="modal fade" id="updatedata{{ $item->id }}">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered"> <!-- Modal Centered -->
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title">Proses Sertifikat</h5>
@@ -210,7 +217,7 @@
     {{-- 3. MODAL DELETE --}}
     {{-- ========================================== --}}
     <div class="modal fade" id="Delete{{ $item->id }}">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered"> <!-- Modal Centered -->
             <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
                     <h5 class="modal-title">Hapus Data</h5>

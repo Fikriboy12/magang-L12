@@ -5,6 +5,9 @@
     <div class="section-header">
     <h1>{{$data['title']}}</h1>
     </div>
+
+    <!-- Tombol Tambah Data dihapus karena ini data pelamar (biasanya hanya view) -->
+    
     <div class="section-body">
         <div class="row">
             <div class="col-md-12 col-sm-12">
@@ -28,44 +31,49 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <table id="table" class="table table-striped table-hover" cellspacing="0" width="100%">
-                    <thead >
-                        <tr >
-                            <th width = "5%">No.</th>
-                            <th>Nama</th>
-                            <th>Email</th>
-                            <th>No Telepon</th>
-                            <th>Alamat</th>
-                            <th>Status</th>
-                            <th class="text-center" width = "20%">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $no = 1;?>
-                        @foreach ($data['data_pelamar'] as $item)
+                <!-- TAMBAHAN: Wrapper Responsive Table -->
+                <div class="table-responsive">
+                    <table id="table" class="table table-striped table-hover" cellspacing="0" width="100%">
+                        <thead>
                             <tr>
-                                <td>{{$no++}}</td>
-                                <td>{{$item->name}}</td>
-                                <td>{{$item->email}}</td>
-                                <td>{{$item->no_telp}}</td>
-                                <td>{{$item->alamat}}</td>
-                                <th>
-                                    @if ($item->status == 1)
-                                        <div class="badge badge-primary">Lengkap</div>
-                                    @else
-                                        <div class="badge badge-warning">Tidak Lengkap</div>
-                                    @endif
-                                </th>
-                                <td width = "10%" class="text-center">
-                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#Update{{$item->id}}">
-                                        <i class="fa fa-eye"></i> 
-                                    </button>
-                                </td>
+                                <th width="5%">No.</th>
+                                <th>Nama</th>
+                                <th>Email</th>
+                                <th>No Telepon</th>
+                                <th>Alamat</th>
+                                <th>Status</th>
+                                <th class="text-center" width="10%">Action</th> <!-- Lebar action dikecilkan dikit -->
                             </tr>
-                        @endforeach
-                        
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php $no = 1;?>
+                            @foreach ($data['data_pelamar'] as $item)
+                                <tr>
+                                    <td>{{$no++}}</td>
+                                    <td>{{$item->name}}</td>
+                                    <td>{{$item->email}}</td>
+                                    <td>{{$item->no_telp}}</td>
+                                    
+                                    {{-- Batasi panjang alamat di tabel agar tidak terlalu lebar --}}
+                                    <td>{{ Str::limit($item->alamat, 50) }}</td>
+                                    
+                                    <td>
+                                        @if ($item->status == 1)
+                                            <div class="badge badge-primary">Lengkap</div>
+                                        @else
+                                            <div class="badge badge-warning">Tidak Lengkap</div>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#Update{{$item->id}}">
+                                            <i class="fa fa-eye"></i> Detail
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div> <!-- End table-responsive -->
 
             </div>
         </div>
@@ -74,89 +82,104 @@
 
 @foreach ($data['data_pelamar'] as $item)
 
-
+<!-- Modal Detail Data -->
 <div class="modal fade" id="Update{{$item->id}}">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered"> <!-- Modal Centered -->
         <div class="modal-content">
 
             <div class="modal-header">
-                <h4 class="modal-title">Detail Data</h4>
+                <h4 class="modal-title">Detail Data Pelamar</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
        
-                <div class="modal-body">
-                    @csrf
-                    <div class="form-group">
-                        <label for="">Nama</label>
-                        <input type="hidden" name = "id" value = "{{$item->id}}">
-                        <input type="text" name = "name" class="form-control" value = "{{$item->name}}" required readonly>
+            <div class="modal-body">
+                {{-- Form dibuat readonly semua karena hanya detail view --}}
+                
+                <div class="form-group">
+                    <label for="">Nama Lengkap</label>
+                    <input type="text" class="form-control" value="{{$item->name}}" readonly>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 col-12"> <!-- Responsif: col-12 di HP, col-md-6 di Laptop -->
+                        <div class="form-group">
+                            <label for="">Email</label>
+                            <input type="email" class="form-control" value="{{$item->email}}" readonly>
+                        </div>   
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="">Email</label>
-                                <input type="email" name = "email" class="form-control" value = "{{$item->email}}" required readonly>
-                            </div>   
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="">No Telepon</label>
-                                <input type="number" name = "no_telp" value = "{{$item->no_telp}}" class="form-control" required readonly>
-                            </div> 
-                        </div>
+                    <div class="col-md-6 col-12">
+                        <div class="form-group">
+                            <label for="">No Telepon</label>
+                            <input type="text" value="{{$item->no_telp}}" class="form-control" readonly>
+                        </div> 
                     </div>
-                  
-                    <div class="row">
-                        <div class="form-group col-6">
+                </div>
+              
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <div class="form-group">
                             <label>NIM</label>
-                            <input type="text" name = "nim" class="form-control" required value = "{{$item->nim}}" readonly>
+                            <input type="text" class="form-control" value="{{$item->nim}}" readonly>
                         </div>
-                        <div class="form-group col-6">
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="form-group">
                             <label>NIK</label>
-                            <input type="text" name = "nik" class="form-control" required value = "{{$item->nik}}" readonly>
+                            <input type="text" class="form-control" value="{{$item->nik}}" readonly>
                         </div>
-                      </div>
-                      <div class="form-group ">
-                          <label for="frist_name">Nama Lengkap</label>
-                          <input id="frist_name" type="text" class="form-control" name="nama_lengkap" autofocus required value = "{{$item->nama_lengkap}}" readonly>
-                      </div>
-                      <div class="row">
-                          <div class="form-group col-6">
-                              <label>Tempat Lahir</label>
-                              <input type="text" name = "tempat_lahir" class="form-control" required value = "{{$item->tempat_lahir}}" readonly>
-                          </div>
-                          <div class="form-group col-6">
-                              <label>Tanggal Lahir</label>
-                              <input type="date" name = "tanggal_lahir" class="form-control" required value = "{{$item->tanggal_lahir}}" readonly>
-                          </div>
-                      </div>
-                      <div class="form-group">
-                          <label>Jenis Kelamin</label>
-                          <input type="text" name = "jenis_kelamin" class="form-control" required value = "{{$item->jenis_kelamin}}" readonly>
-                      </div>
-  
-        
-                      <div class="form-group">
-                          <label>Agama</label>
-                          <input type="text" name = "agama" class="form-control" required value = "{{$item->agama}}" readonly>
-                      </div>
-                  
-                      <div class="form-group">
-                        <label>Alamat Lengkap</label>
-                          <textarea name="alamat_lengkap" id="" required value = "{{$item->alamat_lengkap}}" readonly class="form-control" cols="30" rows="10">{{$item->alamat_lengkap}}</textarea>
-                      </div>
+                    </div>
+                </div>
+                
+                <!-- Nama Lengkap (Redundant dari atas, bisa dihapus salah satu jika mau, tapi saya biarkan sesuai request) -->
+                <div class="form-group">
+                    <label>Nama Lengkap (Sesuai KTP/KTM)</label>
+                    <input type="text" class="form-control" value="{{$item->nama_lengkap}}" readonly>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <div class="form-group">
+                            <label>Tempat Lahir</label>
+                            <input type="text" class="form-control" value="{{$item->tempat_lahir}}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="form-group">
+                            <label>Tanggal Lahir</label>
+                            <input type="date" class="form-control" value="{{$item->tanggal_lahir}}" readonly>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <div class="form-group">
+                            <label>Jenis Kelamin</label>
+                            <input type="text" class="form-control" value="{{$item->jenis_kelamin}}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="form-group">
+                            <label>Agama</label>
+                            <input type="text" class="form-control" value="{{$item->agama}}" readonly>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                 
+                <div class="form-group">
+                    <label>Alamat Lengkap</label>
+                    <textarea class="form-control" style="height: 100px;" readonly>{{$item->alamat_lengkap}}</textarea>
                 </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+            </div>
          
         </div>
     </div>
 </div>
 
 @endforeach
-
 
 @endsection
