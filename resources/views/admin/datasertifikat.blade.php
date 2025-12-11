@@ -31,7 +31,6 @@
 
         <div class="card">
             <div class="card-body">
-                <!-- TAMBAHAN: Wrapper Responsive Table -->
                 <div class="table-responsive">
                     <table id="table" class="table table-striped table-hover" cellspacing="0" width="100%">
                         <thead>
@@ -96,8 +95,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                </div> <!-- End table-responsive -->
-            </div>
+                </div> </div>
         </div>
     </div>
 </section>
@@ -109,8 +107,7 @@
     {{-- 1. MODAL DETAIL MAHASISWA --}}
     {{-- ========================================== --}}
     <div class="modal fade" id="modalDetail{{ $item->id }}">
-        <div class="modal-dialog modal-lg modal-dialog-centered"> <!-- Modal Centered -->
-            <div class="modal-content border-0 shadow-lg">
+        <div class="modal-dialog modal-lg modal-dialog-centered"> <div class="modal-content border-0 shadow-lg">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title font-weight-bold">
                         <i class="fas fa-user-graduate mr-2"></i> Detail Pengajuan
@@ -128,7 +125,10 @@
                                 </tr>
                                 <tr>
                                     <th class="pl-4 py-3 text-primary">NIM</th>
-                                    <td class="py-3">{{ $item->nim ?? '-' }}</td>
+                                    <td class="py-3">
+                                        {{-- PERBAIKAN NIM: Akses langsung kolom 'nim' yang sudah di-join di Controller --}}
+                                        {{ $item->nim ?? '-' }}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th class="pl-4 py-3 text-primary">Universitas / Sekolah</th>
@@ -175,8 +175,7 @@
     {{-- 2. MODAL UPDATE / UPLOAD SERTIFIKAT --}}
     {{-- ========================================== --}}
     <div class="modal fade" id="updatedata{{ $item->id }}">
-        <div class="modal-dialog modal-dialog-centered"> <!-- Modal Centered -->
-            <div class="modal-content">
+        <div class="modal-dialog modal-dialog-centered"> <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title">Proses Sertifikat</h5>
                     <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
@@ -217,8 +216,7 @@
     {{-- 3. MODAL DELETE --}}
     {{-- ========================================== --}}
     <div class="modal fade" id="Delete{{ $item->id }}">
-        <div class="modal-dialog modal-dialog-centered"> <!-- Modal Centered -->
-            <div class="modal-content">
+        <div class="modal-dialog modal-dialog-centered"> <div class="modal-content">
                 <div class="modal-header bg-danger text-white">
                     <h5 class="modal-title">Hapus Data</h5>
                     <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
@@ -240,10 +238,10 @@
                         <button type="submit" class="btn btn-danger">Ya, Hapus</button>
                     </form>
                 </div>
-                
             </div>
         </div>
     </div>
+@endforeach 
+{{-- AKHIR AREA MODAL --}}
 
-@endforeach
 @endsection

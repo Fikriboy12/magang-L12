@@ -127,7 +127,7 @@
     slices: 15,
     boxCols: 12,
     boxRows: 8,
-    animSpeed: 500,
+    animSpeed:0,
     pauseTime: 5000,
     startSlide: 0,
     directionNav: true,

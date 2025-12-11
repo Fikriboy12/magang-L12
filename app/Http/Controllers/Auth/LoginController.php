@@ -30,7 +30,7 @@ class LoginController extends Controller
     }
 
     // =======================
-    // 🔐 PROSES LOGIN (DIPERBAIKI)
+    // 🔐 PROSES LOGIN (DIPERBAIKI UNTUK BLOKIR ADMIN)
     // =======================
     public function action_login(Request $request)
     {
@@ -41,7 +41,6 @@ class LoginController extends Controller
         ]);
 
         // 2. CEK EMAIL DULU (Manual)
-        // Kita cari apakah ada user dengan email ini
         $cekUser = User::where('email', $request->email)->first();
 
         if (!$cekUser) {
@@ -50,7 +49,6 @@ class LoginController extends Controller
         }
 
         // 3. CEK PASSWORD (Auth Attempt)
-        // Jika kode sampai sini, berarti Email BENAR. Sekarang cek Password.
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
@@ -58,34 +56,34 @@ class LoginController extends Controller
             $request->session()->regenerate();
             $user = Auth::user();
             
+            // ========================================================
+            // LOGIKA BARU: BLOKIR ADMIN DI FORM LOGIN BIASA
+            // ========================================================
+            if ($user->role === 'admin') {
+                // Logout admin dan kirim notif ke form login biasa
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                // Notifikasi Spesifik yang Anda minta
+                return redirect()->route('login')->with('error', 'Akses ditolak!');
+            }
+            // ========================================================
+            
             // Pesan Sukses
             $pesan = 'Berhasil Login! Selamat datang ' . $user->name;
 
-            // =================================
             // 🔄 REDIRECT BERDASARKAN ROLE
-            // =================================
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard')
-                    ->with('success', $pesan);
-            }
-
-            if ($user->role === 'pelamar') {
-                return redirect()->route('home.auth')
-                    ->with('success', $pesan);
-            }
-
-            // --- Logic Pembimbing ---
             if ($user->role === 'pembimbing') {
                 return redirect()->route('pembimbing.dashboard')
                     ->with('success', $pesan);
             }
-            // -------------------------------------------
 
+            // Jika Pelamar atau role lain yang diperbolehkan
             return redirect()->route('home.auth')->with('success', $pesan);
         }
 
         // 4. JIKA PASSWORD SALAH
-        // Karena Email sudah dicek di tahap 2 dan ada, berarti Passwordnya yang salah
         return back()->with('error', 'Kata sandi yang Anda masukkan salah.');
     }
 
@@ -126,7 +124,7 @@ class LoginController extends Controller
     }
 
     // =======================
-    // 📝 INSERT LENGKAPI PROFILE
+    // 📝 INSERT LENGKAPI PROFILE (BAGIAN YANG TERJADI ERROR)
     // =======================
     public function insert_lengkapi_profile(Request $request)
     {
@@ -140,8 +138,8 @@ class LoginController extends Controller
 
         $user->update([
             'name' => $request->nama_lengkap,
-            'tanggal_lahir' => $request->tgl_lahir,  
-            'alamat_lengkap' => $request->alamat     
+            'tanggal_lahir' => $request->tgl_lahir,
+            'alamat_lengkap' => $request->alamat // FIXED: Menghapus spasi invalid di sini
         ]);
 
         return redirect()->route('profile.view')

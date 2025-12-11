@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
-use App\Mail\SendMail;
+// use App\Mail\SendMail; // Dihapus karena tidak digunakan di method ini
 
 class DataSertifikatController extends Controller
 {
@@ -22,19 +22,22 @@ class DataSertifikatController extends Controller
     
     public function index()
     {
+        // Menggunakan Query Builder untuk JOIN data
         $data_sertifikat = Sertifikat::leftJoin('users', 'sertifikat.created_by', '=', 'users.id')
-                            // PERBAIKAN UTAMA DI SINI:
-                            // Ganti 'pendaftaran.id_user' menjadi 'pendaftaran.id_users' (PAKAI S)
+                            // JOIN ke pendaftaran tetap diperlukan untuk data Universitas/Jurusan
                             ->leftJoin('pendaftaran', 'users.id', '=', 'pendaftaran.id_users')
                             ->select(
                                 'sertifikat.*', 
                                 'users.name as nama_mahasiswa', 
                                 'users.email',
                                 'users.no_telp',
-                                // Data Akademik
+                                // ===========================================
+                                // PERBAIKAN FINAL: Mengambil NIM dari tabel USERS
+                                'users.nim', 
+                                // ===========================================
                                 'pendaftaran.universitas',
                                 'pendaftaran.jurusan',
-                                'pendaftaran.prodi as program_studi', // Fix sebelumnya (prodi)
+                                'pendaftaran.prodi as program_studi',
                                 'pendaftaran.dari_tanggal',
                                 'pendaftaran.sampai_tanggal'
                             )

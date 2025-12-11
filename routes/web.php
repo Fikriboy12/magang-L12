@@ -18,11 +18,12 @@ use App\Http\Controllers\Admin\DataPelamarController;
 use App\Http\Controllers\Admin\DataPendaftaranController;
 use App\Http\Controllers\Admin\DataDiterimaController;
 use App\Http\Controllers\Admin\DataTidakDiterimaController;
-
-// --- Controller Baru untuk Data Pembimbing (Admin) ---
 use App\Http\Controllers\Admin\DataPembimbingController;
 
-// --- Controller Baru dari Langkah 3 ---
+// --- Controller Login Admin Baru ---
+use App\Http\Controllers\Auth\AdminLoginController; // Baris WAJIB DITAMBAHKAN
+
+// --- Controller Pembimbing/Mahasiswa ---
 use App\Http\Controllers\Pembimbing\DashboardController as PembimbingDashboardController;
 use App\Http\Controllers\Mahasiswa\LaporanHarianController as MahasiswaLaporanHarianController;
 
@@ -34,24 +35,37 @@ use App\Http\Controllers\Mahasiswa\LaporanHarianController as MahasiswaLaporanHa
 */
 
 // ==========================================
-// 🌍 AREA PUBLIC (BISA DIAKSES TANPA LOGIN)
+// 🔐 AREA AUTENTIKASI DAN REGISTRASI
+// ==========================================
+
+// 1. LOGIN ADMIN (URL TERSEMBUNYI)
+Route::prefix('admin')->group(function () {
+    // URL login admin: /admin/login
+    Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('/login', [AdminLoginController::class, 'login'])->name('admin.login.action');
+});
+
+// 2. LOGIN USER BIASA (URL STANDAR)
+// PERBAIKAN: Mengganti showLoginForm dengan method 'login' yang ada di LoginController Anda
+Route::get('/login', [LoginController::class, 'login'])->name('login'); 
+Route::post('/action-login', [LoginController::class, 'action_login'])->name('login.action');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+
+// 3. REGISTRASI
+Route::get('/registrasi', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/insert-register', [RegisterController::class, 'register'])->name('register.store');
+
+// ==========================================
+// 🌍 AREA PUBLIC (LANJUTAN)
 // ==========================================
 
 // 🏠 HALAMAN UTAMA (PUBLIC)
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// 📖 DETAIL INFORMASI (PINDAH KESINI AGAR PUBLIC)
-// Menggunakan HomeController sesuai perbaikan controller sebelumnya
+// 📖 DETAIL INFORMASI 
 Route::get('/detail-informasi/{id}', [HomeController::class, 'detail_informasi'])->name('pelamar.informasi.detail');
 
-// 🔐 LOGIN, LOGOUT & REGISTER (PUBLIC)
-Route::get('/login', [LoginController::class, 'login'])->name('login');
-Route::post('/action-login', [LoginController::class, 'action_login'])->name('login.action');
-
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-Route::get('/registrasi', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/insert-register', [RegisterController::class, 'register'])->name('register.store');
 
 // ----------------------------------------------------
 // HALAMAN SETELAH LOGIN
@@ -76,8 +90,6 @@ Route::middleware(['auth', 'pelamar'])->group(function () {
     Route::get('/detail-lamaran/{id}', [DataLamaranController::class, 'detail'])->name('pelamar.lamaran.detail');
     Route::get('/cetak-lamaran/{id}', [DataLamaranController::class, 'cetak'])->name('pelamar.lamaran.cetak');
     
-    // ❌ Baris detail-informasi SAYA HAPUS DARI SINI (Sudah dipindah ke atas)
-
     // SERTIFIKAT PELAMAR
     Route::post('/insert-sertifikat', [SertifikatController::class, 'insert'])->name('sertifikat.insert');
     Route::post('/update-sertifikat', [SertifikatController::class, 'update'])->name('sertifikat.update');
@@ -85,17 +97,9 @@ Route::middleware(['auth', 'pelamar'])->group(function () {
     Route::get('/cetak-sertifikat/{id}', [SertifikatController::class, 'cetak'])->name('sertifikat.cetak');
 
 
-    // ===================================================================
-    // == TAMBAHAN BARU: Rute Laporan Harian Mahasiswa ==
-    // ===================================================================
-    
-    // Halaman Daftar Laporan Harian (yang pernah di-submit)
+    // == Rute Laporan Harian Mahasiswa ==
     Route::get('/laporan-harian', [MahasiswaLaporanHarianController::class, 'index'])->name('mahasiswa.laporan.index');
-    
-    // Halaman Form Tambah Laporan Harian
     Route::get('/laporan-harian/tambah', [MahasiswaLaporanHarianController::class, 'create'])->name('mahasiswa.laporan.create');
-    
-    // URL untuk MENYIMPAN laporan harian baru (via method POST)
     Route::post('/laporan-harian', [MahasiswaLaporanHarianController::class, 'store'])->name('mahasiswa.laporan.store');
 
 });
@@ -137,8 +141,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // SERTIFIKAT (ADMIN)
     Route::get('/data-sertifikat', [DataSertifikatController::class, 'index'])->name('admin.sertifikat.index');
     Route::post('/approve-sertifikat', [DataSertifikatController::class, 'approve'])->name('admin.sertifikat.approve');
-    
-    // PERBAIKAN DI SINI: MENGGUNAKAN 'DELETE' UNTUK HAPUS SERTIFIKAT
     Route::delete('admin/delete-sertifikat/{id}', [DataSertifikatController::class, 'delete'])->name('admin.sertifikat.delete');
     
     // ALUR
@@ -154,10 +156,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/update-diterima', [DataPendaftaranController::class, 'diterima'])->name('admin.pendaftaran.diterima');
     Route::post('/update-tidak-diterima', [DataPendaftaranController::class, 'tidak_diterima'])->name('admin.pendaftaran.tidak_diterima');
 
-    // --- DATA DITERIMA (MODIFIKASI DI SINI) ---
+    // --- DATA DITERIMA ---
     Route::get('/data-diterima', [DataDiterimaController::class, 'index'])->name('admin.diterima.index');
     Route::get('/detail-diterima/{id}', [DataDiterimaController::class, 'detail'])->name('admin.diterima.detail');
-    // TAMBAHAN: Route khusus untuk update pembimbing di halaman data diterima
     Route::put('/update-pembimbing-mahasiswa/{id}', [DataDiterimaController::class, 'aturPembimbing'])->name('admin.diterima.atur_pembimbing');
 
     Route::get('/data-tidak-diterima', [DataTidakDiterimaController::class, 'index'])->name('admin.tidak_diterima.index');
@@ -174,7 +175,7 @@ Route::middleware(['auth', 'pembimbing'])->prefix('pembimbing')->name('pembimbin
     // Halaman untuk melihat detail laporan satu mahasiswa
     Route::get('/laporan/mahasiswa/{mahasiswa_id}', [PembimbingDashboardController::class, 'lihatLaporan'])->name('laporan.mahasiswa');
 
-    // [BARU] Route untuk Acc Laporan (Sesuai Permintaan)
+    // [BARU] Route untuk Acc Laporan
     Route::post('/laporan/approve/{id}', [PembimbingDashboardController::class, 'approveLaporan'])->name('laporan.approve');
     
     // [BARU] Route untuk Tolak Laporan (Opsional)

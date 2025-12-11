@@ -1,71 +1,82 @@
 <header id="header" class="fixed-top">
-    {{-- PERBAIKAN UTAMA: Menggunakan 'container-fluid' + 'px-5' agar navbar lebih lebar & muat --}}
+    {{-- Container fluid + px-5 agar navbar lebar dan rapi --}}
     <div class="container-fluid d-flex align-items-center px-5">
 
+        {{-- LOGO (DIKEMBALIKAN KE E-MAGANG) --}}
         <div class="logo mr-auto">
-            {{-- Pastikan text-decoration none agar link tidak bergaris bawah --}}
-            <h1 class="text-light"><a href="{{ url('/')}}" style="text-decoration: none;"><span>E</span>-Magang</a></h1>
+            <a href="{{ url('/')}}" style="text-decoration: none; display: flex; align-items: center;">
+                <div style="width: 40px; height: 40px; background: #2563eb; color: white; font-size: 24px; font-weight: 800; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-right: 10px;">
+                    E
+                </div>
+                <span style="font-size: 22px; font-weight: 800; color: #0f172a; text-transform: uppercase;">
+                    MAGANG
+                </span>
+            </a>
         </div>
 
+        {{-- MENU NAVIGASI --}}
         <nav class="nav-menu d-none d-lg-block">
             <ul>
-                {{-- Menu Standar --}}
-                <li class="{{ request()->is('/') ? 'active' : '' }}"><a href="{{ url('/') }}">Home</a></li>
-                <li><a href="{{ url('/#services') }}">Instruction</a></li>
-                <li><a href="{{ url('/#blog') }}">Information</a></li>
-                <li><a href="{{ url('/#contact') }}">Contact</a></li>
-                <li><a href="{{ url('/#portfolio') }}">Gallery</a></li>
+                <li class="{{ request()->is('/') ? 'active' : '' }}">
+                    <a class="page-scroll" href="{{ request()->is('/') ? '#home' : url('/#home') }}">Beranda</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href="{{ request()->is('/') ? '#about' : url('/#about') }}">Tentang</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href="{{ request()->is('/') ? '#services' : url('/#services') }}">Alur Proses</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href="{{ request()->is('/') ? '#portfolio' : url('/#portfolio') }}">Galeri</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href="{{ request()->is('/') ? '#blog' : url('/#blog') }}">Berita</a>
+                </li>
                 
-                {{-- LOGIKA BARU UNTUK PENDAFTARAN --}}
+                {{-- LOGIKA: Cek Status Pendaftaran --}}
                 @php
-                    $showPendaftaran = true; // Default tampil (untuk guest/belum login)
-
+                    $showPendaftaran = true; 
                     if(Auth::check()){
-                        // Cek status di database jika user sudah login
-                        // Sesuaikan 'App\Models\Pendaftaran' dengan nama Model Anda
-                        $dataPendaftaran = \App\Models\Pendaftaran::where('user_id', Auth::id())->first();
-                        
-                        // Jika ada data DAN statusnya 'Diterima', maka sembunyikan pendaftaran
-                        if($dataPendaftaran && $dataPendaftaran->status == 'Diterima'){
+                        $dataPendaftaran = \App\Models\Pendaftaran::where('id_users', Auth::id())->first();
+                        if($dataPendaftaran && strtolower($dataPendaftaran->status_pendaftaran) == 'diterima'){
                             $showPendaftaran = false;
                         }
                     }
                 @endphp
 
-                {{-- TAMPILKAN MENU PENDAFTARAN SESUAI KONDISI DI ATAS --}}
                 @if($showPendaftaran)
-                    <li class="{{ request()->is('pendaftaran') ? 'active' : '' }}">
-                        <a href="{{ url('pendaftaran')}}">Pendaftaran</a>
+                    <li class="{{ request()->is('registrasi') ? 'active' : '' }}">
+                        <a href="{{ url('registrasi') }}">REGISTRASI</a>
                     </li>
                 @endif
-
-                {{-- Menu Lamaran (Selalu muncul atau sesuaikan kebutuhan) --}}
-                <li class="{{ request()->is('data-lamaran') ? 'active' : '' }}"><a href="{{ url('data-lamaran')}}">Lamaran</a></li>
-
-
-                {{-- Menu Khusus Pelamar Diterima (Laporan) --}}
+                
+                {{-- Hanya tampilkan menu Lamaran/Laporan jika sudah login --}}
                 @auth
-                    {{-- Kita pakai pengecekan $showPendaftaran == false artinya dia sudah Diterima --}}
+                    @if(Auth::user()->role == 'pelamar')
+                     <li class="{{ request()->is('pelamar/lamaran*') ? 'active' : '' }}"> 
+                        <a href="{{ route('pelamar.lamaran.index') }}">Lamaran</a>
+                     </li>
+                    @endif
+                
                     @if(!$showPendaftaran || (Auth::user()->role == 'pelamar' && Auth::user()->status == 'diterima')) 
                         <li class="{{ request()->routeIs('mahasiswa.laporan*') ? 'active' : '' }}">
                             <a href="{{ route('mahasiswa.laporan.index') }}">Laporan Harian</a>
                         </li>
                     @endif
                 @endauth
-
-                {{-- Bagian Login / User Dropdown --}}
+                
                 @guest
-                    <li><a href="{{ url('login') }}">Login</a></li>
+                    <li><a href="{{ url('login') }}">Masuk</a></li>
                 @else
                     <li class="drop-down">
                         <a href="#">{{ Auth::user()->name }}</a>
                         <ul>
-                            <li><a href="{{ url('profile') }}">Profile</a></li>
+                            <li><a href="{{ route('profile.view') }}">Profile</a></li>
                             <li>
-                                <a href="{{ url('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    Logout
+                                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    Keluar
                                 </a>
-                                <form id="logout-form" action="{{ url('logout') }}" method="POST" style="display: none;">
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                     @csrf
                                 </form>
                             </li>
@@ -74,6 +85,11 @@
                 @endguest
             </ul>
         </nav>
+        
+        {{-- TOMBOL HUBUNGI KAMI UNTUK GUEST --}}
+        @guest
+             <a href="{{ request()->is('/') ? '#contact' : url('/#contact') }}" class="header-right-btn page-scroll" style="background: #0f172a; color: white; padding: 8px 20px; border-radius: 50px; font-size: 13px; font-weight: 700; text-decoration: none; margin-left: 15px;">Hubungi Kami</a>
+        @endguest
 
     </div>
 </header>
