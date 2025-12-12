@@ -37,9 +37,9 @@
 
         img { max-width: 100%; height: auto; }
 
-        /* --- NAVBAR --- */
+        /* --- NAVBAR (DIPERBAIKI: SELALU PUTIH) --- */
         #header {
-            background: #ffffff;
+            background: #ffffff !important; /* <--- UBAH JADI PUTIH */
             height: 80px;
             transition: all 0.5s;
             z-index: 997;
@@ -49,29 +49,27 @@
             top: 0; width: 100%;
             display: flex; align-items: center;
         }
-        /* Gaya untuk Logo STRONET.ID (Header & Footer) */
         .logo-container-custom { display: flex; align-items: center; text-decoration: none !important; }
         .logo-box-custom {
-            width: 40px; height: 40px; background: #2563eb; color: #ffffff; /* Kotak Biru Huruf Putih */
+            width: 40px; height: 40px; background: #2563eb; color: #ffffff;
             font-size: 24px; font-weight: 800; display: flex; align-items: center; justify-content: center;
             border-radius: 8px; margin-right: 10px;
         }
-        /* Logo text di header */
-        #header .logo-text-custom { font-size: 22px; font-weight: 800; color: #0f172a; text-transform: uppercase; }
-        /* Logo text di footer */
+        /* Logo Text: Harus gelap karena background putih */
+        #header .logo-text-custom { font-size: 22px; font-weight: 800; color: #0f172a !important; text-transform: uppercase; }
         #footer .logo-text-custom { font-size: 22px; font-weight: 800; color: #ffffff; text-transform: uppercase; }
-
 
         /* MENU DESKTOP */
         .nav-menu { margin-left: 40px; }
         .nav-menu ul { margin: 0; padding: 0; list-style: none; display: flex; }
         .nav-menu li { margin: 0 5px; }
         .nav-menu a {
-            color: #64748b; font-size: 14px; font-weight: 600;
+            color: #64748b !important; /* <--- UBAH JADI GELAP AGAR TERBACA */
+            font-size: 14px; font-weight: 600;
             text-decoration: none; display: flex; align-items: center; gap: 5px;
             cursor: pointer;
         }
-        .nav-menu a:hover, .nav-menu .active > a { color: #2563eb; }
+        .nav-menu a:hover, .nav-menu .active > a { color: #2563eb !important; }
 
         /* TOMBOL & USER */
         .header-right-btn {
@@ -81,7 +79,6 @@
             transition: 0.3s;
         }
         .header-right-btn:hover { background: #2563eb; transform: translateY(-2px); }
-
         .user-dropdown { position: relative; display: inline-block; }
         .user-toggle {
             display: flex; align-items: center; gap: 8px; padding: 5px 12px;
@@ -118,12 +115,9 @@
         }
         .footer-row { display: flex; flex-wrap: wrap; align-items: flex-start; }
         .footer-col { padding-bottom: 40px; }
-        
-        /* Container Logo Footer */
         .footer-logo-text { 
             display: flex; align-items: center; margin-bottom: 20px; 
         }
-        
         .footer-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #bfdbfe; margin-bottom: 25px; display: block; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; width: fit-content; }
         .footer-desc { font-size: 14px; color: #f1f5f9; line-height: 1.7; margin-bottom: 20px; text-align: justify; }
         .btn-admin-footer { display: inline-flex; align-items: center; gap: 8px; background: #ffffff; color: #2563eb; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; text-decoration: none; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -135,6 +129,32 @@
         .footer-links i { color: #2563eb; font-size: 14px; margin-top: 3px; background: #ffffff; padding: 6px; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
         .footer-bottom { background: rgba(0, 0, 0, 0.2); padding: 20px 0; margin-top: 20px; text-align: center; font-size: 13px; color: #e2e8f0; width: 100%; }
         .footer-bottom strong { color: #ffffff; }
+        
+        /* ================================================================= */
+        /* 🛠️ FIX DESKTOP TAMPILAN 100% (Solusi Aman: Margin Strategy) 🛠️ */
+        /* ================================================================= */
+        @media (min-width: 992px) {
+            
+            .slider-glass-card {
+                /* SUDAH DIUBAH DARI 150px MENJADI 80px AGAR POSISI LEBIH NAIK */
+                margin-top: 80px !important; 
+
+                /* Membatasi lebar agar tidak nge-zoom */
+                max-width: 550px !important; 
+                width: 100% !important;
+
+                /* Menengahkan kotak secara horizontal */
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+            
+            /* Mengecilkan font judul di desktop agar rapi */
+            .title2-hero {
+                font-size: 40px !important; 
+                line-height: 1.2 !important;
+            }
+        }
+
 
         /* ======================================= */
         /* 📱 FIX TAMPILAN HP (MOBILE) 📱          */
@@ -144,7 +164,7 @@
             .nav-menu { display: none; }
             .header-right-btn { display: none; } 
             
-            /* 1. TOMBOL BURGER MENU */
+            /* 1. TOMBOL BURGER MENU (UBAH JADI BIRU KARENA BG PUTIH) */
             .mobile-nav-toggle {
                 display: block !important;
                 color: #2563eb !important; 
@@ -167,9 +187,10 @@
             .logo-text-custom { font-size: 18px !important; }
             .logo-box-custom { width: 32px; height: 32px; font-size: 16px; }
 
-            /* 3. FIX GAMBAR NGEZOOM */
+            /* 3. FIX GAMBAR NGEZOOM DAN POSISI MOBILE */
             .slider-area, #home {
-                height: auto !important; min-height: 600px !important; padding-top: 70px;
+                height: auto !important; min-height: 600px !important; 
+                padding-top: 70px; /* Jarak dari header mobile */
             }
             .nivoSlider { position: relative; height: 600px !important; }
             .nivoSlider img {
@@ -201,7 +222,6 @@
             img:not(.nivo-main-image) { max-width: 100% !important; height: auto !important; display: inline-block !important; margin: 0 auto !important; }
         }
     </style>
-
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 </head>
 
@@ -222,7 +242,6 @@
 
             <nav class="nav-menu d-none d-lg-block">
                 <ul>
-                    
                     <li class="active"><a class="page-scroll" href="<?php echo e(url('/')); ?>/#home"><i class="fa-solid fa-house"></i> Beranda</a></li>
                     <li><a class="page-scroll" href="<?php echo e(url('/')); ?>/#about"><i class="fa-solid fa-circle-info"></i> Tentang</a></li>
                     <li><a class="page-scroll" href="<?php echo e(url('/')); ?>/#services"><i class="fa-solid fa-list-check"></i> Alur Proses</a></li>
@@ -235,20 +254,17 @@
                             if($cek && (strtolower($cek->status_pendaftaran) == 'diterima')) { $bolehDaftar = false; }
                         ?>
                         <?php if($bolehDaftar): ?> 
-                            
                             <li>
                                 <a href="<?php echo e(route('pendaftaran.index')); ?>">
                                     <i class="fa-solid fa-file-signature"></i> Pendaftaran
                                 </a>
                             </li> 
                         <?php endif; ?>
-                        
                         <li>
                             <a href="<?php echo e(route('pelamar.lamaran.index')); ?>">
                                 <i class="fa-solid fa-briefcase"></i> Lamaran
                             </a>
                         </li>
-                        
                         <li>
                             <a href="<?php echo e(route('mahasiswa.laporan.index')); ?>">
                                 <i class="fa-solid fa-file-lines"></i> Laporan
@@ -335,6 +351,7 @@
             <div class="container">
                 &copy; 2025 <strong>ASTRONET.ID</strong>. All Rights Reserved.
             </div>
+            
         </div>
     </footer>
     
