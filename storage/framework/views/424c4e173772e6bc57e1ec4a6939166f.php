@@ -34,50 +34,60 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <table id="table" class="table table-striped table-hover" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Judul</th>
-                            <th>Deskripsi</th>
-                            <th>Tanggal Informasi</th>
-                            <th>Gambar</th>
-                            <th class ="text-center" width = "15%">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <?php $no = 1;
-                          foreach ($data['data_informasi'] as $value) {?>
-                          <tr>
-                            <td><?= $no++ ?></td>
-                            <td><?= $value->judul?></td>
+                <!-- TAMBAHAN: Wrapper Responsive Table -->
+                <div class="table-responsive">
+                    <table id="table" class="table table-striped table-hover" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th width="5%">No</th>
+                                <th>Judul</th>
+                                <th>Deskripsi</th>
+                                <th>Tanggal Informasi</th>
+                                <th width="15%">Gambar</th>
+                                <th class="text-center" width="15%">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $no = 1;
+                              foreach ($data['data_informasi'] as $value) {?>
+                              <tr>
+                                <td><?= $no++ ?></td>
+                                <td><?= $value->judul?></td>
+                                
+                                
+                                <td> <?=(str_word_count("$value->deskripsi") > 10 ? substr("$value->deskripsi",0,140)." ...." : "$value->deskripsi")?></td>
+                                
+                                <td><?= $value->tgl_informasi?></td>
+                                
+                                <td class="text-center">
+                                    <!-- Gambar Responsif -->
+                                    <img src="<?= asset('')?>assets_admin/img/informasi/<?= $value->gambar_informasi?>" alt="" class="img-fluid" style="max-width: 100px;">
+                                </td>
                             
+                                <td class="text-center"> 
+                                    <!-- Tombol Aksi Responsif -->
+                                    <div style="display: flex; gap: 5px; justify-content: center; flex-wrap: wrap;">
+                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updatedata<?= $value->id_informasi ?>">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <a href="<?= url('delete-informasi/' . $value->id_informasi) ?>" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
+                                    </div>
+                                </td>
                             
-                            <td> <?=(str_word_count("$value->deskripsi") > 10 ? substr("$value->deskripsi",0,140)." ...." : "$value->deskripsi")?></td>
-                            
-                            
-                            <td><?= $value->tgl_informasi?></td>
-                            
-                            <td width = "10%" class ="text-center"><img src="<?= asset('')?>assets_admin/img/informasi/<?= $value->gambar_informasi?>" alt="" width ="90%"></td>
-                        
-                            <td class ="text-center"> 
-                            <button type="button" class="btn btn-primary btn-sm " data-toggle="modal" data-target="#updatedata<?= $value->id_informasi ?>">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <a href="<?= url('delete-informasi/' . $value->id_informasi) ?>" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
-                            </td>
-                        
-                          </tr>
-                        <?php } ?>
-                      </tbody>
-                </table>
+                              </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div> <!-- End table-responsive -->
 
             </div>
         </div>
     </div>
 </section>
+
+<!-- Modal Tambah Data -->
 <div class="modal fade" id="myModal">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered"> <!-- Modal Centered -->
         <div class="modal-content">
 
             <div class="modal-header">
@@ -88,7 +98,7 @@
                 <div class="modal-body">
                     <?php echo csrf_field(); ?>
                     <div class="form-group">
-                        <label for="">judul</label>
+                        <label for="">Judul</label>
                         <input type="text" name="judul" id="" class="form-control" required>
                       </div>
                       <div class="form-group">
@@ -101,7 +111,8 @@
                       </div>
                       <div class="form-group">
                         <label for="">Deskripsi</label>
-                        <textarea name="deskripsi" id="summernote" cols="30" rows="10" class = "form-control" required></textarea>
+                        <!-- ID Summernote dihapus sementara jika tidak dipakai, ganti rows="5" -->
+                        <textarea name="deskripsi" id="summernote" cols="30" rows="5" class="form-control" required></textarea>
                       </div>
                       <div class="form-group">
                         <label for="">Gambar</label>
@@ -118,11 +129,10 @@
     </div>
 </div>
 
+<!-- Modal Update Data -->
 <?php $__currentLoopData = $data['data_informasi']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-
-
 <div class="modal fade" id="updatedata<?php echo e($value->id_informasi); ?>">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered"> <!-- Modal Centered -->
         <div class="modal-content">
 
             <div class="modal-header">
@@ -132,25 +142,28 @@
             <form action="<?php echo e(url('update-informasi')); ?>" method="post" enctype="multipart/form-data">
                 <div class="modal-body">
                     <?php echo csrf_field(); ?>
-                    <input type="hidden" name="id_informasi" id="" class="form-control" value = "<?= $value->id_informasi ?>">
+                    <input type="hidden" name="id_informasi" id="" class="form-control" value="<?= $value->id_informasi ?>">
                     <div class="form-group">
-                        <label for="">judul</label>
-                        <input type="text" name="judul" id="" class="form-control" required value = "<?= $value->judul?>">
+                        <label for="">Judul</label>
+                        <input type="text" name="judul" id="" class="form-control" required value="<?= $value->judul?>">
                     </div>
                     <div class="form-group">
                         <label for="">Deskripsi</label>
-                        <textarea name="deskripsi" id="" cols="30" rows="10" class = "form-control" required value = "<?= $value->deskripsi?>"><?= $value->deskripsi?></textarea>
+                        <textarea name="deskripsi" id="" cols="30" rows="5" class="form-control" required value="<?= $value->deskripsi?>"><?= $value->deskripsi?></textarea>
                     </div>
                     <div class="form-group">
                         <label for="">Penulis</label>
-                        <input type="text" name="penulis" id="" class="form-control" required value = "<?= $value->penulis?>">
+                        <input type="text" name="penulis" id="" class="form-control" required value="<?= $value->penulis?>">
                     </div>
                     <div class="form-group">
                         <label for="">Tanggal Informasi</label>
-                        <input type="date" name="tgl_informasi" id="" class="form-control" required value = "<?= $value->tgl_informasi?>">
+                        <input type="date" name="tgl_informasi" id="" class="form-control" required value="<?= $value->tgl_informasi?>">
                     </div>
                     <div class="form-group">
-                      <label for="">Gambar</label>
+                      <label for="">Gambar (Biarkan kosong jika tidak diganti)</label>
+                      <br>
+                      <!-- Preview Gambar Responsif -->
+                      <img src="<?= asset('')?>assets_admin/img/informasi/<?= $value->gambar_informasi?>" alt="" class="img-fluid mb-2" style="max-width: 150px;">
                       <input type="file" name="gambar" id="" class="form-control">
                     </div>
                 </div>

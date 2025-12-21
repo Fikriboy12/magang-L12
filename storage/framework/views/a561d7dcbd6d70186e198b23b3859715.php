@@ -18,41 +18,43 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        padding: 20px; 
+        box-sizing: border-box;
     }
 
-    /* Card Login */
+    /* Card Login diperkecil lagi */
     .login-card {
         background: #fff;
         border-radius: 12px;
-        padding: 30px 20px; /* Padding dikurangi sedikit biar tidak terlalu gemuk */
+        padding: 25px 20px;
         
-        /* PERBAIKAN UTAMA AGAR PAS DI HP */
-        width: 90%;          /* Agar ada jarak kiri-kanan di HP (tidak full layar) */
-        max-width: 340px;    /* Lebar maksimal dikecilkan sedikit (dari 360 ke 340) */
+        /* --- PERUBAHAN: Lebar maksimal diperkecil menjadi 300px agar lebih mungil --- */
+        width: 100%;        
+        max-width: 300px;   
         
         box-shadow: 0 15px 30px rgba(0,0,0,0.3);
         text-align: center;
     }
 
-    /* Logo */
+    /* Logo juga disesuaikan ukurannya */
     .login-card img {
-        width: 100px; /* Diperkecil dari 180px jadi 100px agar rapi */
+        width: 80px; /* Diperkecil sedikit agar proporsional dengan kotak baru */
         height: auto;
         margin-bottom: 15px;
     }
 
     .company-name {
-        font-size: 15px; /* Font diperkecil sedikit */
+        font-size: 13px; /* Font diperkecil sedikit */
         font-weight: 500;
         color: #1e3c72;
-        margin-bottom: 15px;
+        margin-bottom: 12px;
     }
 
     .login-card h2 {
-        margin-bottom: 20px;
+        margin-bottom: 18px;
         color: #1e3c72;
         font-weight: 700;
-        font-size: 22px;
+        font-size: 20px; /* Judul diperkecil sedikit */
     }
 
     /* Input */
@@ -68,16 +70,16 @@
         left: 12px;
         transform: translateY(-50%);
         color: #1e3c72;
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .input-group input {
         width: 100%;
-        padding: 10px 12px 10px 35px; /* Padding disesuaikan */
+        padding: 9px 12px 9px 35px;
         border-radius: 8px;
         border: 1px solid #ccc;
         outline: none;
-        font-size: 13px; /* Font input diperkecil agar pas */
+        font-size: 13px;
         box-sizing: border-box;
     }
 
@@ -96,8 +98,8 @@
         color: #fff;
         font-weight: bold;
         cursor: pointer;
-        margin-top: 15px;
-        font-size: 14px;
+        margin-top: 10px;
+        font-size: 13px;
         transition: 0.3s;
     }
 
@@ -109,24 +111,20 @@
     /* Links */
     .login-card .links {
         margin-top: 15px;
-        font-size: 13px;
+        font-size: 12px;
     }
     .login-card .links a {
         color: #1e3c72;
         text-decoration: none;
         font-weight: 500;
     }
-    .login-card .links a:hover {
-        color: #2a5298;
-        text-decoration: underline;
-    }
 
     /* Alert Style */
     .alert {
-        padding: 10px;
-        margin-bottom: 15px;
+        padding: 8px;
+        margin-bottom: 12px;
         border-radius: 6px;
-        font-size: 12px; /* Font alert diperkecil */
+        font-size: 11px;
         text-align: left;
     }
     .alert-danger {
@@ -139,10 +137,6 @@
         color: #155724;
         border: 1px solid #c3e6cb;
     }
-    .alert ul {
-        margin: 0;
-        padding-left: 20px;
-    }
 </style>
 </head>
 <body>
@@ -152,7 +146,6 @@
     <div class="company-name">PT.MEDIA BALAI NUSA astro net</div>
     <h2>Login</h2>
 
-    
     <?php if(session('success')): ?>
         <div class="alert alert-success">
             <i class="fas fa-check-circle"></i> <?php echo e(session('success')); ?>
@@ -160,7 +153,6 @@
         </div>
     <?php endif; ?>
 
-    
     <?php if(session('error')): ?>
         <div class="alert alert-danger">
             <i class="fas fa-exclamation-triangle"></i> <?php echo e(session('error')); ?>
@@ -168,7 +160,6 @@
         </div>
     <?php endif; ?>
 
-    
     <?php if($errors->any()): ?>
         <div class="alert alert-danger">
             <ul>
@@ -179,7 +170,6 @@
         </div>
     <?php endif; ?>
 
-    
     <form method="POST" action="<?php echo e(route('login.action')); ?>">
         <?php echo csrf_field(); ?>
         <div class="input-group">

@@ -13,12 +13,14 @@ class SendMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    /**
+     * Variabel publik agar bisa diakses di dalam view emailku.blade.php
+     */
     public $data;
 
     /**
      * Create a new message instance.
-     *
-     * @param array $data Data yang dikirim dari Controller
+     * Menerima array data dari DataPendaftaranController
      */
     public function __construct(array $data)
     {
@@ -26,25 +28,30 @@ class SendMail extends Mailable
     }
 
     /**
-     * Get the message envelope.
+     * Get the message envelope (Mengatur Subjek Email).
      */
     public function envelope(): Envelope
     {
-        // Menggunakan title dari controller sebagai subjek
         return new Envelope(
-            subject: $this->data['title'] ?? 'Pembaruan Status Pendaftaran Magang',
+            subject: $this->data['subject'] ?? 'Update Status Pendaftaran Magang',
         );
     }
 
     /**
-     * Get the message content definition.
+     * Get the message content definition (Mengatur File Tampilan Email).
      */
     public function content(): Content
     {
-        // View email harus ada di resources/views/emails/status.blade.php
         return new Content(
-            view: 'emails.status', 
-            with: ['data' => $this->data],
+            view: 'emailku', // Pastikan file ini ada di resources/views/emailku.blade.php
         );
+    }
+
+    /**
+     * Get the attachments for the message.
+     */
+    public function attachments(): array
+    {
+        return [];
     }
 }

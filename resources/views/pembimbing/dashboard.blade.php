@@ -160,7 +160,7 @@
                 <div class="admin-banner">
                     <h1 class="banner-title">Selamat Datang, pembimbing!</h1>
                     <p class="banner-subtitle">
-                        Sistem Informasi Magang - PT. Aditama Net Media Solusindo
+                        Sistem Informasi Magang - PT. MEDIA BALAI NUSA astro net
                     </p>
                 </div>
             </div>
