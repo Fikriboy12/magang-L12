@@ -28,7 +28,7 @@ class User extends Authenticatable
         'status',
         'alamat',
         
-        // FIELD BARU DARI PROFILE (Ini sudah benar)
+        // FIELD DARI PROFILE
         'nama_lengkap',
         'nim',
         'nik',
@@ -40,6 +40,15 @@ class User extends Authenticatable
 
         // TAMBAHKAN 'pembimbing_id' AGAR BISA DISIMPAN OLEH ADMIN
         'pembimbing_id',
+
+        // ==========================================
+        // == TAMBAHAN BARU: DATA WALI & BIOMETRIK ==
+        // ==========================================
+        'nama_wali',
+        'email_wali',
+        'no_hp_wali',
+        'face_descriptor',
+        'otp_code', // Wajib dimasukkan agar sistem bisa menyimpan OTP saat registrasi
     ];
 
     /**
@@ -63,7 +72,7 @@ class User extends Authenticatable
 
 
     // ===================================================================
-    // == TAMBAHAN BARU: RELASI DATABASE (Letakkan di sini) ==
+    // == RELASI DATABASE ==
     // ===================================================================
 
     /**

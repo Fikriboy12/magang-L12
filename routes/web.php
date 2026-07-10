@@ -19,13 +19,18 @@ use App\Http\Controllers\Admin\DataPendaftaranController;
 use App\Http\Controllers\Admin\DataDiterimaController;
 use App\Http\Controllers\Admin\DataTidakDiterimaController;
 use App\Http\Controllers\Admin\DataPembimbingController;
+use App\Http\Controllers\Admin\DataAbsensiController;
 
 // --- Controller Login Admin Baru ---
-use App\Http\Controllers\Auth\AdminLoginController; // Baris WAJIB DITAMBAHKAN
+use App\Http\Controllers\Auth\AdminLoginController;
 
 // --- Controller Pembimbing/Mahasiswa ---
 use App\Http\Controllers\Pembimbing\DashboardController as PembimbingDashboardController;
+use App\Http\Controllers\Pembimbing\AbsensiPembimbingController;
+
 use App\Http\Controllers\Mahasiswa\LaporanHarianController as MahasiswaLaporanHarianController;
+use App\Http\Controllers\Mahasiswa\AbsensiController as MahasiswaAbsensiController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -40,21 +45,27 @@ use App\Http\Controllers\Mahasiswa\LaporanHarianController as MahasiswaLaporanHa
 
 // 1. LOGIN ADMIN (URL TERSEMBUNYI)
 Route::prefix('admin')->group(function () {
-    // URL login admin: /admin/login
     Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
     Route::post('/login', [AdminLoginController::class, 'login'])->name('admin.login.action');
 });
 
 // 2. LOGIN USER BIASA (URL STANDAR)
-// PERBAIKAN: Mengganti showLoginForm dengan method 'login' yang ada di LoginController Anda
 Route::get('/login', [LoginController::class, 'login'])->name('login'); 
 Route::post('/action-login', [LoginController::class, 'action_login'])->name('login.action');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+// --- TAMBAHAN BARU: ROUTE LOGIN BIOMETRIK WAJAH ---
+Route::post('/login-biometrik', [LoginController::class, 'loginBiometric'])->name('login.biometric');
 
-// 3. REGISTRASI
+
+// 3. REGISTRASI & OTP
 Route::get('/registrasi', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/insert-register', [RegisterController::class, 'register'])->name('register.store');
+
+// [PENTING] Route untuk AJAX Kirim OTP (Tombol Orange)
+// Route ini wajib ada supaya tombol "Kirim OTP" di halaman register berfungsi
+Route::post('/send-otp-ajax', [RegisterController::class, 'sendOtpAjax'])->name('send.otp.ajax');
+
 
 // ==========================================
 // 🌍 AREA PUBLIC (LANJUTAN)
@@ -101,6 +112,16 @@ Route::middleware(['auth', 'pelamar'])->group(function () {
     Route::get('/laporan-harian', [MahasiswaLaporanHarianController::class, 'index'])->name('mahasiswa.laporan.index');
     Route::get('/laporan-harian/tambah', [MahasiswaLaporanHarianController::class, 'create'])->name('mahasiswa.laporan.create');
     Route::post('/laporan-harian', [MahasiswaLaporanHarianController::class, 'store'])->name('mahasiswa.laporan.store');
+    
+    // Route Download PDF Laporan (Mahasiswa)
+    Route::get('/laporan-harian/download-pdf', [MahasiswaLaporanHarianController::class, 'downloadPdf'])->name('mahasiswa.laporan.pdf');
+
+    // ==========================================
+    // RUTE ABSENSI MAHASISWA
+    // ==========================================
+    Route::get('/absensi', [MahasiswaAbsensiController::class, 'index'])->name('mahasiswa.absensi.index');
+    Route::post('/absensi/masuk', [MahasiswaAbsensiController::class, 'store'])->name('mahasiswa.absensi.store');
+    Route::put('/absensi/pulang/{id}', [MahasiswaAbsensiController::class, 'absenPulang'])->name('mahasiswa.absensi.pulang');
 
 });
 
@@ -163,6 +184,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/data-tidak-diterima', [DataTidakDiterimaController::class, 'index'])->name('admin.tidak_diterima.index');
     Route::get('/detail-tidak-diterima/{id}', [DataTidakDiterimaController::class, 'detail'])->name('admin.tidak_diterima.detail');
+
+    // ABSENSI (ADMIN)
+    Route::get('/data-absensi', [DataAbsensiController::class, 'index'])->name('admin.absensi.index');
+    Route::get('/data-absensi/detail/{id}', [DataAbsensiController::class, 'detail'])->name('admin.absensi.detail');
+
 });
 
 
@@ -175,10 +201,17 @@ Route::middleware(['auth', 'pembimbing'])->prefix('pembimbing')->name('pembimbin
     // Halaman untuk melihat detail laporan satu mahasiswa
     Route::get('/laporan/mahasiswa/{mahasiswa_id}', [PembimbingDashboardController::class, 'lihatLaporan'])->name('laporan.mahasiswa');
 
-    // [BARU] Route untuk Acc Laporan
+    // Route untuk Acc Laporan
     Route::post('/laporan/approve/{id}', [PembimbingDashboardController::class, 'approveLaporan'])->name('laporan.approve');
     
-    // [BARU] Route untuk Tolak Laporan (Opsional)
+    // Route untuk Tolak Laporan
     Route::post('/laporan/reject/{id}', [PembimbingDashboardController::class, 'rejectLaporan'])->name('laporan.reject');
+
+    // Download PDF Laporan Mahasiswa oleh Pembimbing
+    Route::get('/laporan/mahasiswa/{id}/pdf', [PembimbingDashboardController::class, 'downloadPdf'])->name('laporan.mahasiswa.pdf');
+
+    // MONITORING ABSENSI (KHUSUS PEMBIMBING)
+    Route::get('/monitoring-absensi', [AbsensiPembimbingController::class, 'index'])->name('absensi.index');
+    Route::get('/monitoring-absensi/detail/{id}', [AbsensiPembimbingController::class, 'detail'])->name('absensi.detail');
 
 });

@@ -53,11 +53,17 @@ class DataPendaftaranController extends Controller
             'tidak_diterima' => Pendaftaran::where('status_pendaftaran', 'tidak diterima')->count(),
         ];
 
+        // PERBAIKAN DI SINI: Menambahkan kembali kolom yang hilang
         $detail = Pendaftaran::select(
                 'pendaftaran.*', 
                 'users.email', 
                 'users.name as nama_lengkap', 
-                'users.nim'
+                'users.nim',
+                'users.tempat_lahir', // Ditambahkan kembali
+                'users.tanggal_lahir', // Ditambahkan kembali
+                'users.jenis_kelamin', // Ditambahkan kembali
+                'users.alamat_lengkap', // Ditambahkan kembali
+                'users.no_telp'        // Ditambahkan kembali
             )
             ->join('users', 'pendaftaran.id_users', '=', 'users.id')
             ->where('id_pendaftaran', $id_pendaftaran)
@@ -78,7 +84,6 @@ class DataPendaftaranController extends Controller
         $pendaftaran = Pendaftaran::where('id_pendaftaran', $id_pendaftaran)->first();
         $users = User::where('id', $pendaftaran->id_users)->first();
 
-        // 1. Update Status di Database
         Pendaftaran::where('id_pendaftaran', $id_pendaftaran)->update([
             'status_pendaftaran' => 'diterima',
             'keterangan' => $request->keterangan,
@@ -87,15 +92,12 @@ class DataPendaftaranController extends Controller
         $users->status = 'diterima';
         $users->save();
 
-        // 2. Siapkan Data Email
         $data_email = [
             'subject' => 'Selamat! Pendaftaran Magang Diterima',
             'status'  => 'terima', 
-            // PERBAIKAN: Arahkan langsung ke halaman login agar tidak 404
             'url'     => url('/login'), 
         ];
         
-        // 3. Kirim Email
         Mail::to($users->email)->send(new SendMail($data_email));
 
         return redirect('data-pendaftaran')->with('suc_message', 'Status diperbarui dan email penerimaan berhasil dikirim.');
@@ -106,21 +108,17 @@ class DataPendaftaranController extends Controller
         $pendaftaran = Pendaftaran::where('id_pendaftaran', $id_pendaftaran)->first();
         $users = User::where('id', $pendaftaran->id_users)->first();
 
-        // 1. Update Status di Database
         Pendaftaran::where('id_pendaftaran', $id_pendaftaran)->update([
             'status_pendaftaran' => 'tidak diterima',
             'keterangan' => $request->keterangan,
         ]);
 
-        // 2. Siapkan Data Email
         $data_email = [
             'subject' => 'Informasi Status Pendaftaran Magang',
             'status'  => 'tolak',
-            // PERBAIKAN: Arahkan langsung ke halaman login agar tidak 404
             'url'     => url('/login'),
         ];
 
-        // 3. Kirim Email
         Mail::to($users->email)->send(new SendMail($data_email));
 
         return redirect('data-pendaftaran')->with('suc_message', 'Status diperbarui dan email penolakan berhasil dikirim.');

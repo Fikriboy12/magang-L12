@@ -9,9 +9,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     
     <style>
-        /* Latar Belakang Biru Solid (KOREKSI WARNA) */
+        /* Latar Belakang Biru Gradasi Sesuai Logo */
         body { 
-            background-color: #3b5998; /* Warna biru solid yang paling mendekati */
+            background: linear-gradient(135deg, #4AC1E0 0%, #3CB9E0 100%);
             font-family: 'Plus Jakarta Sans', sans-serif;
             color: #4a5568;
             height: 100vh;
@@ -39,18 +39,21 @@
             padding: 1.5rem !important;
         }
         
-        /* Style Tombol */
+        /* Style Tombol Disesuaikan Logo */
         .btn-primary { 
-            background-color: #2563eb; 
-            border-color: #2563eb; 
+            background: linear-gradient(135deg, #4AC1E0 0%, #3CB9E0 100%); 
+            border: none;
+            color: white; 
             font-weight: bold;
             letter-spacing: 1px;
-            padding: 8px 0; 
-            transition: background-color 0.3s;
+            padding: 10px 0; 
+            transition: all 0.3s;
         }
         .btn-primary:hover {
-            background-color: #1d4ed8;
-            border-color: #1d4ed8;
+            background: linear-gradient(135deg, #3CB9E0 0%, #4AC1E0 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(60, 185, 224, 0.4);
+            color: white;
         }
         
         /* === INPUT FIELD (Icon Inside) === */
@@ -65,7 +68,7 @@
         .input-group-text {
             background-color: #ffffff;
             border: none;
-            color: #64748b;
+            color: #3CB9E0; /* Ikon juga disesuaikan biru logo */
             padding: 0.375rem 0.75rem;
             display: flex;
             align-items: center;
@@ -76,10 +79,14 @@
             box-shadow: none;
             height: 100%;
         }
+        .form-control:focus {
+            outline: none;
+            box-shadow: none;
+        }
         
         /* Style Judul dan Logo */
         .pt-title {
-            color: #2563eb; 
+            color: #3CB9E0; /* Teks disesuaikan biru logo */
             font-weight: bold;
             font-size: 0.9rem; 
             margin-bottom: 3px;
@@ -96,6 +103,10 @@
         }
         .text-secondary {
             color: #6c757d !important;
+        }
+        .text-secondary:hover {
+            color: #3CB9E0 !important;
+            text-decoration: none;
         }
     </style>
 </head>

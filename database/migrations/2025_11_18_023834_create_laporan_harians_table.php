@@ -11,20 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('laporan_harian', function (Blueprint $table) {
+        // PENTING: Nama tabel menggunakan akhiran 's' (laporan_harians)
+        // agar otomatis terbaca oleh Model Laravel tanpa setting tambahan.
+        Schema::create('laporan_harians', function (Blueprint $table) {
             $table->id();
-            
-            // Kolom untuk menyambungkan laporan ini ke mahasiswa (user)
-            $table->foreignId('user_id')
-                  ->constrained('users')      // Merujuk ke kolom 'id' di tabel 'users'
-                  ->onDelete('cascade');    // Jika user dihapus, laporannya ikut terhapus
 
-            $table->date('tanggal');        // Tanggal laporan
-            $table->text('kegiatan');       // Teks deskripsi kegiatan
-            $table->string('foto');         // Path/nama file foto
-            $table->text('catatan')->nullable(); // Catatan tambahan (boleh kosong)
-            
-            $table->timestamps(); // Kolom created_at dan updated_at
+            // Relasi ke tabel users
+            $table->foreignId('user_id')
+                  ->constrained('users')
+                  ->onDelete('cascade');
+
+            $table->date('tanggal');
+            $table->text('kegiatan');
+            $table->string('foto'); // Pastikan ini string untuk menyimpan path file
+            $table->text('catatan')->nullable();
+
+            // Kolom status langsung dibuat di sini agar tidak error
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+
+            $table->timestamps();
         });
     }
 
@@ -33,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('laporan_harian');
+        Schema::dropIfExists('laporan_harians');
     }
 };

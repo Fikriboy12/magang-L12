@@ -4,293 +4,394 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - PT. MEDIA BALAI NUSA</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="icon" href="{{ asset('gambar/AMS-logo.png') }}" type="image/png">
-    <link rel="shortcut icon" href="{{ asset('gambar/AMS-logo.png') }}" type="image/png">
     <link rel="stylesheet" href="{{ asset('assets_admin/modules/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets_admin/modules/fontawesome/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets_admin/modules/jquery-selectric/selectric.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets_admin/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets_admin/css/components.css') }}">
 
     <style>
-        /* BACKGROUND GRADIENT BIRU (Sesuai Logo) */
+        /* BACKGROUND GRADIENT BIRU CERAH DARI LOGO */
         body {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, #4AC1E0 0%, #3CB9E0 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            /* UBAH 1: Tambahkan padding kiri-kanan (15px) agar tidak mentok layar HP */
-            padding: 30px 15px; 
+            padding: 30px 15px;
             font-family: 'Nunito', sans-serif;
         }
 
         /* CARD REGISTER */
         .card-register {
             background: #ffffff;
-            border-radius: 20px; /* Lebih rounded */
+            border-radius: 15px; 
             padding: 40px;
-            max-width: 450px; /* <--- LEBAR CARD SESUAI */
+            max-width: 500px;
             width: 100%;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2); /* Shadow lebih dalam */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             border: none;
         }
 
-        /* UBAH 2: Media Query Khusus HP */
-        @media (max-width: 576px) {
-            .card-register {
-                /* Padding card dikecilkan sedikit di HP agar area input lebih lega */
-                padding: 30px 20px; 
-            }
-            
-            h4 {
-                font-size: 1.2rem; /* Ukuran font judul sedikit disesuaikan */
-            }
+        /* HEADER */
+        .register-header h4 {
+            color: #000000;
+            font-weight: 800;
+            letter-spacing: 0.5px;
         }
 
-        /* INPUT FIELDS */
+        /* FORM INPUT STANDAR */
         .form-group label {
-            font-weight: 700;
-            color: #5a5c69;
+            font-weight: 600;
+            color: #444;
             font-size: 0.9rem;
             margin-bottom: 8px;
         }
 
         .form-control {
-            border-radius: 10px;
-            border: 1px solid #e3e6f0;
+            border-radius: 8px;
+            border: 1px solid #d1d3e2;
             padding: 12px 15px;
-            height: 48px; /* Tinggi input konsisten */
+            height: 48px; 
             font-size: 0.95rem;
-            background-color: #fdfdfd;
             transition: all 0.3s ease;
         }
 
         .form-control:focus {
-            background-color: #fff;
-            border-color: #1e3c72; /* Warna Biru Logo */
-            box-shadow: 0 0 0 4px rgba(30, 60, 114, 0.1); /* Glow biru */
+            border-color: #3CB9E0;
+            box-shadow: 0 0 0 3px rgba(60, 185, 224, 0.1);
         }
 
-        /* TEXTAREA ALAMAT LENGKAP (CUSTOM BAGUS) */
-        textarea.form-control {
-            height: 120px !important; /* Lebih tinggi */
-            resize: none; /* Tidak bisa ditarik manual agar tetap rapi */
-            line-height: 1.5;
-        }
-
-        /* DROPDOWN */
-        select.form-control {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%231e3c72' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            background-size: 16px 12px;
-            padding-right: 40px;
-            cursor: pointer;
-        }
-
-        /* TOMBOL REGISTER */
-        .btn-register {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            border: none;
+        /* TOMBOL KIRIM OTP (BIRU CERAH LOGO) */
+        .btn-otp {
+            background-color: #3CB9E0; 
             color: white;
-            font-weight: 800;
-            font-size: 1rem;
-            padding: 14px;
-            border-radius: 50px;
-            width: 100%;
-            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.3);
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 20px;
+            font-weight: 600;
+            border: 1px solid #3CB9E0;
+            border-radius: 0 8px 8px 0 !important; 
+            padding: 0 20px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
         }
-
-        .btn-register:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(30, 60, 114, 0.4);
+        .btn-otp:hover {
+            background-color: #4AC1E0; 
             color: white;
         }
+        .btn-otp:disabled {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
 
-        /* LINK LOGIN */
-        .login-footer {
+        /* INPUT KODE OTP (4 DIGIT STYLE) */
+        .otp-input-style {
             text-align: center;
-            margin-top: 25px;
-            font-size: 0.95rem;
-            color: #6c757d;
-        }
-
-        .login-footer a {
-            color: #1e3c72;
-            font-weight: 800;
-            text-decoration: none;
-        }
-
-        .login-footer a:hover {
-            text-decoration: underline;
-            color: #2a5298;
+            letter-spacing: 15px; 
+            font-weight: bold;
+            font-size: 1.4rem; 
+            color: #3CB9E0;
+            background-color: #f8f9fc; 
+            border: 1px solid #b7b9cc;
         }
         
-        /* Style untuk tombol login manual di notifikasi */
-        .btn-manual-login {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); /* <--- DIUBAH: Warna biru sesuai logo */
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            display: inline-block;
-            margin-top: 15px;
-            text-decoration: none;
-            transition: background-color 0.2s;
-            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.3); /* Tambahkan shadow */
-        }
-        .btn-manual-login:hover {
-            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%); /* Efek hover kebalik */
-            color: white;
-            text-decoration: none;
-            transform: translateY(-2px); /* Efek sedikit naik */
-            box-shadow: 0 8px 20px rgba(30, 60, 114, 0.4);
+        .otp-input-style:focus {
+            background-color: #fff;
+            border-color: #3CB9E0;
         }
 
+        /* TOMBOL DAFTAR */
+        .btn-register {
+            background: linear-gradient(135deg, #4AC1E0 0%, #3CB9E0 100%);
+            border: none;
+            color: white;
+            font-weight: 700;
+            padding: 12px;
+            border-radius: 50px;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(60, 185, 224, 0.3);
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.95rem;
+            margin-top: 20px;
+        }
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(60, 185, 224, 0.4);
+            color: white;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        .login-footer a {
+            color: #3CB9E0;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        
+        textarea.form-control {
+            height: 100px !important;
+            resize: none;
+        }
+
+        .section-title {
+            color: #3CB9E0;
+            font-weight: bold;
+            border-bottom: 2px solid #3CB9E0;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            margin-top: 30px;
+        }
     </style>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 </head>
 
 <body>
     
     <div class="card-register">
-        <div class="text-center mb-4">
-             {{-- Logo DIPERKECIL DI SINI (width="100") --}}
-             <img src="{{ asset('gambar/ANMS-logo.png') }}" alt="logo" width="100" style="height: auto;">
-             
-             <h4 class="mt-3" style="color: #1e3c72; font-weight: 800;">Daftar Akun Baru</h4>
-             <p class="text-muted small">Silakan lengkapi data diri Anda di bawah ini</p>
+        <div class="text-center mb-4 register-header">
+             <img src="{{ asset('gambar/ANMS-logo.png') }}" alt="logo" width="90">
+             <h4 class="mt-3">Form Registrasi Akun Siswa</h4>
+             <p class="text-muted small">Silakan lengkapi data diri Anda dan verifikasi wajah</p>
         </div>
 
-        {{-- NOTIFIKASI SUKSES --}}
         @if(session('success'))
-        <div class="alert alert-success fade show shadow-sm border-0 mb-4" role="alert" style="background-color: #d1fae5; color: #065f46; border-radius: 10px;">
-            <div class="d-flex align-items-center mb-2">
-                <i class="fas fa-check-circle mr-2"></i>
-                <strong>Berhasil!</strong> &nbsp; {{ session('success') }}
+            <div class="alert alert-success text-center">
+                <strong>Berhasil!</strong> {{ session('success') }} <br>
+                <a href="{{ route('login') }}" class="btn btn-sm btn-primary mt-2">Login Sekarang</a>
             </div>
-            
-            <p class="mb-0">
-                <i class="fas fa-arrow-right mr-2"></i> Silakan klik tombol di bawah ini untuk masuk ke akun Anda.
-            </p>
-            
-            {{-- LINK LOGIN MANUAL --}}
-            <a href="{{ route('login') }}" class="btn-manual-login">
-                <i class="fas fa-sign-in-alt mr-1"></i> Masuk (Login) Sekarang
-            </a>
-            
-        </div>
         @endif
 
-        {{-- Alert Error --}}
         @if ($errors->any())
-        <div class="alert alert-danger fade show shadow-sm border-0 mb-4" role="alert" style="background-color: #fee2e2; color: #991b1b; border-radius: 10px;">
-            <ul class="mb-0 pl-3">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+            <div class="alert alert-danger">
+                <ul class="mb-0 small pl-3">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
 
-        {{-- Form Register --}}
-        {{-- Kondisi: Form hanya tampil jika tidak ada pesan sukses --}}
         @if (!session('success'))
-        <form method="POST" action="{{ route('register.store') }}">
+        <form method="POST" action="{{ route('register.store') }}" id="registerForm">
             @csrf
+
+            <h5 class="section-title">Data Akun</h5>
 
             <div class="form-group">
                 <label>Nama Lengkap</label>
-                <input type="text" name="nama_lengkap" class="form-control" placeholder="Masukkan nama lengkap" value="{{ old('nama_lengkap') }}" required>
+                <input type="text" name="nama_lengkap" class="form-control" placeholder="Nama Lengkap" value="{{ old('nama_lengkap') }}" required>
             </div>
 
             <div class="form-group">
-                <label>Alamat Email</label>
-                <input type="email" name="email" class="form-control" placeholder="contoh@email.com" value="{{ old('email') }}" required>
+                <label>Email Siswa</label>
+                <div class="input-group">
+                    <input type="email" name="email" id="emailInput" class="form-control" placeholder="contoh@email.com" value="{{ old('email') }}" required style="border-radius: 8px 0 0 8px;">
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-otp" id="btnKirimOtp">
+                            Kirim OTP
+                        </button>
+                    </div>
+                </div>
+                <small class="text-muted d-block mt-1" id="otpStatus" style="font-size: 12px;">
+                    <i class="fas fa-info-circle"></i> Klik tombol biru untuk menerima kode.
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label>Kode Verifikasi (OTP)</label>
+                <input type="number" name="otp_input" class="form-control otp-input-style" placeholder="0000" maxlength="4" required>
             </div>
 
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-6">
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="password" name="password" class="form-control" placeholder="Min. 8 karakter" required>
+                        <input type="password" name="password" class="form-control" placeholder="Min 8 karakter" required>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-6">
                     <div class="form-group">
                         <label>Konfirmasi Password</label>
-                        <input type="password" name="password_confirmation" class="form-control" placeholder="Ketik ulang" required>
+                        <input type="password" name="password_confirmation" class="form-control" placeholder="Ulangi" required>
                     </div>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>No. WhatsApp / Telepon</label>
-                <input type="number" name="no_telp" class="form-control" placeholder="08xxxxxxxxxx" value="{{ old('no_telp') }}" required>
+                <label>Nomor HP Siswa</label>
+                <input type="number" name="no_hp_siswa" class="form-control" placeholder="08xxxxxxxxxx" value="{{ old('no_hp_siswa') }}" required>
             </div>
 
-            {{-- NIM Full Width --}}
+
+            <h5 class="section-title">Data Orang Tua/Wali</h5>
+
             <div class="form-group">
-                <label>NIM (Nomor Induk Mahasiswa)</label>
-                <input type="text" name="nim" class="form-control" placeholder="Masukkan NIM" value="{{ old('nim') }}" required>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Tempat Lahir</label>
-                        <input type="text" name="tempat_lahir" class="form-control" placeholder="Kota Kelahiran" value="{{ old('tempat_lahir') }}" required>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Tanggal Lahir</label>
-                        <input type="date" name="tanggal_lahir" class="form-control" value="{{ old('tanggal_lahir') }}" required>
-                    </div>
-                </div>
+                <label>Nama Orang Tua/Wali</label>
+                <input type="text" name="nama_wali" class="form-control" placeholder="Nama Lengkap Orang Tua/Wali" value="{{ old('nama_wali') }}" required>
             </div>
 
             <div class="form-group">
-                <label>Jenis Kelamin</label>
-                <select name="jenis_kelamin" class="form-control" required>
-                    <option value="">-- Pilih Jenis Kelamin --</option>
-                    <option value="laki-laki">Laki-laki</option>
-                    <option value="perempuan">Perempuan</option>
-                </select>
+                <label>Email Orang Tua/Wali</label>
+                <input type="email" name="email_wali" class="form-control" placeholder="Email Orang Tua/Wali" value="{{ old('email_wali') }}" required>
             </div>
 
-            {{-- ALAMAT LENGKAP --}}
             <div class="form-group">
-                <label>Alamat Lengkap</label>
-                <textarea name="alamat_lengkap" class="form-control" placeholder="Masukkan alamat lengkap anda" required>{{ old('alamat_lengkap') }}</textarea>
+                <label>Nomor HP Orang Tua/Wali</label>
+                <input type="number" name="no_hp_wali" class="form-control" placeholder="08xxxxxxxxxx" value="{{ old('no_hp_wali') }}" required>
             </div>
 
-            <div class="form-group mt-4">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" name="agree" class="custom-control-input" id="agree" required>
-                    <label class="custom-control-label text-muted small" for="agree">
-                        Saya menyetujui <a href="#">Syarat & Ketentuan</a> yang berlaku.
-                    </label>
+
+            <h5 class="section-title">Verifikasi Biometrik</h5>
+
+            <div class="form-group text-center">
+                <div style="position: relative; display: inline-block; background: #e9ecef; border-radius: 8px; overflow: hidden; border: 2px solid #3CB9E0;">
+                    <video id="video-webcam" width="320" height="240" autoplay muted></video>
+                    <canvas id="overlay-canvas" style="position: absolute; top: 0; left: 0;"></canvas>
                 </div>
+                
+                <br>
+                <button type="button" class="btn btn-outline-info mt-3 font-weight-bold" id="btn-capture-face">
+                    <i class="fas fa-camera"></i> Ambil Foto Wajah (Biometrik)
+                </button>
+                <p id="biometric-status" class="mt-2 text-danger font-weight-bold">Wajah belum dipindai.</p>
+
+                <input type="hidden" name="face_descriptor" id="face_descriptor">
             </div>
+
 
             <button type="submit" class="btn-register">
-                Daftar Sekarang
+                Daftar Akun
             </button>
 
             <div class="login-footer">
-                Sudah punya akun? <a href="{{ url('login') }}">Masuk Disini</a>
+                Sudah punya akun? <a href="{{ url('login') }}">Login Disini</a>
             </div>
 
         </form>
         @endif
     </div>
+
+    <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+            });
+
+            $('#btnKirimOtp').click(function() {
+                var email = $('#emailInput').val();
+                var btn = $(this);
+                var status = $('#otpStatus');
+
+                if(email == '') {
+                    alert('Isi email dulu bos!');
+                    $('#emailInput').focus();
+                    return;
+                }
+
+                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+                status.text('Mengirim kode...').css('color', '#3CB9E0'); 
+
+                $.ajax({
+                    url: "{{ route('send.otp.ajax') }}",
+                    type: "POST",
+                    data: { email: email },
+                    success: function(response) {
+                        if(response.status == 'success') {
+                            alert('Kode OTP 4 Digit Terkirim!');
+                            status.html('<span class="text-success"><i class="fas fa-check"></i> Cek Email Anda.</span>');
+                            btn.html('Terkirim').removeClass('btn-otp').addClass('btn-secondary');
+                        } else {
+                            alert(response.message);
+                            status.text(response.message).css('color', 'red');
+                            btn.prop('disabled', false).text('Kirim Ulang');
+                        }
+                    },
+                    error: function() {
+                        alert('Gagal koneksi.');
+                        status.text('Gagal mengirim.').css('color', 'red');
+                        btn.prop('disabled', false).text('Kirim Ulang');
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        const video = document.getElementById('video-webcam');
+        const captureBtn = document.getElementById('btn-capture-face');
+        const statusText = document.getElementById('biometric-status');
+        const faceDescriptorInput = document.getElementById('face_descriptor');
+        const canvas = document.getElementById('overlay-canvas');
+
+        // URL ke folder model yang harus Anda siapkan di public/models
+        const MODEL_URL = '/models'; 
+
+        // Load Model secara async
+        Promise.all([
+            faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+            faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+            faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+        ]).then(startVideo).catch(err => {
+            console.error("Gagal load model. Pastikan folder public/models berisi file model face-api.", err);
+            statusText.innerText = "Error memuat sistem kamera.";
+        });
+
+        function startVideo() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    video.srcObject = stream;
+                })
+                .catch(err => {
+                    console.error("Gagal akses kamera:", err);
+                    statusText.innerText = "Kamera tidak diizinkan atau tidak ditemukan.";
+                });
+        }
+
+        captureBtn.addEventListener('click', async () => {
+            if(!video.srcObject) {
+                alert("Kamera belum siap atau tidak menyala.");
+                return;
+            }
+
+            statusText.innerText = "Memindai wajah...";
+            statusText.className = "mt-2 text-warning font-weight-bold";
+
+            const detection = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor();
+
+            if (detection) {
+                const descriptor = detection.descriptor;
+                faceDescriptorInput.value = JSON.stringify(Array.from(descriptor));
+                
+                statusText.innerText = "Wajah berhasil dipindai!";
+                statusText.className = "mt-2 text-success font-weight-bold";
+                
+                // Gambar kotak biru di wajah yang terdeteksi
+                const displaySize = { width: video.width, height: video.height };
+                faceapi.matchDimensions(canvas, displaySize);
+                const resizedDetection = faceapi.resizeResults(detection, displaySize);
+                canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+                faceapi.draw.drawDetections(canvas, resizedDetection);
+            } else {
+                statusText.innerText = "Wajah tidak terdeteksi. Coba lagi.";
+                statusText.className = "mt-2 text-danger font-weight-bold";
+                faceDescriptorInput.value = ""; 
+                canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+            }
+        });
+
+        // Validasi form agar tidak submit jika wajah kosong
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            if (!faceDescriptorInput.value) {
+                e.preventDefault();
+                alert('Peringatan: Anda harus melakukan Verifikasi Biometrik (Ambil Foto Wajah) sebelum mendaftar!');
+                statusText.innerText = "WAJIB: Silakan klik tombol Ambil Foto Wajah!";
+            }
+        });
+    </script>
 </body>
 </html>

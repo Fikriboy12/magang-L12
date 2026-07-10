@@ -1,206 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+    <title>PT. MEDIA BALAI NUSA - Admin Panel</title>
     
     <link rel="icon" href="<?php echo e(asset('gambar/AMS-logo.png')); ?>" type="image/png">
     <link rel="shortcut icon" href="<?php echo e(asset('gambar/AMS-logo.png')); ?>" type="image/png">
-    <title>PT.MEDIA BALAI NUSA</title>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" xintegrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" xintegrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
 
     <link rel="stylesheet" href="<?php echo e(asset('assets_admin/css/style.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset('assets_admin/css/components.css')); ?>">
-
     <link rel="stylesheet" href="<?php echo e(asset('assets_admin/datatables/datatables.min.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset('assets_admin/datatables/dataTables.bootstrap4.min.css')); ?>">
-    <link rel="stylesheet" href="<?php echo e(asset('assets_admin/datatables/buttons.dataTables.min.css')); ?>">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="<?php echo e(asset('assets_admin/summernote/summernote-bs4.css')); ?>">
 
-    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'UA-94034622-3');
-    </script>
     <style>
-        /* Styling Dasar Tabel DataTables */
+        /* =========================================================
+           MODERN ADMIN THEME - GLASSMORPHISM & CLEAN UI
+           ========================================================= */
+        
+        :root {
+            --primary-color: #6777ef;
+            --primary-soft: rgba(103, 119, 239, 0.1);
+            --bg-body: #f4f7fc;
+            --card-shadow: 0 10px 30px rgba(103, 119, 239, 0.08);
+        }
+
+        body {
+            background-color: var(--bg-body);
+            font-family: 'Plus Jakarta Sans', sans-serif; /* Pastikan font ini terload jika ingin dipakai */
+        }
+
+        /* 1. NAVBAR MODERN (GLASS EFFECT) */
+        .navbar-bg {
+            content: ' ';
+            position: fixed; /* Fixed agar stabil saat zoom */
+            top: 0; left: 0; width: 100%;
+            height: 80px; /* Tinggi tetap */
+            background: rgba(103, 119, 239, 0.9) !important; /* Warna primer transparan */
+            backdrop-filter: blur(10px); /* Efek Kaca Buram */
+            z-index: 800;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .main-navbar {
+            position: fixed;
+            top: 0; right: 0; left: 0;
+            height: 80px;
+            z-index: 900;
+            background: transparent !important; /* Transparan karena bg sudah dihandle navbar-bg */
+            padding: 0 30px;
+        }
+
+        /* 2. PERBAIKAN LAYOUT KONTEN (AGAR TIDAK HANCUR SAAT ZOOM) */
+        .main-wrapper {
+            padding-top: 80px !important; /* Dorong konten ke bawah setinggi navbar */
+        }
+        
+        .main-content {
+            padding-top: 30px;
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+
+        /* 3. MODERN CARDS & SECTIONS */
+        .card, .section-header, .monitoring-header-card {
+            border-radius: 16px !important; /* Sudut lebih bulat */
+            border: none !important;
+            box-shadow: var(--card-shadow) !important; /* Bayangan halus modern */
+            background: #ffffff;
+        }
+
+        .section-header {
+            margin-bottom: 25px !important;
+            padding: 20px 25px !important;
+        }
+
+        /* 4. FLOATING MENU BUTTON YANG KEREN */
+        #floating-hamburger {
+            position: fixed !important;
+            top: 22px !important; left: 25px !important;
+            z-index: 1000;
+            width: 48px; height: 48px;
+            border-radius: 14px; /* Rounded square modern */
+            background: #ffffff;
+            color: var(--primary-color);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        #floating-hamburger:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(103, 119, 239, 0.25);
+            background: var(--primary-color);
+            color: #ffffff;
+        }
+        
+        #floating-hamburger i { font-size: 20px; }
+
+        /* 5. UI ELEMENTS LAINNYA */
+        /* Kursor Modern */
+        html, body, a, button, input, select, .btn { cursor: none !important; }
+        .cursor-trail-dot { position: fixed; width: 10px; height: 10px; background: rgba(103, 119, 239, 0.5); border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); transition: background 0.3s; }
+        .cursor-trail-dot.trail-leader { width: 14px; height: 14px; background: var(--primary-color); box-shadow: 0 0 10px var(--primary-color); }
+
+        /* Dropdown User yang Lebih Bersih */
+        .dropdown-menu {
+            border: none !important;
+            border-radius: 12px !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+            margin-top: 10px !important;
+        }
+        
+        /* DataTable Modern */
         .table.dataTable {
-            border-collapse: collapse !important; /* Pastikan border tidak dobel */
-            width: 100% !important;
-            margin-top: 15px; /* Jarak dari atas */
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Shadow halus */
-            border-radius: 8px; /* Sudut sedikit bulat */
-            overflow: hidden; /* Agar sudut bulat terlihat */
+            border-collapse: separate !important;
+            border-spacing: 0 8px !important; /* Jarak antar baris */
+            margin-top: 0 !important;
         }
-
-        /* Header Tabel */
         .table.dataTable thead th {
-            background-color: #f8f9fa; /* Warna latar header abu-abu muda */
-            border-bottom: 2px solid #dee2e6; /* Garis bawah header lebih tebal */
-            border-top: none !important; /* Hapus border atas default */
-            padding: 12px 15px; /* Padding di dalam header */
-            text-align: left; /* Rata kiri */
-            font-weight: 600; /* Teks header tebal */
-            color: #495057; /* Warna teks header */
-            vertical-align: middle; /* Teks di tengah vertikal */
+            border-bottom: none !important;
+            background: var(--bg-body) !important;
+            color: #6c757d;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            padding: 15px !important;
         }
-
-        /* Hapus border vertikal di header */
-        .table.dataTable thead th:not(:last-child) {
-            border-right: none !important;
+        .table.dataTable tbody tr {
+            background: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            border-radius: 10px;
+            transition: transform 0.2s;
         }
-        .table.dataTable thead th:not(:first-child) {
-            border-left: none !important;
-        }
-
-
-        /* Isi Tabel (Sel) */
-        .table.dataTable tbody td {
-            padding: 10px 15px; /* Padding di dalam sel */
-            border-top: 1px solid #e9ecef; /* Garis horizontal halus antar baris */
-            vertical-align: middle; /* Teks di tengah vertikal */
-            border-right: none !important; /* Hapus border vertikal */
-            border-left: none !important; /* Hapus border vertikal */
-            color: #495057; /* Warna teks isi */
-        }
-
-        /* Zebra Striping (Warna Belang) */
-        .table.dataTable tbody tr:nth-of-type(even) {
-            background-color: #fdfdfe; /* Warna sedikit beda untuk baris genap */
-        }
-
-        /* Efek Hover pada Baris */
         .table.dataTable tbody tr:hover {
-            background-color: #e9ecef; /* Warna latar saat mouse hover */
-            cursor: pointer; /* Ubah cursor */
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
+        .table.dataTable td {
+            padding: 15px !important;
+            border-top: none !important;
+            border-bottom: none !important;
+        }
+        .table.dataTable td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+        .table.dataTable td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
 
-        /* Styling Tombol Aksi (Edit, Delete, Detail) */
-        .table.dataTable .btn-action {
-            padding: 5px 10px; /* Ukuran tombol lebih kecil */
-            font-size: 12px; /* Ukuran font tombol */
-            margin-right: 5px; /* Jarak antar tombol */
-            border-radius: 6px; /* Sudut tombol */
-            transition: all 0.2s ease; /* Transisi halus */
-        }
-        /* Hilangkan margin kanan di tombol terakhir */
-        .table.dataTable .btn-action:last-child {
-            margin-right: 0;
-        }
-
-        /* Styling untuk Ikon di dalam tombol (jika Anda pakai ikon) */
-        .table.dataTable .btn-action i {
-            font-size: 14px; /* Sesuaikan ukuran ikon */
-            vertical-align: middle; /* Ikon sejajar tengah */
-        }
-
-        /* Tombol Primary (misal: Edit, Detail) */
-        .table.dataTable .btn-primary.btn-action {
-            background-color: #6777ef;
-            border-color: #6777ef;
-        }
-        .table.dataTable .btn-primary.btn-action:hover {
-            background-color: #4f5fd7;
-            border-color: #4f5fd7;
-        }
-
-        /* Tombol Danger (misal: Delete) */
-        .table.dataTable .btn-danger.btn-action {
-            background-color: #fc544b;
-            border-color: #fc544b;
-        }
-        .table.dataTable .btn-danger.btn-action:hover {
-            background-color: #e7443b;
-            border-color: #e7443b;
-        }
-
-        /* Tombol Info/Secondary (misal: View) */
-        .table.dataTable .btn-info.btn-action {
-            background-color: #3abaf4;
-            border-color: #3abaf4;
-        }
-        .table.dataTable .btn-info.btn-action:hover {
-            background-color: #28a1d7;
-            border-color: #28a1d7;
-        }
-
-
-        /* Styling untuk Badge Status */
-        .badge-status {
-            padding: 6px 10px;
-            border-radius: 15px; /* Bentuk pil */
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: capitalize; /* Huruf pertama besar */
-            display: inline-block; /* Agar padding berfungsi */
-        }
-
-        .badge-status.status-pengajuan {
-            background-color: #e6f7ff; /* Latar biru muda */
-            color: #1890ff; /* Teks biru */
-        }
-        .badge-status.status-diterima {
-            background-color: #f6ffed; /* Latar hijau muda */
-            color: #52c41a; /* Teks hijau */
-        }
-        .badge-status.status-ditolak,
-        .badge-status.status-tidak-diterima { /* Menambahkan 'tidak diterima' */
-            background-color: #fff1f0; /* Latar merah muda */
-            color: #f5222d; /* Teks merah */
-        }
-        .badge-status.status-selesai { /* Contoh status lain */
-            background-color: #fafafa; /* Latar abu-abu */
-            color: #595959; /* Teks abu-abu */
+        @media (max-width: 991px) {
+            #floating-hamburger { top: 18px !important; left: 15px !important; width: 42px; height: 42px; }
+            .navbar-bg, .main-navbar { height: 70px; }
+            .main-wrapper { padding-top: 70px !important; }
         }
     </style>
-    </head>
+</head>
+
 <body>
     <div id="app">
-        <div class="main-wrapper">
-            <div class="navbar-bg"></div>
-            <nav class="navbar navbar-expand-lg main-navbar">
-                <form class="form-inline mr-auto">
-                    <ul class="navbar-nav mr-3">
-                    <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
-                    <li><a href="#" data-toggle="search" class="nav-link nav-link-lg d-sm-none"><i class="fas fa-search"></i></a></li>
-                    </ul>
-                </form>
-                <ul class="navbar-nav navbar-right">
-                    <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-                        
-                        
-                        <div class="d-sm-none d-lg-inline-block">Hi, <?php echo e(Auth::user()->name); ?></div></a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <div class="dropdown-title">Logged in</div>
-                            
-                            
-                            <div class="dropdown-divider"></div>
+        
+        <a href="#" data-toggle="sidebar" id="floating-hamburger">
+            <i class="fas fa-bars"></i>
+        </a>
 
-                            
-                            <a href="<?php echo e(url('logout')); ?>"
-                                class="dropdown-item has-icon text-danger"
-                                onclick="event.preventDefault();
-                                             document.getElementById('logout-form-admin-master').submit();">
-                                <i class="fas fa-sign-out-alt"></i> Logout
-                            </a>
-                            <form id="logout-form-admin-master" action="<?php echo e(url('logout')); ?>" method="POST" style="display: none;">
-                                <?php echo csrf_field(); ?>
-                            </form>
-                            
+        <div class="navbar-bg"></div>
+            
+        <nav class="navbar navbar-expand-lg main-navbar">
+            <form class="form-inline mr-auto"></form>
+            <ul class="navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+                        
+                        <div class="d-sm-none d-lg-inline-block text-white font-weight-bold" style="font-size: 15px;">
+                            Hi, <?php echo e(Auth::user()->name); ?>
+
                         </div>
-                    </li>
-                </ul>
-            </nav>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right animate slideIn">
+                        <div class="dropdown-title">Administrator Panel</div>
+                        
+                        
+                        
+                        <a href="<?php echo e(url('logout')); ?>" class="dropdown-item has-icon text-danger"
+                           onclick="event.preventDefault(); document.getElementById('logout-form-admin').submit();">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                        <form id="logout-form-admin" action="<?php echo e(url('logout')); ?>" method="POST" style="display: none;"><?php echo csrf_field(); ?></form>
+                    </div>
+                </li>
+            </ul>
+        </nav>
 
+        <div class="main-wrapper">
             
             <?php echo $__env->make('template_admin.sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
@@ -211,102 +208,67 @@
 
             
             <?php echo $__env->make('template_admin.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
-
-            
-            
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" xintegrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-            
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" xintegrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-            
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
-            
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-
-            
-            <script src="<?php echo e(asset('assets_admin/datatables/jquery.dataTables.min.js')); ?>"></script>
-            <script src="<?php echo e(asset('assets_admin/datatables/datatables.min.js')); ?>"></script>
-            <script src="<?php echo e(asset('assets_admin/datatables/dataTables.bootstrap4.min.js')); ?>"></script>
-            <script src="<?php echo e(asset('assets_admin/datatables/dataTables.buttons.min.js')); ?>"></script>
-            <script src="<?php echo e(asset('assets_admin/datatables/jszip.min.js')); ?>"></script>
-            <script src="<?php echo e(asset('assets_admin/datatables/pdfmake.min.js')); ?>"></script>
-            <script src="<?php echo e(asset('assets_admin/datatables/vfs_fonts.js')); ?>"></script>
-            <script src="<?php echo e(asset('assets_admin/datatables/buttons.html5.min.js')); ?>"></script>
-
-            
-            <script src="<?php echo e(asset('assets_admin/js/stisla.js')); ?>"></script>
-            <script src="<?php echo e(asset('assets_admin/summernote/summernote-bs4.js')); ?>"></script>
-            <script src="<?php echo e(asset('assets_admin/js/scripts.js')); ?>"></script>
-            <script src="<?php echo e(asset('assets_admin/js/custom.js')); ?>"></script>
-
-            
-            <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-            
-            <script>
-                $(document).ready(function() {
-                    $(document).on('click', '.btn-delete', function(event) { // Selector lebih umum '.btn-delete'
-                        event.preventDefault();
-                        const url = $(this).attr("href"); // Ambil href dari link
-                        Swal.fire({
-                            title: 'Apakah Anda yakin?',
-                            text: "Data ini akan dihapus permanen!",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Ya, hapus!',
-                            cancelButtonText: 'Batal'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = url; // Redirect ke URL delete
-                            }
-                        })
-                    });
-                });
-            </script>
-
-            
-            <script>
-            $(document).ready(function() {
-                // Gunakan selector yang lebih spesifik jika ada banyak tabel
-                $('.datatable').DataTable({ // Ganti #table menjadi .datatable atau ID spesifik
-                dom: 'lBfrtip',
-                buttons: [
-                    'copyHtml5',
-                    'excelHtml5',
-                    'csvHtml5',
-                    'pdfHtml5'
-                ],
-                "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-                });
-            });
-            </script>
-
-            
-            <script>
-            $(document).ready(function(){
-                // Gunakan selector yang lebih spesifik jika ada banyak textarea
-                $('.summernote').summernote({ // Ganti #summernote menjadi .summernote atau ID spesifik
-                    height: "200px",
-                    toolbar:[
-                        ['style', ['style']],
-                        ['font', ['bold', 'italic', 'underline', 'clear']],
-                        ['fontname', ['fontname']],
-                        ['color', ['color']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['height', ['height']],
-                        ['table', ['table']],
-                        ['insert', ['link', 'picture', 'hr']],
-                        ['view', ['fullscreen', 'codeview']],
-                        ['help', ['help']]
-                    ],
-                });
-            });
-            </script>
-
-            
-            <?php echo $__env->yieldContent('scripts'); ?>
         </div>
     </div>
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
+    <script src="<?php echo e(asset('assets_admin/datatables/jquery.dataTables.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('assets_admin/datatables/dataTables.bootstrap4.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('assets_admin/summernote/summernote-bs4.js')); ?>"></script>
+
+    <script src="<?php echo e(asset('assets_admin/js/stisla.js')); ?>"></script>
+    <script src="<?php echo e(asset('assets_admin/js/scripts.js')); ?>"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function() {
+            // SCRIPT KURSOR ULAR MODERN (LEBIH SMOOTH)
+            (function() {
+                const trailLength = 10; const dots = []; let mouseX = window.innerWidth/2; let mouseY = window.innerHeight/2;
+                for (let i = 0; i < trailLength; i++) {
+                    const dot = document.createElement('div'); dot.classList.add('cursor-trail-dot');
+                    if (i === 0) dot.classList.add('trail-leader'); document.body.appendChild(dot);
+                    dots.push({ element: dot, x: mouseX, y: mouseY });
+                }
+                window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+                function animateTrail() {
+                    let x = mouseX; let y = mouseY;
+                    dots.forEach((dot, index) => {
+                        dot.x += (x - dot.x) * 0.25; /* Lebih smooth */
+                        dot.y += (y - dot.y) * 0.25;
+                        dot.element.style.left = dot.x + 'px'; dot.element.style.top = dot.y + 'px';
+                        x = dot.x; y = dot.y;
+                        const scale = 1 - (index * 0.07); dot.element.style.transform = `translate(-50%, -50%) scale(${scale})`;
+                    });
+                    requestAnimationFrame(animateTrail);
+                }
+                animateTrail();
+            })();
+
+            // SweetAlert Global Delete
+            $(document).on('click', '.btn-delete', function(e) {
+                e.preventDefault(); const url = $(this).attr("href");
+                Swal.fire({
+                    title: 'Anda yakin?',
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#6777ef',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    background: '#fff',
+                    borderRadius: '16px',
+                    customClass: { popup: 'swal-wide' }
+                }).then((result) => { if (result.isConfirmed) window.location.href = url; });
+            });
+        });
+    </script>
+    <?php echo $__env->yieldContent('scripts'); ?>
 </body>
 </html><?php /**PATH C:\xampp\htdocs\magang-L12\resources\views/template_admin/master.blade.php ENDPATH**/ ?>

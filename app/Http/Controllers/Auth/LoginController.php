@@ -87,6 +87,77 @@ class LoginController extends Controller
         return back()->with('error', 'Kata sandi yang Anda masukkan salah.');
     }
 
+    // =========================================================
+    // 📷 FUNGSI BARU UNTUK LOGIN WAJAH (BIOMETRIK)
+    // =========================================================
+    public function loginBiometric(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'face_descriptor' => 'required|string',
+        ]);
+
+        // 1. Cari user berdasarkan email
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->with('error', 'Email tidak ditemukan di sistem.');
+        }
+
+        if (!$user->face_descriptor) {
+            return back()->with('error', 'Akun ini belum mendaftarkan biometrik wajah. Silakan login menggunakan password.');
+        }
+
+        // 2. Ubah string JSON menjadi Array
+        $storedDescriptor = json_decode($user->face_descriptor, true);
+        $liveDescriptor = json_decode($request->face_descriptor, true);
+
+        if (!is_array($storedDescriptor) || !is_array($liveDescriptor) || count($storedDescriptor) !== 128 || count($liveDescriptor) !== 128) {
+            return back()->with('error', 'Data wajah tidak valid atau rusak.');
+        }
+
+        // 3. Hitung Euclidean Distance (Tingkat Kemiripan Wajah)
+        $distance = 0;
+        for ($i = 0; $i < 128; $i++) {
+            $distance += pow($storedDescriptor[$i] - $liveDescriptor[$i], 2);
+        }
+        $distance = sqrt($distance);
+
+        // Log data untuk membantu debugging
+        \Illuminate\Support\Facades\Log::info("Biometrik Login Attempt", [
+            'email' => $request->email,
+            'calculated_distance' => $distance,
+            'stored_desc_sample' => array_slice($storedDescriptor, 0, 5),
+            'live_desc_sample' => array_slice($liveDescriptor, 0, 5),
+        ]);
+
+        // 4. Validasi Threshold (DIPERKETAT MENJADI 0.50 AGAR LEBIH AMAN)
+        if ($distance < 0.50) {
+            
+            // Terapkan Blokir Admin juga di Login Biometrik
+            if ($user->role === 'admin') {
+                return redirect()->route('login')->with('error', 'Akses ditolak!');
+            }
+
+            // Wajah cocok! Loginkan user
+            Auth::login($user);
+            $request->session()->regenerate();
+            
+            $pesan = 'Berhasil Login dengan Wajah! Selamat datang ' . $user->name . ' (Skor Ketidakmiripan: ' . round($distance, 4) . ')';
+
+            // Redirect sesuai role (SAMA PERSIS DENGAN LOGIN BIASA)
+            if ($user->role === 'pembimbing') {
+                return redirect()->route('pembimbing.dashboard')->with('success', $pesan);
+            } else {
+                return redirect()->route('home.auth')->with('success', $pesan);
+            }
+
+        } else {
+            // Wajah tidak cocok (MENAMPILKAN SKOR AGAR KITA TAHU KENAPA DITOLAK)
+            return back()->with('error', 'Wajah tidak cocok! (Skor Ketidakmiripan: ' . round($distance, 4) . '). Harus di bawah 0.50');
+        }
+    }
+
     // =======================
     // 🚪 LOGOUT
     // =======================

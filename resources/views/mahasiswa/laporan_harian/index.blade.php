@@ -5,13 +5,28 @@
 @section('contents')
 
 <style>
+    /* --- CSS WARNA KUSTOM LOGO --- */
+    .text-logo { color: #3CB9E0 !important; }
+    .bg-logo { background: linear-gradient(135deg, #4AC1E0 0%, #3CB9E0 100%) !important; }
+    .btn-logo {
+        background: linear-gradient(135deg, #4AC1E0 0%, #3CB9E0 100%) !important;
+        color: white !important;
+        border: none !important;
+        transition: all 0.3s ease;
+    }
+    .btn-logo:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(60, 185, 224, 0.4) !important;
+        color: white !important;
+    }
+
     /* CSS Header Modern */
     .hd-header {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+        background: linear-gradient(135deg, #4AC1E0 0%, #3CB9E0 100%) !important;
         color: white !important;
         padding: 30px;
         border-radius: 15px 15px 0 0;
-        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        box-shadow: 0 4px 15px rgba(60, 185, 224, 0.3);
         position: relative;
         overflow: hidden;
     }
@@ -29,7 +44,7 @@
         transition: transform 0.3s ease;
         cursor: pointer;
     }
-    .img-thumbnail-custom:hover { transform: scale(1.1); border-color: #3b82f6; }
+    .img-thumbnail-custom:hover { transform: scale(1.1); border-color: #3CB9E0; }
 
     /* --- CSS UNTUK FORM MODAL --- */
     .form-control-custom {
@@ -37,14 +52,14 @@
         background-color: #f8fafc; font-size: 0.95rem;
     }
     .form-control-custom:focus {
-        border-color: #3b82f6; background-color: #fff;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        border-color: #3CB9E0; background-color: #fff;
+        box-shadow: 0 0 0 3px rgba(60, 185, 224, 0.1);
     }
     .upload-box {
         border: 2px dashed #cbd5e1; border-radius: 12px; padding: 20px;
         text-align: center; background: #f8fafc; cursor: pointer; transition: all 0.3s;
     }
-    .upload-box:hover { border-color: #3b82f6; background: #eff6ff; }
+    .upload-box:hover { border-color: #3CB9E0; background: #e8f8fc; }
 </style>
 
 <div class="content-wrapper" style="background-color: #f8fafc;">
@@ -64,7 +79,7 @@
                         </div>
                         <div style="z-index: 2;">
                             {{-- TOMBOL TAMBAH (MEMBUKA MODAL) --}}
-                            <button type="button" class="btn btn-light text-primary font-weight-bold shadow-sm" style="border-radius: 50px;" data-toggle="modal" data-target="#modalTambahLaporan">
+                            <button type="button" class="btn btn-light text-logo font-weight-bold shadow-sm" style="border-radius: 50px;" data-toggle="modal" data-target="#modalTambahLaporan">
                                 <i class="fas fa-plus mr-2"></i> Tambah Laporan
                             </button>
                         </div>
@@ -98,7 +113,7 @@
                                             <td class="text-center align-middle">{{ $loop->iteration }}</td>
                                             
                                             <td class="align-middle">
-                                                <span class="badge badge-light text-primary" style="font-size: 0.9rem;">
+                                                <span class="badge badge-light text-logo" style="font-size: 0.9rem;">
                                                     <i class="far fa-calendar-alt mr-1"></i>
                                                     {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}
                                                 </span>
@@ -180,7 +195,7 @@
         <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
             
             {{-- Header Modal --}}
-            <div class="modal-header bg-primary text-white" style="border-radius: 15px 15px 0 0;">
+            <div class="modal-header bg-logo text-white" style="border-radius: 15px 15px 0 0;">
                 <h5 class="modal-title font-weight-bold" id="modalLabel">
                     <i class="fas fa-edit mr-2"></i> Tulis Laporan Kegiatan
                 </h5>
@@ -217,7 +232,7 @@
                         <label class="font-weight-bold text-dark">Foto Dokumentasi <span class="text-danger">*</span></label>
                         
                         <div class="upload-box" onclick="document.getElementById('fileInput').click()">
-                            <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+                            <i class="fas fa-cloud-upload-alt fa-2x text-logo mb-2"></i>
                             <p class="mb-0 font-weight-bold">Klik untuk upload foto</p>
                             <small class="text-muted">Format: JPG, PNG (Max 2MB)</small>
                             
@@ -236,7 +251,7 @@
                 {{-- Footer Modal --}}
                 <div class="modal-footer bg-light" style="border-radius: 0 0 15px 15px;">
                     <button type="button" class="btn btn-secondary rounded-pill px-4" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                    <button type="submit" class="btn btn-logo rounded-pill px-4 shadow-sm">
                         <i class="fas fa-paper-plane mr-1"></i> Kirim Laporan
                     </button>
                 </div>

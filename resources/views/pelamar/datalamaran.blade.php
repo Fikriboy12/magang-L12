@@ -6,13 +6,28 @@
 
 {{-- CSS MODERN --}}
 <style>
-    /* Header Biru Modern */
+    /* --- CSS WARNA KUSTOM LOGO --- */
+    .text-logo { color: #3CB9E0 !important; }
+    .bg-logo { background: linear-gradient(135deg, #4AC1E0 0%, #3CB9E0 100%) !important; }
+    .btn-logo {
+        background: linear-gradient(135deg, #4AC1E0 0%, #3CB9E0 100%) !important;
+        color: white !important;
+        border: none !important;
+        transition: all 0.3s ease;
+    }
+    .btn-logo:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(60, 185, 224, 0.4) !important;
+        color: white !important;
+    }
+
+    /* Header Biru Modern Disesuaikan Logo */
     .hd-header {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+        background: linear-gradient(135deg, #4AC1E0 0%, #3CB9E0 100%) !important;
         color: white !important;
         padding: 25px 30px;
         border-radius: 15px 15px 0 0;
-        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        box-shadow: 0 4px 15px rgba(60, 185, 224, 0.3);
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -72,8 +87,8 @@
         text-decoration: none !important;
     }
     
-    .btn-view { background: #eff6ff; color: #2563eb; }
-    .btn-view:hover { background: #2563eb; color: white; }
+    .btn-view { background: #e8f8fc; color: #3CB9E0; }
+    .btn-view:hover { background: #3CB9E0; color: white; }
 
     .btn-print { background: #fffbeb; color: #d97706; }
     .btn-print:hover { background: #d97706; color: white; }
@@ -131,7 +146,7 @@
                                         <td class="text-center font-weight-bold text-muted">{{ $loop->iteration }}</td>
                                         
                                         <td>
-                                            <span class="font-weight-bold text-primary" style="font-size: 0.95rem;">
+                                            <span class="font-weight-bold text-logo" style="font-size: 0.95rem;">
                                                 {{ $item->user->name ?? Auth::user()->name }}
                                             </span>
                                         </td>
@@ -212,7 +227,7 @@
                                             <div class="modal fade" id="modalAjukan{{ $item->id_pendaftaran }}" tabindex="-1" role="dialog" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                                     <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
-                                                        <div class="modal-header bg-primary text-white" style="border-radius: 15px 15px 0 0;">
+                                                        <div class="modal-header bg-logo text-white" style="border-radius: 15px 15px 0 0;">
                                                             <h5 class="modal-title font-weight-bold">Ajukan Sertifikat</h5>
                                                             <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
@@ -229,7 +244,7 @@
                                                             <form action="{{ url('insert-sertifikat') }}" method="POST">
                                                                 @csrf
                                                                 <input type="hidden" name="id_pendaftaran" value="{{ $item->id_pendaftaran }}">
-                                                                <button type="submit" class="btn btn-primary rounded-pill px-4">Ya, Ajukan</button>
+                                                                <button type="submit" class="btn btn-logo rounded-pill px-4">Ya, Ajukan</button>
                                                             </form>
                                                         </div>
                                                     </div>
@@ -288,7 +303,7 @@
                                             <td class="text-center">{{ $loop->iteration }}</td>
                                             <td>{{ $sertifikat->nama_sertifikat ?? 'Sertifikat Magang' }}</td>
                                             <td>{{ \Carbon\Carbon::parse($sertifikat->created_at)->format('d M Y') }}</td>
-                                            <td><span class="badge badge-primary">PDF / Image</span></td>
+                                            <td><span class="badge bg-logo text-white">PDF / Image</span></td>
                                             <td class="text-center">
                                                 
                                                 {{-- PERBAIKAN LINK DOWNLOAD DI SINI --}}
@@ -296,7 +311,7 @@
                                                 {{-- 2. Menggunakan 'file_path' bukan 'file' (sesuai database) --}}
                                                 
                                                 @if(!empty($sertifikat->file_path))
-                                                    <a href="{{ asset('sertifikat/'.$sertifikat->file_path) }}" target="_blank" class="btn btn-sm btn-primary shadow-sm px-3" style="border-radius: 20px;">
+                                                    <a href="{{ asset('sertifikat/'.$sertifikat->file_path) }}" target="_blank" class="btn btn-sm btn-logo shadow-sm px-3" style="border-radius: 20px;">
                                                         <i class="fas fa-download mr-1"></i> Download
                                                     </a>
                                                 @else
