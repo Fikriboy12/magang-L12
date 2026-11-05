@@ -257,7 +257,7 @@
         statusText.innerText = "Memuat Sistem AI...";
 
         try {
-            // 3. Muat Model
+            // 3. Muat Model (SSD Mobilenet, 68 Landmarks, Face Recognition)
             await Promise.all([
                 faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
                 faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
@@ -274,26 +274,50 @@
                 const displaySize = { width: video.videoWidth, height: video.videoHeight };
                 faceapi.matchDimensions(canvas, displaySize);
 
+                let isSubmitted = false;
+                let detectionCount = 0;
+                const requiredDetections = 8; // Memerlukan 8 frame stabil untuk memastikan akurasi data wajah
+
                 const scanInterval = setInterval(async () => {
+                    if (isSubmitted) return;
+
                     const detection = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor();
                     
-                    if (detection) {
-                        clearInterval(scanInterval); // Hentikan scan jika sudah terdeteksi
-                        
-                        statusText.innerText = "Wajah diproses. Mohon tunggu...";
-                        statusText.style.color = "#28a745"; // Warna hijau
-                        
-                        const resizedDetection = faceapi.resizeResults(detection, displaySize);
-                        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-                        faceapi.draw.drawDetections(canvas, resizedDetection);
+                    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 
-                        // Kirim data ke controller
-                        document.getElementById('bio_email').value = emailInput.value;
-                        document.getElementById('bio_face_descriptor').value = JSON.stringify(Array.from(detection.descriptor));
+                    if (detection) {
+                        const resizedDetection = faceapi.resizeResults(detection, displaySize);
                         
-                        formBiometric.submit();
+                        // Gambar Kotak Deteksi & 68 Titik Karakteristik Wajah (Landmarks) dengan Label Threshold 0.60
+                        const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { label: '0.60' });
+                        drawBox.draw(canvas);
+                        faceapi.draw.drawFaceLandmarks(canvas, resizedDetection);
+
+                        detectionCount++;
+                        statusText.innerText = `Menyelaraskan wajah... (${Math.round((detectionCount / requiredDetections) * 100)}%)`;
+                        statusText.style.color = "#3CB9E0";
+
+                        if (detectionCount >= requiredDetections) {
+                            isSubmitted = true;
+                            clearInterval(scanInterval);
+                            
+                            statusText.innerText = "Wajah berhasil diselaraskan! Memproses login...";
+                            statusText.style.color = "#28a745"; // Warna hijau
+
+                            // Kirim data ke controller
+                            document.getElementById('bio_email').value = emailInput.value;
+                            document.getElementById('bio_face_descriptor').value = JSON.stringify(Array.from(detection.descriptor));
+                            
+                            setTimeout(() => {
+                                formBiometric.submit();
+                            }, 500);
+                        }
+                    } else {
+                        statusText.innerText = "Posisikan wajah Anda di tengah kamera...";
+                        statusText.style.color = "#cc0000"; // Warna merah
+                        detectionCount = 0; // Reset jika wajah sempat tidak terdeteksi
                     }
-                }, 500); 
+                }, 150); // Scan setiap 150ms agar visualisasi landmark real-time terlihat mulus
             });
 
         } catch (err) {

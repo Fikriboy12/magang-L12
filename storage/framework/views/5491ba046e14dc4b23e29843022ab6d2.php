@@ -27,10 +27,10 @@
            ========================================================= */
         
         :root {
-            --primary-color: #6777ef;
-            --primary-soft: rgba(103, 119, 239, 0.1);
+            --primary-color: #3CB9E0;
+            --primary-soft: rgba(60, 185, 224, 0.15);
             --bg-body: #f4f7fc;
-            --card-shadow: 0 10px 30px rgba(103, 119, 239, 0.08);
+            --card-shadow: 0 10px 30px rgba(60, 185, 224, 0.1);
         }
 
         body {
@@ -38,16 +38,17 @@
             font-family: 'Plus Jakarta Sans', sans-serif; /* Pastikan font ini terload jika ingin dipakai */
         }
 
-        /* 1. NAVBAR MODERN (GLASS EFFECT) */
+        /* 1. NAVBAR MODERN (GLASS EFFECT & CORPORATE CYAN/BLUE GRADIENT) */
         .navbar-bg {
             content: ' ';
             position: fixed; /* Fixed agar stabil saat zoom */
             top: 0; left: 0; width: 100%;
             height: 80px; /* Tinggi tetap */
-            background: rgba(103, 119, 239, 0.9) !important; /* Warna primer transparan */
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #3CB9E0 100%) !important; /* Warna biru logo elegan */
             backdrop-filter: blur(10px); /* Efek Kaca Buram */
             z-index: 800;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 4px 20px rgba(30, 60, 114, 0.25);
         }
 
         .main-navbar {
@@ -99,8 +100,8 @@
         
         #floating-hamburger:hover {
             transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 12px 25px rgba(103, 119, 239, 0.25);
-            background: var(--primary-color);
+            box-shadow: 0 12px 25px rgba(60, 185, 224, 0.35);
+            background: linear-gradient(135deg, #3CB9E0, #4AC1E0);
             color: #ffffff;
         }
         
@@ -108,9 +109,9 @@
 
         /* 5. UI ELEMENTS LAINNYA */
         /* Kursor Modern */
-        html, body, a, button, input, select, .btn { cursor: none !important; }
-        .cursor-trail-dot { position: fixed; width: 10px; height: 10px; background: rgba(103, 119, 239, 0.5); border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); transition: background 0.3s; }
-        .cursor-trail-dot.trail-leader { width: 14px; height: 14px; background: var(--primary-color); box-shadow: 0 0 10px var(--primary-color); }
+        html, body, a, button, input, select, .btn { cursor: auto !important; }
+        .cursor-trail-dot { position: fixed; width: 10px; height: 10px; background: rgba(60, 185, 224, 0.4); border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); transition: background 0.3s; }
+        .cursor-trail-dot.trail-leader { width: 14px; height: 14px; background: #3CB9E0; box-shadow: 0 0 10px #3CB9E0; }
 
         /* Dropdown User yang Lebih Bersih */
         .dropdown-menu {
@@ -258,7 +259,7 @@
                     text: "Data yang dihapus tidak dapat dikembalikan!",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#6777ef',
+                    confirmButtonColor: '#3CB9E0',
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Ya, Hapus!',
                     cancelButtonText: 'Batal',

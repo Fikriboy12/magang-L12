@@ -57,15 +57,15 @@
   /* Hover Effect */
   .main-sidebar .sidebar-menu li a:hover {
     background-color: #f1f5f9;
-    color: #1e3c72;
+    color: #0284c7;
     transform: translateX(5px);
   }
 
   /* MENU AKTIF (TOMBOL BIRU "MASTER WEBSITE") */
   .main-sidebar .sidebar-menu li.active > a {
-    background: linear-gradient(135deg, #3a7bd5, #00d2ff); /* Warna Biru Gradasi */
+    background: linear-gradient(135deg, #0284c7, #3CB9E0); /* Warna Biru Cyan Gradasi Logo */
     color: #ffffff !important;
-    box-shadow: 0 5px 15px rgba(58, 123, 213, 0.3);
+    box-shadow: 0 5px 15px rgba(60, 185, 224, 0.35);
     
     /* Pastikan sudutnya tetap membulat seperti gambar */
     border-radius: 10px !important; 
@@ -86,9 +86,9 @@
   }
   
   .main-sidebar .sidebar-menu li .dropdown-menu li.active a {
-    color: #3a7bd5 !important;
+    color: #0284c7 !important;
     background: transparent !important;
-    border-left: 2px solid #3a7bd5;
+    border-left: 2px solid #0284c7;
     font-weight: 700;
     box-shadow: none;
   }
@@ -114,7 +114,7 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   }
   
-  .badge-primary-soft { background: #e3f2fd; color: #1565c0; }
+  .badge-primary-soft { background: #e0f2fe; color: #0284c7; }
   .badge-danger-soft { background: #ffebee; color: #c62828; }
 </style>
 
@@ -128,7 +128,7 @@
     </div>
     
     <div class="sidebar-brand sidebar-brand-sm">
-      <a href="<?php echo e(url('admin/dashboard')); ?>" style="background: #3a7bd5; color: white; padding: 5px 10px; border-radius: 5px;">AP</a>
+      <a href="<?php echo e(url('admin/dashboard')); ?>" style="background: linear-gradient(135deg, #0284c7, #3CB9E0); color: white; padding: 5px 10px; border-radius: 5px;">AP</a>
     </div>
 
     <ul class="sidebar-menu">

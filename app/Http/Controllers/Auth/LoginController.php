@@ -131,8 +131,8 @@ class LoginController extends Controller
             'live_desc_sample' => array_slice($liveDescriptor, 0, 5),
         ]);
 
-        // 4. Validasi Threshold (DIPERKETAT MENJADI 0.50 AGAR LEBIH AMAN)
-        if ($distance < 0.50) {
+        // 4. Validasi Threshold (SESUAI DIAGRAM ALUR: THRESHOLD = 0.60)
+        if ($distance < 0.60) {
             
             // Terapkan Blokir Admin juga di Login Biometrik
             if ($user->role === 'admin') {
@@ -154,7 +154,7 @@ class LoginController extends Controller
 
         } else {
             // Wajah tidak cocok (MENAMPILKAN SKOR AGAR KITA TAHU KENAPA DITOLAK)
-            return back()->with('error', 'Wajah tidak cocok! (Skor Ketidakmiripan: ' . round($distance, 4) . '). Harus di bawah 0.50');
+            return back()->with('error', 'Wajah tidak cocok! (Skor Ketidakmiripan: ' . round($distance, 4) . '). Harus di bawah 0.60');
         }
     }
 

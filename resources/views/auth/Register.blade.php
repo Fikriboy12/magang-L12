@@ -251,7 +251,7 @@
             <div class="form-group text-center">
                 <div style="position: relative; display: inline-block; background: #e9ecef; border-radius: 8px; overflow: hidden; border: 2px solid #3CB9E0;">
                     <video id="video-webcam" width="320" height="240" autoplay muted></video>
-                    <canvas id="overlay-canvas" style="position: absolute; top: 0; left: 0;"></canvas>
+                    <canvas id="overlay-canvas" style="position: absolute; top: 0; left: 0; z-index: 10; pointer-events: none;"></canvas>
                 </div>
                 
                 <br>
@@ -331,7 +331,12 @@
         // URL ke folder model yang harus Anda siapkan di public/models
         const MODEL_URL = '/models'; 
 
-        // Load Model secara async
+        let latestDetection = null;
+        let isCaptured = false;
+        let scanInterval = null;
+        let detectionStarted = false;
+
+        // Load Model secara async (SSD Mobilenet, 68 Landmarks, Face Recognition)
         Promise.all([
             faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
             faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
@@ -342,9 +347,20 @@
         });
 
         function startVideo() {
+            // Bind events ke video terlebih dahulu untuk menghindari race condition
+            video.addEventListener('play', startDetection);
+            video.addEventListener('playing', startDetection);
+
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then(stream => {
                     video.srcObject = stream;
+                    
+                    // Backup pemicu jika event play/playing terlewat oleh browser
+                    setTimeout(() => {
+                        if (video.srcObject && !video.paused) {
+                            startDetection();
+                        }
+                    }, 500);
                 })
                 .catch(err => {
                     console.error("Gagal akses kamera:", err);
@@ -352,44 +368,94 @@
                 });
         }
 
-        captureBtn.addEventListener('click', async () => {
-            if(!video.srcObject) {
+        // Mulai pemindaian dan render landmarks secara real-time
+        function startDetection() {
+            if (detectionStarted) return;
+            detectionStarted = true;
+
+            const displaySize = { width: video.width || 320, height: video.height || 240 };
+            faceapi.matchDimensions(canvas, displaySize);
+
+            scanInterval = setInterval(async () => {
+                if (isCaptured) return;
+
+                const detection = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor();
+                canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+
+                if (detection) {
+                    latestDetection = detection;
+                    const resizedDetection = faceapi.resizeResults(detection, displaySize);
+                    
+                    // Gambar Kotak Deteksi & 68 Titik Karakteristik Wajah (Landmarks) secara real-time
+                    const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { label: 'Wajah' });
+                    drawBox.draw(canvas);
+                    faceapi.draw.drawFaceLandmarks(canvas, resizedDetection);
+
+                    if (faceDescriptorInput.value === "") {
+                        statusText.innerText = "Wajah terdeteksi! Silakan klik 'Ambil Foto Wajah'.";
+                        statusText.className = "mt-2 text-info font-weight-bold";
+                    }
+                } else {
+                    latestDetection = null;
+                    if (faceDescriptorInput.value === "") {
+                        statusText.innerText = "Posisikan wajah Anda di depan kamera...";
+                        statusText.className = "mt-2 text-danger font-weight-bold";
+                    }
+                }
+            }, 150); // Scan setiap 150ms agar visualisasi real-time lancar
+        }
+
+        captureBtn.addEventListener('click', () => {
+            if (!video.srcObject) {
                 alert("Kamera belum siap atau tidak menyala.");
                 return;
             }
 
-            statusText.innerText = "Memindai wajah...";
-            statusText.className = "mt-2 text-warning font-weight-bold";
+            // Jika sedang dalam status ter-capture, tombol berfungsi untuk membatalkan/mengulang
+            if (isCaptured) {
+                isCaptured = false;
+                faceDescriptorInput.value = "";
+                statusText.innerText = "Posisikan wajah Anda di depan kamera...";
+                statusText.className = "mt-2 text-danger font-weight-bold";
+                captureBtn.innerHTML = '<i class="fas fa-camera"></i> Ambil Foto Wajah (Biometrik)';
+                captureBtn.className = "btn btn-outline-info mt-3 font-weight-bold";
+                return;
+            }
 
-            const detection = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor();
-
-            if (detection) {
-                const descriptor = detection.descriptor;
+            if (latestDetection) {
+                isCaptured = true;
+                const descriptor = latestDetection.descriptor;
+                
+                // Simpan descriptor wajah 128 dimensi sebagai string JSON
                 faceDescriptorInput.value = JSON.stringify(Array.from(descriptor));
                 
-                statusText.innerText = "Wajah berhasil dipindai!";
+                statusText.innerText = "Wajah berhasil dipindai dan disimpan!";
                 statusText.className = "mt-2 text-success font-weight-bold";
-                
-                // Gambar kotak biru di wajah yang terdeteksi
-                const displaySize = { width: video.width, height: video.height };
+
+                // Gambarkan visual terakhir di canvas agar membeku (freeze) sebagai konfirmasi
+                const displaySize = { width: video.width || 320, height: video.height || 240 };
                 faceapi.matchDimensions(canvas, displaySize);
-                const resizedDetection = faceapi.resizeResults(detection, displaySize);
+                const resizedDetection = faceapi.resizeResults(latestDetection, displaySize);
                 canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-                faceapi.draw.drawDetections(canvas, resizedDetection);
+                const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { label: 'Wajah' });
+                drawBox.draw(canvas);
+                faceapi.draw.drawFaceLandmarks(canvas, resizedDetection);
+
+                // Ubah tampilan tombol untuk opsi ambil ulang
+                captureBtn.innerHTML = '<i class="fas fa-undo"></i> Ambil Ulang Foto Wajah';
+                captureBtn.className = "btn btn-outline-warning mt-3 font-weight-bold";
             } else {
-                statusText.innerText = "Wajah tidak terdeteksi. Coba lagi.";
-                statusText.className = "mt-2 text-danger font-weight-bold";
-                faceDescriptorInput.value = ""; 
-                canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+                alert("Wajah tidak terdeteksi! Mohon sejajarkan wajah Anda di depan kamera sebelum mengambil foto.");
             }
         });
 
-        // Validasi form agar tidak submit jika wajah kosong
+        // Validasi form agar tidak submit jika data biometrik kosong
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             if (!faceDescriptorInput.value) {
                 e.preventDefault();
-                alert('Peringatan: Anda harus melakukan Verifikasi Biometrik (Ambil Foto Wajah) sebelum mendaftar!');
-                statusText.innerText = "WAJIB: Silakan klik tombol Ambil Foto Wajah!";
+                alert('Peringatan: Anda wajib melakukan Verifikasi Biometrik (Ambil Foto Wajah) sebelum mendaftar!');
+                statusText.innerText = "WAJIB: Silakan ambil foto wajah terlebih dahulu!";
+                statusText.className = "mt-2 text-danger font-weight-bold";
             }
         });
     </script>

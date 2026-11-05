@@ -12,9 +12,9 @@ body {
 .hero {
     padding: 30px;
     border-radius: 15px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 24px rgba(60, 185, 224, 0.25);
     text-align: center;
-    background: linear-gradient(135deg, #5c67f2 0%, #0d6efd 100%);
+    background: linear-gradient(135deg, #1e3c72 0%, #0077b6 50%, #3CB9E0 100%);
     color: #fff;
     margin-bottom: 30px;
 }
@@ -56,7 +56,7 @@ body {
     color: #fff;
     border-radius: 15px 0 0 15px;
 }
-.card-icon.bg-primary { background-color: #6777ef !important; }
+.card-icon.bg-primary { background: linear-gradient(135deg, #0284c7, #3CB9E0) !important; }
 .card-icon.bg-info { background-color: #3abaf4 !important; }
 .card-icon.bg-success { background-color: #63ed7a !important; }
 .card-icon.bg-warning { background-color: #ffa426 !important; }
@@ -127,7 +127,7 @@ body {
                     </div>
                     <div class="card-wrap">
                         <div class="card-header"><h4>Data Pelamar</h4></div>
-                        <div class="card-body"><?php echo e($data['jumlah_pelamar_user'] ?? 0); ?></div>
+                        <div class="card-body"><?php echo e($data['pelamar'] ?? $data['jumlah_pelamar_user'] ?? 0); ?></div>
                     </div>
                 </div>
             </div>
