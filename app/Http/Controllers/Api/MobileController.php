@@ -11,6 +11,7 @@ use App\Models\LaporanHarian;
 use App\Models\Absensi;
 use App\Models\Sertifikat;
 use App\Models\Pendaftaran;
+use App\Models\Chat;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Cache;
@@ -44,8 +45,8 @@ class MobileController extends Controller
             ], 401);
         }
 
-        // Cek apakah rolenya pelamar (siswa/mahasiswa), pembimbing, atau orang_tua
-        if (!in_array($user->role, ['pelamar', 'pembimbing', 'orang_tua'])) {
+        // Cek apakah rolenya pelamar (siswa/mahasiswa), pembimbing, pembimbing_lapangan, atau orang_tua
+        if (!in_array($user->role, ['pelamar', 'pembimbing', 'pembimbing_lapangan', 'orang_tua'])) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Akses ditolak! Akun Anda tidak memiliki hak akses aplikasi mobile.'
@@ -1178,6 +1179,309 @@ class MobileController extends Controller
                     'email_wali' => $orangTua->email,
                     'no_telp_wali' => $orangTua->no_telp,
                 ]
+            ]
+        ]);
+    }
+
+    // =========================================================================
+    // 🏭 RUTE KHUSUS MOBILE: PEMBIMBING LAPANGAN (INDUSTRI)
+    // =========================================================================
+    protected function getMentorSiswaIds(User $mentor)
+    {
+        $siswaIds = User::where('role', 'pelamar')
+                        ->where('pembimbing_lapangan_id', $mentor->id)
+                        ->pluck('id')
+                        ->toArray();
+
+        if (empty($siswaIds)) {
+            $siswaIds = Pendaftaran::where('status_pendaftaran', 'diterima')->pluck('id_users')->toArray();
+        }
+
+        return $siswaIds;
+    }
+
+    public function getPembimbingLapanganDashboard(Request $request)
+    {
+        $mentor = $request->user();
+        if ($mentor->role !== 'pembimbing_lapangan') {
+            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
+        }
+
+        $siswaIds = $this->getMentorSiswaIds($mentor);
+        $today = Carbon::today()->toDateString();
+
+        $totalSiswa = count($siswaIds);
+        $pendingLaporan = LaporanHarian::whereIn('user_id', $siswaIds)->where('status', 'pending')->count();
+        $pendingIzin = Absensi::whereIn('id_users', $siswaIds)
+                                ->whereIn('status', ['Izin', 'Sakit'])
+                                ->where(function($q) {
+                                    $q->whereNull('status_validasi')->orWhere('status_validasi', 'pending');
+                                })->count();
+        $pengajuanSertifikat = Sertifikat::whereIn('created_by', $siswaIds)
+                                         ->whereIn('status_pengajuan', ['pending', 'menunggu_verifikasi'])
+                                         ->count();
+        $unreadChats = Chat::where('receiver_id', $mentor->id)->where('is_read', false)->count();
+
+        $hadirToday = Absensi::whereIn('id_users', $siswaIds)->whereDate('tgl_absen', $today)->where('status', 'Hadir')->count();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'total_siswa' => $totalSiswa,
+                'pending_laporan' => $pendingLaporan,
+                'pending_izin' => $pendingIzin,
+                'pengajuan_sertifikat' => $pengajuanSertifikat,
+                'unread_chats' => $unreadChats,
+                'hadir_hari_ini' => $hadirToday,
+            ]
+        ]);
+    }
+
+    public function getPembimbingLapanganSiswa(Request $request)
+    {
+        $mentor = $request->user();
+        $siswaIds = $this->getMentorSiswaIds($mentor);
+
+        $siswa = User::whereIn('id', $siswaIds)->with('pendaftaran')->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $siswa
+        ]);
+    }
+
+    public function getPembimbingLapanganIzin(Request $request)
+    {
+        $mentor = $request->user();
+        $siswaIds = $this->getMentorSiswaIds($mentor);
+
+        $izin = Absensi::whereIn('id_users', $siswaIds)
+                        ->whereIn('status', ['Izin', 'Sakit'])
+                        ->with('user')
+                        ->latest('tgl_absen')
+                        ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $izin
+        ]);
+    }
+
+    public function approveIzinMobile(Request $request, $id)
+    {
+        $mentor = $request->user();
+        $siswaIds = $this->getMentorSiswaIds($mentor);
+
+        $absensi = Absensi::whereIn('id_users', $siswaIds)->findOrFail($id);
+        $absensi->update(['status_validasi' => 'valid']);
+
+        return response()->json(['status' => 'success', 'message' => 'Izin berhasil disetujui (ACC).']);
+    }
+
+    public function rejectIzinMobile(Request $request, $id)
+    {
+        $mentor = $request->user();
+        $siswaIds = $this->getMentorSiswaIds($mentor);
+
+        $absensi = Absensi::whereIn('id_users', $siswaIds)->findOrFail($id);
+        $absensi->update([
+            'status_validasi' => 'rejected',
+            'keterangan' => ($absensi->keterangan ?? '') . ($request->alasan ? ' [Ditolak: ' . $request->alasan . ']' : ' [Ditolak]')
+        ]);
+
+        return response()->json(['status' => 'success', 'message' => 'Izin berhasil ditolak.']);
+    }
+
+    public function getPembimbingLapanganLaporan(Request $request)
+    {
+        $mentor = $request->user();
+        $siswaIds = $this->getMentorSiswaIds($mentor);
+
+        $laporan = LaporanHarian::whereIn('user_id', $siswaIds)
+                                ->with('user')
+                                ->latest('tanggal')
+                                ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $laporan
+        ]);
+    }
+
+    public function approveLaporanMobile(Request $request, $id)
+    {
+        $mentor = $request->user();
+        $siswaIds = $this->getMentorSiswaIds($mentor);
+
+        $laporan = LaporanHarian::whereIn('user_id', $siswaIds)->findOrFail($id);
+        $laporan->update([
+            'status' => 'approved',
+            'catatan' => $request->catatan ?? $laporan->catatan
+        ]);
+
+        return response()->json(['status' => 'success', 'message' => 'Laporan harian berhasil di-ACC.']);
+    }
+
+    public function rejectLaporanMobile(Request $request, $id)
+    {
+        $mentor = $request->user();
+        $siswaIds = $this->getMentorSiswaIds($mentor);
+
+        $laporan = LaporanHarian::whereIn('user_id', $siswaIds)->findOrFail($id);
+        $laporan->update([
+            'status' => 'rejected',
+            'catatan' => $request->catatan ?? 'Perlu perbaikan.'
+        ]);
+
+        return response()->json(['status' => 'success', 'message' => 'Laporan harian ditolak untuk revisi.']);
+    }
+
+    public function getPembimbingLapanganAbsensi(Request $request)
+    {
+        $mentor = $request->user();
+        $siswaIds = $this->getMentorSiswaIds($mentor);
+        $date = $request->get('tanggal', Carbon::today()->toDateString());
+
+        $absensi = Absensi::whereIn('id_users', $siswaIds)
+                          ->whereDate('tgl_absen', $date)
+                          ->with('user')
+                          ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'date' => $date,
+            'data' => $absensi
+        ]);
+    }
+
+    public function getPembimbingLapanganAbsensiDetail(Request $request, $siswa_id)
+    {
+        $mentor = $request->user();
+        $siswaIds = $this->getMentorSiswaIds($mentor);
+
+        if (!in_array($siswa_id, $siswaIds)) {
+            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
+        }
+
+        $absensi = Absensi::where('id_users', $siswa_id)->latest('tgl_absen')->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $absensi
+        ]);
+    }
+
+    public function getPembimbingLapanganSertifikat(Request $request)
+    {
+        $mentor = $request->user();
+        $siswaIds = $this->getMentorSiswaIds($mentor);
+
+        $sertifikat = Sertifikat::whereIn('created_by', $siswaIds)->with('user')->latest()->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $sertifikat
+        ]);
+    }
+
+    public function approveSertifikatMobile(Request $request, $id)
+    {
+        $mentor = $request->user();
+        $siswaIds = $this->getMentorSiswaIds($mentor);
+
+        $sertifikat = Sertifikat::whereIn('created_by', $siswaIds)->findOrFail($id);
+        $sertifikat->update(['status_pengajuan' => 'disetujui']);
+
+        return response()->json(['status' => 'success', 'message' => 'Pengajuan sertifikat disetujui (ACC).']);
+    }
+
+    public function rejectSertifikatMobile(Request $request, $id)
+    {
+        $mentor = $request->user();
+        $siswaIds = $this->getMentorSiswaIds($mentor);
+
+        $sertifikat = Sertifikat::whereIn('created_by', $siswaIds)->findOrFail($id);
+        $sertifikat->update(['status_pengajuan' => 'ditolak']);
+
+        return response()->json(['status' => 'success', 'message' => 'Pengajuan sertifikat ditolak.']);
+    }
+
+    // ==========================================
+    // 💬 API CHAT MOBILE (GENERAL)
+    // ==========================================
+    public function getChatMessages(Request $request, $partner_id)
+    {
+        $currentUser = $request->user();
+
+        // Tandai pesan terbaca
+        Chat::where('sender_id', $partner_id)
+            ->where('receiver_id', $currentUser->id)
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        $messages = Chat::where(function($q) use ($currentUser, $partner_id) {
+            $q->where('sender_id', $currentUser->id)->where('receiver_id', $partner_id);
+        })->orWhere(function($q) use ($currentUser, $partner_id) {
+            $q->where('sender_id', $partner_id)->where('receiver_id', $currentUser->id);
+        })->orderBy('created_at', 'asc')->get();
+
+        return response()->json([
+            'status' => 'success',
+            'current_user_id' => $currentUser->id,
+            'data' => $messages->map(function($m) use ($currentUser) {
+                return [
+                    'id' => $m->id,
+                    'is_mine' => $m->sender_id === $currentUser->id,
+                    'message' => $m->message,
+                    'attachment' => $m->attachment ? asset('uploads/chat/' . $m->attachment) : null,
+                    'time' => Carbon::parse($m->created_at)->format('H:i'),
+                    'date' => Carbon::parse($m->created_at)->toDateString(),
+                ];
+            })
+        ]);
+    }
+
+    public function sendChatMessage(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'receiver_id' => 'required|exists:users,id',
+            'message' => 'required_without:attachment|nullable|string',
+            'attachment' => 'nullable|file|max:5120',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'errors' => $validator->errors()], 422);
+        }
+
+        $currentUser = $request->user();
+        $attachmentName = null;
+
+        if ($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $attachmentName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
+            $destinationPath = public_path('uploads/chat');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+            $file->move($destinationPath, $attachmentName);
+        }
+
+        $chat = Chat::create([
+            'sender_id' => $currentUser->id,
+            'receiver_id' => $request->receiver_id,
+            'message' => $request->message ?? '',
+            'attachment' => $attachmentName,
+            'is_read' => false,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'id' => $chat->id,
+                'is_mine' => true,
+                'message' => $chat->message,
+                'attachment' => $chat->attachment ? asset('uploads/chat/' . $chat->attachment) : null,
+                'time' => Carbon::parse($chat->created_at)->format('H:i'),
             ]
         ]);
     }

@@ -62,6 +62,9 @@
                         <li class="{{ request()->routeIs('mahasiswa.laporan*') ? 'active' : '' }}">
                             <a href="{{ route('mahasiswa.laporan.index') }}">Laporan Harian</a>
                         </li>
+                        <li class="{{ request()->routeIs('siswa.chat*') ? 'active' : '' }}">
+                            <a href="{{ route('siswa.chat') }}">Chat Mentor</a>
+                        </li>
                     @endif
                 @endauth
                 

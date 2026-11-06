@@ -46,7 +46,8 @@
                                 <th>Dari Tanggal</th>
                                 <th>Sampai Tanggal</th>
                                 <!-- HEADER BARU -->
-                                <th>Atur Guru Pembimbing</th>
+                                <th>Guru Pembimbing</th>
+                                <th>Pembimbing Lapangan</th>
                                 <th>Status</th>
                                 <th class="text-center" width = "20%">Action</th>
                             </tr>
@@ -69,25 +70,49 @@
                                     <td>{{$item->dari_tanggal}}</td>
                                     <td>{{$item->sampai_tanggal}}</td>
                                     
-                                    <!-- KOLOM DROPWDOWN PEMBIMBING -->
+                                    <!-- KOLOM DROPWDOWN GURU PEMBIMBING -->
                                     <td>
                                         <form action="{{ route('admin.diterima.atur_pembimbing', $item->id_user_asli) }}" method="POST">
                                             @csrf
                                             @method('PUT')
                                             
-                                            <div class="input-group input-group-sm" style="min-width: 200px;">
-                                                <select name="pembimbing_id" class="form-control form-control-sm" required>
-                                                    <option value="">-- Pilih Guru Pembimbing --</option>
+                                            <div class="input-group input-group-sm" style="min-width: 190px;">
+                                                <select name="pembimbing_id" class="form-control form-control-sm">
+                                                    <option value="">-- Pilih Guru --</option>
                                                     @foreach($data['pembimbings'] as $pembimbing)
                                                         <option value="{{ $pembimbing->id }}" 
-                                                            {{-- Otomatis terpilih jika sudah diset sebelumnya --}}
                                                             {{ $item->pembimbing_id == $pembimbing->id ? 'selected' : '' }}>
                                                             {{ $pembimbing->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
                                                 <div class="input-group-append">
-                                                    <button type="submit" class="btn btn-primary btn-sm" title="Simpan">
+                                                    <button type="submit" class="btn btn-primary btn-sm" title="Simpan Guru">
+                                                        <i class="fas fa-save"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </td>
+
+                                    <!-- KOLOM DROPWDOWN PEMBIMBING LAPANGAN -->
+                                    <td>
+                                        <form action="{{ route('admin.diterima.atur_pembimbing', $item->id_user_asli) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            
+                                            <div class="input-group input-group-sm" style="min-width: 190px;">
+                                                <select name="pembimbing_lapangan_id" class="form-control form-control-sm">
+                                                    <option value="">-- Pilih Mentor Lapangan --</option>
+                                                    @foreach($data['pembimbing_lapangans'] as $pl)
+                                                        <option value="{{ $pl->id }}" 
+                                                            {{ $item->pembimbing_lapangan_id == $pl->id ? 'selected' : '' }}>
+                                                            {{ $pl->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <div class="input-group-append">
+                                                    <button type="submit" class="btn btn-info btn-sm" title="Simpan Pembimbing Lapangan">
                                                         <i class="fas fa-save"></i>
                                                     </button>
                                                 </div>

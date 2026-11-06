@@ -16,12 +16,14 @@ class DataDiterimaController extends Controller
 
     public function index()
     {
-        // 1. Ambil data semua user yang rolenya pembimbing untuk isi dropdown
+        // 1. Ambil data semua user yang rolenya pembimbing dan pembimbing_lapangan untuk isi dropdown
         $pembimbings = User::where('role', 'pembimbing')->get();
+        $pembimbingLapangans = User::where('role', 'pembimbing_lapangan')->get();
 
         $data = [
             'title' => "Data Diterima",
-            'pembimbings' => $pembimbings, // Kirim variabel ini ke view
+            'pembimbings' => $pembimbings, 
+            'pembimbing_lapangans' => $pembimbingLapangans,
             'data_pendaftaran' => Pendaftaran::select(
                     'pendaftaran.*', 
                     'users.id as id_user_asli', // PENTING: ID User untuk update
@@ -33,7 +35,8 @@ class DataDiterimaController extends Controller
                     'users.alamat_lengkap', 
                     'users.no_telp',
                     'users.jenis_kelamin',
-                    'users.pembimbing_id' // Ambil data pembimbing saat ini
+                    'users.pembimbing_id', // Ambil data guru pembimbing saat ini
+                    'users.pembimbing_lapangan_id' // Ambil data pembimbing lapangan saat ini
                 )
                 ->join('users', 'pendaftaran.id_users', '=', 'users.id')
                 ->where('pendaftaran.status_pendaftaran', 'diterima') 
@@ -66,17 +69,21 @@ class DataDiterimaController extends Controller
         return view('admin.detailditerima', compact('data'));
     }
 
-    // --- FUNGSI BARU UNTUK SIMPAN PEMBIMBING ---
+    // --- FUNGSI UNTUK SIMPAN PEMBIMBING SEKOLAH & PEMBIMBING LAPANGAN ---
     public function aturPembimbing(Request $request, $id)
     {
-        // Cari data USER (Mahasiswa) berdasarkan ID User
         $user = User::findOrFail($id);
 
-        // Update kolom pembimbing_id sesuai pilihan di dropdown
-        $user->pembimbing_id = $request->pembimbing_id;
+        if ($request->has('pembimbing_id')) {
+            $user->pembimbing_id = $request->pembimbing_id;
+        }
+
+        if ($request->has('pembimbing_lapangan_id')) {
+            $user->pembimbing_lapangan_id = $request->pembimbing_lapangan_id;
+        }
+
         $user->save();
 
-        // MENGGUNAKAN 'suc_message' AGAR NOTIFIKASI WARNA HIJAU MUNCUL
-        return redirect()->back()->with('suc_message', 'Sukses! Akun Mahasiswa berhasil dikaitkan dengan Pembimbing.');
+        return redirect()->back()->with('suc_message', 'Sukses! Data Pembimbing berhasil diperbarui.');
     }
 }

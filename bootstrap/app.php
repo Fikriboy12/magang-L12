@@ -30,6 +30,9 @@ return Application::configure(basePath: dirname(__DIR__))
             
             // Untuk role Orang Tua
             'orang_tua' => \App\Http\Middleware\RoleMiddleware::class . ':orang_tua',
+
+            // Untuk role Pembimbing Lapangan
+            'pembimbing_lapangan' => \App\Http\Middleware\RoleMiddleware::class . ':pembimbing_lapangan',
         ]);
         // ----------------------------------------------
 

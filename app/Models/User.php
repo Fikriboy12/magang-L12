@@ -38,8 +38,9 @@ class User extends Authenticatable
         'agama',
         'alamat_lengkap', 
 
-        // TAMBAHKAN 'pembimbing_id' dan 'siswa_id' AGAR BISA DISIMPAN OLEH ADMIN
+        // TAMBAHKAN 'pembimbing_id', 'pembimbing_lapangan_id', dan 'siswa_id' AGAR BISA DISIMPAN OLEH ADMIN
         'pembimbing_id',
+        'pembimbing_lapangan_id',
         'siswa_id',
 
         // ==========================================
@@ -133,5 +134,37 @@ class User extends Authenticatable
     public function absensi()
     {
         return $this->hasMany(Absensi::class, 'id_users', 'id');
+    }
+
+    /**
+     * Relasi: Satu Pembimbing Lapangan punya BANYAK Siswa Binaan.
+     */
+    public function siswaLapangan()
+    {
+        return $this->hasMany(User::class, 'pembimbing_lapangan_id', 'id');
+    }
+
+    /**
+     * Relasi: Satu Siswa punya SATU Pembimbing Lapangan.
+     */
+    public function pembimbingLapangan()
+    {
+        return $this->belongsTo(User::class, 'pembimbing_lapangan_id', 'id');
+    }
+
+    /**
+     * Relasi: Pesan yang dikirim oleh user
+     */
+    public function sentChats()
+    {
+        return $this->hasMany(Chat::class, 'sender_id');
+    }
+
+    /**
+     * Relasi: Pesan yang diterima oleh user
+     */
+    public function receivedChats()
+    {
+        return $this->hasMany(Chat::class, 'receiver_id');
     }
 }

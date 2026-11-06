@@ -77,6 +77,9 @@ class LoginController extends Controller
             if ($user->role === 'pembimbing') {
                 return redirect()->route('pembimbing.dashboard')
                     ->with('success', $pesan);
+            } elseif ($user->role === 'pembimbing_lapangan') {
+                return redirect()->route('pembimbing_lapangan.dashboard')
+                    ->with('success', $pesan);
             } elseif ($user->role === 'orang_tua') {
                 return redirect()->route('orangtua.dashboard')
                     ->with('success', $pesan);
@@ -151,6 +154,8 @@ class LoginController extends Controller
             // Redirect sesuai role (SAMA PERSIS DENGAN LOGIN BIASA)
             if ($user->role === 'pembimbing') {
                 return redirect()->route('pembimbing.dashboard')->with('success', $pesan);
+            } elseif ($user->role === 'pembimbing_lapangan') {
+                return redirect()->route('pembimbing_lapangan.dashboard')->with('success', $pesan);
             } elseif ($user->role === 'orang_tua') {
                 return redirect()->route('orangtua.dashboard')->with('success', $pesan);
             } else {

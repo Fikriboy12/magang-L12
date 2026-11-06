@@ -152,11 +152,12 @@
         </ul>
       </li>
 
-      <li class="nav-item dropdown {{ request()->is('data-admin*', 'data-pelamar*', 'data-pembimbing*', 'data-orang-tua*') ? 'active' : '' }}">
+      <li class="nav-item dropdown {{ request()->is('data-admin*', 'data-pelamar*', 'data-pembimbing*', 'data-pembimbing-lapangan*', 'data-orang-tua*') ? 'active' : '' }}">
         <a href="#" class="nav-link has-dropdown"><i class="fas fa-users-cog"></i> <span>Manajemen User</span></a>
         <ul class="dropdown-menu">
           <li class="{{ request()->is('data-admin*') ? 'active' : '' }}"><a class="nav-link" href="{{ url('/data-admin') }}">Admin</a></li>
-          <li class="{{ request()->is('data-pembimbing*') ? 'active' : '' }}"><a class="nav-link" href="{{ url('/data-pembimbing') }}">Guru Pembimbing</a></li>
+          <li class="{{ request()->is('data-pembimbing*') && !request()->is('data-pembimbing-lapangan*') ? 'active' : '' }}"><a class="nav-link" href="{{ url('/data-pembimbing') }}">Guru Pembimbing</a></li>
+          <li class="{{ request()->is('data-pembimbing-lapangan*') ? 'active' : '' }}"><a class="nav-link" href="{{ url('/data-pembimbing-lapangan') }}">Pembimbing Lapangan</a></li>
           <li class="{{ request()->is('data-pelamar*') ? 'active' : '' }}"><a class="nav-link" href="{{ url('/data-pelamar') }}">Siswa</a></li>
           <li class="{{ request()->is('data-orang-tua*') ? 'active' : '' }}"><a class="nav-link" href="{{ url('/data-orang-tua') }}">Orang Tua</a></li>
         </ul>

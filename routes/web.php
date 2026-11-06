@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\DataPendaftaranController;
 use App\Http\Controllers\Admin\DataDiterimaController;
 use App\Http\Controllers\Admin\DataTidakDiterimaController;
 use App\Http\Controllers\Admin\DataPembimbingController;
+use App\Http\Controllers\Admin\DataPembimbingLapanganController;
 use App\Http\Controllers\Admin\DataOrangTuaController;
 use App\Http\Controllers\Admin\DataAbsensiController;
 
@@ -29,6 +30,12 @@ use App\Http\Controllers\Auth\AdminLoginController;
 // --- Controller Pembimbing/Mahasiswa ---
 use App\Http\Controllers\Pembimbing\DashboardController as PembimbingDashboardController;
 use App\Http\Controllers\Pembimbing\AbsensiPembimbingController;
+
+// --- Controller Pembimbing Lapangan ---
+use App\Http\Controllers\PembimbingLapangan\PembimbingLapanganController;
+
+// --- Controller Pelamar / Siswa Chat ---
+use App\Http\Controllers\Pelamar\ChatMentorController;
 
 use App\Http\Controllers\Mahasiswa\LaporanHarianController as MahasiswaLaporanHarianController;
 use App\Http\Controllers\Mahasiswa\AbsensiController as MahasiswaAbsensiController;
@@ -137,6 +144,13 @@ Route::middleware(['auth', 'pelamar'])->group(function () {
     Route::post('/absensi/masuk', [MahasiswaAbsensiController::class, 'store'])->name('mahasiswa.absensi.store');
     Route::put('/absensi/pulang/{id}', [MahasiswaAbsensiController::class, 'absenPulang'])->name('mahasiswa.absensi.pulang');
 
+    // ==========================================
+    // 💬 CHAT SISWA DENGAN PEMBIMBING LAPANGAN
+    // ==========================================
+    Route::get('/chat-mentor', [ChatMentorController::class, 'index'])->name('siswa.chat');
+    Route::get('/chat-mentor/messages-ajax', [ChatMentorController::class, 'getMessagesAjax'])->name('siswa.chat.messages');
+    Route::post('/chat-mentor/send-ajax', [ChatMentorController::class, 'sendMessageAjax'])->name('siswa.chat.send');
+
 });
 
 
@@ -156,6 +170,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/insert-pembimbing', [DataPembimbingController::class, 'store'])->name('admin.pembimbing.store');
     Route::post('/update-pembimbing', [DataPembimbingController::class, 'update'])->name('admin.pembimbing.update');
     Route::get('/delete-pembimbing/{id}', [DataPembimbingController::class, 'delete'])->name('admin.pembimbing.delete');
+
+    // DATA PEMBIMBING LAPANGAN (INDUSTRI)
+    Route::get('/data-pembimbing-lapangan', [DataPembimbingLapanganController::class, 'index'])->name('admin.pembimbing_lapangan.index');
+    Route::post('/insert-pembimbing-lapangan', [DataPembimbingLapanganController::class, 'store'])->name('admin.pembimbing_lapangan.store');
+    Route::post('/update-pembimbing-lapangan', [DataPembimbingLapanganController::class, 'update'])->name('admin.pembimbing_lapangan.update');
+    Route::get('/delete-pembimbing-lapangan/{id}', [DataPembimbingLapanganController::class, 'delete'])->name('admin.pembimbing_lapangan.delete');
 
     // DATA ORANG TUA
     Route::get('/data-orang-tua', [DataOrangTuaController::class, 'index'])->name('admin.orangtua.index');
@@ -254,5 +274,43 @@ Route::middleware(['auth', 'orang_tua'])->prefix('orang-tua')->name('orangtua.')
 
     // Halaman Monitoring Absensi Anak
     Route::get('/monitoring-absensi', [OrangTuaDashboardController::class, 'absensi'])->name('absensi.index');
+
+});
+
+
+// ==========================================
+// 🏭 ROUTE KHUSUS PEMBIMBING LAPANGAN (INDUSTRI)
+// ==========================================
+Route::middleware(['auth', 'pembimbing_lapangan'])->prefix('pembimbing-lapangan')->name('pembimbing_lapangan.')->group(function () {
+    
+    // 1. Dashboard Utama
+    Route::get('/dashboard', [PembimbingLapanganController::class, 'dashboard'])->name('dashboard');
+
+    // 2. ACC Izin & Sakit Siswa
+    Route::get('/izin', [PembimbingLapanganController::class, 'accIzin'])->name('izin.index');
+    Route::post('/izin/approve/{id}', [PembimbingLapanganController::class, 'approveIzin'])->name('izin.approve');
+    Route::post('/izin/reject/{id}', [PembimbingLapanganController::class, 'rejectIzin'])->name('izin.reject');
+
+    // 3. Data Laporan Harian Siswa
+    Route::get('/laporan', [PembimbingLapanganController::class, 'dataLaporan'])->name('laporan.index');
+    Route::get('/laporan/siswa/{siswa_id}', [PembimbingLapanganController::class, 'detailLaporanSiswa'])->name('laporan.siswa');
+    Route::post('/laporan/approve/{id}', [PembimbingLapanganController::class, 'approveLaporan'])->name('laporan.approve');
+    Route::post('/laporan/reject/{id}', [PembimbingLapanganController::class, 'rejectLaporan'])->name('laporan.reject');
+    Route::get('/laporan/siswa/{siswa_id}/pdf', [PembimbingLapanganController::class, 'downloadPdfLaporan'])->name('laporan.pdf');
+
+    // 4. Data Absensi Siswa
+    Route::get('/absensi', [PembimbingLapanganController::class, 'dataAbsensi'])->name('absensi.index');
+    Route::get('/absensi/siswa/{siswa_id}', [PembimbingLapanganController::class, 'detailAbsensiSiswa'])->name('absensi.siswa');
+    Route::get('/absensi/siswa/{siswa_id}/pdf', [PembimbingLapanganController::class, 'downloadPdfAbsensi'])->name('absensi.pdf');
+
+    // 5. Pengajuan Sertifikat Siswa
+    Route::get('/sertifikat', [PembimbingLapanganController::class, 'pengajuanSertifikat'])->name('sertifikat.index');
+    Route::post('/sertifikat/approve/{id}', [PembimbingLapanganController::class, 'approveSertifikat'])->name('sertifikat.approve');
+    Route::post('/sertifikat/reject/{id}', [PembimbingLapanganController::class, 'rejectSertifikat'])->name('sertifikat.reject');
+
+    // 6. Chat Langsung dengan Siswa Bimbingan
+    Route::get('/chat/{siswa_id?}', [PembimbingLapanganController::class, 'chatRoom'])->name('chat.index');
+    Route::get('/chat-ajax/messages/{siswa_id}', [PembimbingLapanganController::class, 'getMessagesAjax'])->name('chat.messages');
+    Route::post('/chat-ajax/send', [PembimbingLapanganController::class, 'sendMessageAjax'])->name('chat.send');
 
 });

@@ -17,4 +17,9 @@ class Sertifikat extends Model
         'created_by',
         'status_pengajuan'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }

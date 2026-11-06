@@ -51,4 +51,32 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/laporan/{id}', [MobileController::class, 'getOrangTuaLaporanDetail']);
         Route::get('/profil-anak', [MobileController::class, 'getOrangTuaProfilAnak']);
     });
+
+    // --- RUTE KHUSUS PEMBIMBING LAPANGAN (INDUSTRI) ---
+    Route::prefix('pembimbing-lapangan')->group(function () {
+        Route::get('/dashboard', [MobileController::class, 'getPembimbingLapanganDashboard']);
+        Route::get('/siswa', [MobileController::class, 'getPembimbingLapanganSiswa']);
+        // ACC Izin
+        Route::get('/izin', [MobileController::class, 'getPembimbingLapanganIzin']);
+        Route::post('/izin/{id}/approve', [MobileController::class, 'approveIzinMobile']);
+        Route::post('/izin/{id}/reject', [MobileController::class, 'rejectIzinMobile']);
+        // Data Laporan
+        Route::get('/laporan', [MobileController::class, 'getPembimbingLapanganLaporan']);
+        Route::post('/laporan/{id}/approve', [MobileController::class, 'approveLaporanMobile']);
+        Route::post('/laporan/{id}/reject', [MobileController::class, 'rejectLaporanMobile']);
+        // Absensi Siswa
+        Route::get('/absensi', [MobileController::class, 'getPembimbingLapanganAbsensi']);
+        Route::get('/absensi/siswa/{siswa_id}', [MobileController::class, 'getPembimbingLapanganAbsensiDetail']);
+        // Sertifikat
+        Route::get('/sertifikat', [MobileController::class, 'getPembimbingLapanganSertifikat']);
+        Route::post('/sertifikat/{id}/approve', [MobileController::class, 'approveSertifikatMobile']);
+        Route::post('/sertifikat/{id}/reject', [MobileController::class, 'rejectSertifikatMobile']);
+        // Chat
+        Route::get('/chat/{siswa_id}', [MobileController::class, 'getChatMessages']);
+        Route::post('/chat/send', [MobileController::class, 'sendChatMessage']);
+    });
+
+    // --- RUTE CHAT UMUM UNTUK SISWA & MENTOR ---
+    Route::get('/chat/messages/{partner_id}', [MobileController::class, 'getChatMessages']);
+    Route::post('/chat/send', [MobileController::class, 'sendChatMessage']);
 });
