@@ -36,7 +36,7 @@
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th>Nama Mahasiswa</th>
+                                <th>Nama Siswa</th>
                                 <th>File Sertifikat</th>
                                 <th>Status</th>
                                 <th class="text-center" width="20%">Action</th>
@@ -76,7 +76,7 @@
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center" style="gap: 5px;">
                                         {{-- TOMBOL DETAIL --}}
-                                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalDetail{{ $item->id }}" title="Detail Mahasiswa">
+                                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalDetail{{ $item->id }}" title="Detail Siswa">
                                             <i class="fas fa-eye"></i>
                                         </button>
 

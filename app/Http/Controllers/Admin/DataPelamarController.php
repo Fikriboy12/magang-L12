@@ -20,7 +20,7 @@ class DataPelamarController extends Controller
     public function index()
     {
         $data = [
-            'title' => "Data Pelamar",
+            'title' => "Data Siswa",
             'data_pelamar' => User::leftJoin('detail_users', 'detail_users.id_users', '=', 'users.id')->where('role', 'pelamar')->get(),
         ];
 

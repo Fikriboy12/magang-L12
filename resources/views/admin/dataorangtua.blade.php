@@ -122,7 +122,7 @@
                     <div class="form-group">
                         <label for="">Pilih Siswa / Anak yang Diasuh <span class="text-danger">*</span></label>
                         <select name="siswa_id" class="form-control select2" required style="width: 100%;">
-                            <option value="">-- Pilih Siswa / Mahasiswa --</option>
+                            <option value="">-- Pilih Siswa --</option>
                             @foreach ($data['siswas'] as $siswa)
                                 <option value="{{ $siswa->id }}" {{ old('siswa_id') == $siswa->id ? 'selected' : '' }}>
                                     {{ $siswa->name }} {{ $siswa->nim ? '('.$siswa->nim.')' : '' }} - {{ $siswa->email }}

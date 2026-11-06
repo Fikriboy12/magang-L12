@@ -157,7 +157,7 @@
         <ul class="dropdown-menu">
           <li class="{{ request()->is('data-admin*') ? 'active' : '' }}"><a class="nav-link" href="{{ url('/data-admin') }}">Admin</a></li>
           <li class="{{ request()->is('data-pembimbing*') ? 'active' : '' }}"><a class="nav-link" href="{{ url('/data-pembimbing') }}">Guru Pembimbing</a></li>
-          <li class="{{ request()->is('data-pelamar*') ? 'active' : '' }}"><a class="nav-link" href="{{ url('/data-pelamar') }}">Mahasiswa</a></li>
+          <li class="{{ request()->is('data-pelamar*') ? 'active' : '' }}"><a class="nav-link" href="{{ url('/data-pelamar') }}">Siswa</a></li>
           <li class="{{ request()->is('data-orang-tua*') ? 'active' : '' }}"><a class="nav-link" href="{{ url('/data-orang-tua') }}">Orang Tua</a></li>
         </ul>
       </li>

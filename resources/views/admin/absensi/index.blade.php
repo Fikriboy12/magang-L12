@@ -1,6 +1,6 @@
 @extends('template_admin.master')
 
-@section('title', 'Data Mahasiswa Magang')
+@section('title', 'Data Siswa Magang')
 
 @section('contents')
 <div class="content-wrapper">
@@ -14,7 +14,7 @@
         <div class="container-fluid">
             <div class="card card-primary card-outline">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3 class="card-title mb-0"><i class="fas fa-users mr-1"></i> Daftar Mahasiswa Aktif</h3>
+                    <h3 class="card-title mb-0"><i class="fas fa-users mr-1"></i> Daftar Siswa Aktif</h3>
                     <a href="{{ route('admin.absensi.portal') }}" class="btn btn-primary btn-sm shadow-sm" style="background: linear-gradient(135deg, #0284c7, #3CB9E0); border: none; font-weight: 600; padding: 6px 14px; border-radius: 8px;">
                         <i class="fas fa-calendar-check mr-1"></i> Pusat Presensi (QR & Manual)
                     </a>
@@ -25,9 +25,9 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th>Nama Mahasiswa</th>
+                                    <th>Nama Siswa</th>
                                     <th>Email</th>
-                                    <th>Asal Sekolah/Kampus</th>
+                                    <th>Asal Sekolah</th>
                                     <th width="15%">Aksi</th>
                                 </tr>
                             </thead>

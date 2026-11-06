@@ -125,7 +125,7 @@ body {
                         <i class="far fa-user"></i>
                     </div>
                     <div class="card-wrap">
-                        <div class="card-header"><h4>Data Pelamar</h4></div>
+                        <div class="card-header"><h4>Data Siswa</h4></div>
                         <div class="card-body">{{ $data['pelamar'] ?? $data['jumlah_pelamar_user'] ?? 0 }}</div>
                     </div>
                 </div>
