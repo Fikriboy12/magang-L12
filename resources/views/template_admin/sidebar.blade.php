@@ -152,12 +152,13 @@
         </ul>
       </li>
 
-      <li class="nav-item dropdown {{ request()->is('data-admin*', 'data-pelamar*', 'data-pembimbing*') ? 'active' : '' }}">
+      <li class="nav-item dropdown {{ request()->is('data-admin*', 'data-pelamar*', 'data-pembimbing*', 'data-orang-tua*') ? 'active' : '' }}">
         <a href="#" class="nav-link has-dropdown"><i class="fas fa-users-cog"></i> <span>Manajemen User</span></a>
         <ul class="dropdown-menu">
           <li class="{{ request()->is('data-admin*') ? 'active' : '' }}"><a class="nav-link" href="{{ url('/data-admin') }}">Admin</a></li>
-          <li class="{{ request()->is('data-pembimbing*') ? 'active' : '' }}"><a class="nav-link" href="{{ url('/data-pembimbing') }}">Pembimbing</a></li>
+          <li class="{{ request()->is('data-pembimbing*') ? 'active' : '' }}"><a class="nav-link" href="{{ url('/data-pembimbing') }}">Guru Pembimbing</a></li>
           <li class="{{ request()->is('data-pelamar*') ? 'active' : '' }}"><a class="nav-link" href="{{ url('/data-pelamar') }}">Mahasiswa</a></li>
+          <li class="{{ request()->is('data-orang-tua*') ? 'active' : '' }}"><a class="nav-link" href="{{ url('/data-orang-tua') }}">Orang Tua</a></li>
         </ul>
       </li>
 
@@ -183,10 +184,17 @@
 
       <li class="menu-header">Monitoring</li>
 
-      <li class="{{ request()->routeIs('admin.absensi.*') ? 'active' : '' }}">
+      <li class="{{ request()->routeIs('admin.absensi.portal', 'admin.absensi.qr*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.absensi.portal') }}">
+          <i class="fas fa-calendar-check"></i> 
+          <span>Presensi Harian</span>
+        </a>
+      </li>
+
+      <li class="{{ request()->routeIs('admin.absensi.index', 'admin.absensi.detail') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('admin.absensi.index') }}">
-          <i class="fas fa-clock"></i> 
-          <span>Data Absensi</span>
+          <i class="fas fa-clipboard-list"></i> 
+          <span>Rekap Absensi</span>
         </a>
       </li>
 

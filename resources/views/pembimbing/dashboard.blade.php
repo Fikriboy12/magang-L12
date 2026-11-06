@@ -1,6 +1,6 @@
 @extends('template_admin.master_pembimbing')
 
-@section('title', 'Dashboard Pembimbing')
+@section('title', 'Dashboard Guru Pembimbing')
 
 @section('contents')
 
@@ -158,7 +158,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="admin-banner">
-                    <h1 class="banner-title">Selamat Datang, pembimbing!</h1>
+                    <h1 class="banner-title">Selamat Datang, Guru Pembimbing!</h1>
                     <p class="banner-subtitle">
                         Sistem Informasi Magang - PT. MEDIA BALAI NUSA astro net
                     </p>
@@ -176,7 +176,7 @@
                         <i class="far fa-user"></i>
                     </div>
                     <div class="stat-content">
-                        <h6>Data Mahasiswa</h6>
+                        <h6>Data Siswa Bimbingan</h6>
                         <h2>{{ $mahasiswaList->count() }}</h2>
                     </div>
                 </div>
@@ -216,7 +216,7 @@
                 <div class="card-table">
                     <div class="table-header">
                         <h5 class="m-0 font-weight-bold" style="color: #374151; font-size: 1.1rem;">
-                            <i class="fas fa-list text-primary mr-2"></i> Daftar Mahasiswa Bimbingan
+                            <i class="fas fa-list text-primary mr-2"></i> Daftar Siswa Bimbingan
                         </h5>
                     </div>
                     
@@ -225,7 +225,7 @@
                             <thead>
                                 <tr>
                                     <th class="text-center" width="5%">No</th>
-                                    <th width="35%">Nama Mahasiswa</th>
+                                    <th width="35%">Nama Siswa</th>
                                     <th width="30%">Email</th>
                                     <th class="text-center">Status Laporan</th>
                                     <th class="text-center" width="15%">Aksi</th>
@@ -243,7 +243,7 @@
                                             </div>
                                             <div>
                                                 <span style="font-weight: 600; display: block; color: #1f2937;">{{ $mhs->name }}</span>
-                                                <span style="font-size: 0.8rem; color: #9ca3af;">NIM: {{ $mhs->nim ?? '-' }}</span>
+                                                <span style="font-size: 0.8rem; color: #9ca3af;">NIS/NISN: {{ $mhs->nim ?? '-' }}</span>
                                             </div>
                                         </div>
                                     </td>
@@ -273,7 +273,7 @@
                                 <tr>
                                     <td colspan="5" class="text-center py-5 text-muted">
                                         <i class="fas fa-folder-open fa-3x mb-3" style="opacity: 0.3;"></i>
-                                        <p>Belum ada mahasiswa yang dibimbing.</p>
+                                        <p>Belum ada siswa yang dibimbing.</p>
                                     </td>
                                 </tr>
                                 @endforelse

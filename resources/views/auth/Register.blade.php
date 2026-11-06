@@ -209,42 +209,27 @@
 
             <div class="row">
                 <div class="col-6">
-                    <div class="form-group">
+                    <div class="form-group mb-1">
                         <label>Password</label>
                         <input type="password" name="password" class="form-control" placeholder="Min 8 karakter" required>
                     </div>
                 </div>
                 <div class="col-6">
-                    <div class="form-group">
+                    <div class="form-group mb-1">
                         <label>Konfirmasi Password</label>
                         <input type="password" name="password_confirmation" class="form-control" placeholder="Ulangi" required>
                     </div>
                 </div>
             </div>
+            <small class="text-muted d-block mb-3" style="font-size: 11px;">
+                <i class="fas fa-info-circle text-primary"></i> Minimal 8 karakter, wajib kombinasi huruf dan angka.
+            </small>
+
 
             <div class="form-group">
                 <label>Nomor HP Siswa</label>
                 <input type="number" name="no_hp_siswa" class="form-control" placeholder="08xxxxxxxxxx" value="{{ old('no_hp_siswa') }}" required>
             </div>
-
-
-            <h5 class="section-title">Data Orang Tua/Wali</h5>
-
-            <div class="form-group">
-                <label>Nama Orang Tua/Wali</label>
-                <input type="text" name="nama_wali" class="form-control" placeholder="Nama Lengkap Orang Tua/Wali" value="{{ old('nama_wali') }}" required>
-            </div>
-
-            <div class="form-group">
-                <label>Email Orang Tua/Wali</label>
-                <input type="email" name="email_wali" class="form-control" placeholder="Email Orang Tua/Wali" value="{{ old('email_wali') }}" required>
-            </div>
-
-            <div class="form-group">
-                <label>Nomor HP Orang Tua/Wali</label>
-                <input type="number" name="no_hp_wali" class="form-control" placeholder="08xxxxxxxxxx" value="{{ old('no_hp_wali') }}" required>
-            </div>
-
 
             <h5 class="section-title">Verifikasi Biometrik</h5>
 

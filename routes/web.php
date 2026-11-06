@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\OtpPasswordResetController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Pelamar\PendaftaranController;
 use App\Http\Controllers\Pelamar\DataLamaranController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\Admin\DataPendaftaranController;
 use App\Http\Controllers\Admin\DataDiterimaController;
 use App\Http\Controllers\Admin\DataTidakDiterimaController;
 use App\Http\Controllers\Admin\DataPembimbingController;
+use App\Http\Controllers\Admin\DataOrangTuaController;
 use App\Http\Controllers\Admin\DataAbsensiController;
 
 // --- Controller Login Admin Baru ---
@@ -30,6 +32,9 @@ use App\Http\Controllers\Pembimbing\AbsensiPembimbingController;
 
 use App\Http\Controllers\Mahasiswa\LaporanHarianController as MahasiswaLaporanHarianController;
 use App\Http\Controllers\Mahasiswa\AbsensiController as MahasiswaAbsensiController;
+
+// --- Controller Orang Tua ---
+use App\Http\Controllers\OrangTua\OrangTuaDashboardController;
 
 
 /*
@@ -65,6 +70,14 @@ Route::post('/insert-register', [RegisterController::class, 'register'])->name('
 // [PENTING] Route untuk AJAX Kirim OTP (Tombol Orange)
 // Route ini wajib ada supaya tombol "Kirim OTP" di halaman register berfungsi
 Route::post('/send-otp-ajax', [RegisterController::class, 'sendOtpAjax'])->name('send.otp.ajax');
+
+// 4. LUPA KATA SANDI (RESET PASSWORD VIA OTP)
+Route::get('/forgot-password', [OtpPasswordResetController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('/forgot-password/send-otp', [OtpPasswordResetController::class, 'sendResetOtp'])->name('password.send_otp');
+Route::post('/forgot-password/resend-otp', [OtpPasswordResetController::class, 'resendResetOtp'])->name('password.resend_otp');
+Route::get('/reset-password-otp', [OtpPasswordResetController::class, 'showResetPasswordForm'])->name('password.reset.form');
+Route::post('/reset-password-otp', [OtpPasswordResetController::class, 'resetPassword'])->name('password.update.otp');
+
 
 
 // ==========================================
@@ -120,6 +133,7 @@ Route::middleware(['auth', 'pelamar'])->group(function () {
     // RUTE ABSENSI MAHASISWA
     // ==========================================
     Route::get('/absensi', [MahasiswaAbsensiController::class, 'index'])->name('mahasiswa.absensi.index');
+    Route::get('/absensi/download-pdf', [MahasiswaAbsensiController::class, 'downloadPdf'])->name('mahasiswa.absensi.pdf');
     Route::post('/absensi/masuk', [MahasiswaAbsensiController::class, 'store'])->name('mahasiswa.absensi.store');
     Route::put('/absensi/pulang/{id}', [MahasiswaAbsensiController::class, 'absenPulang'])->name('mahasiswa.absensi.pulang');
 
@@ -142,6 +156,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/insert-pembimbing', [DataPembimbingController::class, 'store'])->name('admin.pembimbing.store');
     Route::post('/update-pembimbing', [DataPembimbingController::class, 'update'])->name('admin.pembimbing.update');
     Route::get('/delete-pembimbing/{id}', [DataPembimbingController::class, 'delete'])->name('admin.pembimbing.delete');
+
+    // DATA ORANG TUA
+    Route::get('/data-orang-tua', [DataOrangTuaController::class, 'index'])->name('admin.orangtua.index');
+    Route::post('/insert-orang-tua', [DataOrangTuaController::class, 'store'])->name('admin.orangtua.store');
+    Route::post('/update-orang-tua', [DataOrangTuaController::class, 'update'])->name('admin.orangtua.update');
+    Route::get('/delete-orang-tua/{id}', [DataOrangTuaController::class, 'delete'])->name('admin.orangtua.delete');
 
     // PROFILE ADMIN
     Route::get('/data-profile', [DataProfileController::class, 'index'])->name('admin.profile.index');
@@ -185,8 +205,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/data-tidak-diterima', [DataTidakDiterimaController::class, 'index'])->name('admin.tidak_diterima.index');
     Route::get('/detail-tidak-diterima/{id}', [DataTidakDiterimaController::class, 'detail'])->name('admin.tidak_diterima.detail');
 
-    // ABSENSI (ADMIN)
+    // ABSENSI (ADMIN) - PUSAT PRESENSI EDLINK (QR & MANUAL) & DATA REKAP
     Route::get('/data-absensi', [DataAbsensiController::class, 'index'])->name('admin.absensi.index');
+    Route::get('/data-absensi/portal', [DataAbsensiController::class, 'portal'])->name('admin.absensi.portal');
+    Route::get('/data-absensi/qr', [DataAbsensiController::class, 'portal'])->name('admin.absensi.qr');
+    Route::get('/data-absensi/manual-data', [DataAbsensiController::class, 'getManualData'])->name('admin.absensi.manual.data');
+    Route::post('/data-absensi/manual-store', [DataAbsensiController::class, 'storeManual'])->name('admin.absensi.manual.store');
+    Route::get('/data-absensi/qr-token', [DataAbsensiController::class, 'getQrToken'])->name('admin.absensi.qr.token');
+    Route::get('/data-absensi/qr-recent', [DataAbsensiController::class, 'getRecentScans'])->name('admin.absensi.qr.recent');
     Route::get('/data-absensi/detail/{id}', [DataAbsensiController::class, 'detail'])->name('admin.absensi.detail');
 
 });
@@ -213,5 +239,20 @@ Route::middleware(['auth', 'pembimbing'])->prefix('pembimbing')->name('pembimbin
     // MONITORING ABSENSI (KHUSUS PEMBIMBING)
     Route::get('/monitoring-absensi', [AbsensiPembimbingController::class, 'index'])->name('absensi.index');
     Route::get('/monitoring-absensi/detail/{id}', [AbsensiPembimbingController::class, 'detail'])->name('absensi.detail');
+
+});
+
+
+// 👪 ROUTE KHUSUS ORANG TUA / WALI
+Route::middleware(['auth', 'orang_tua'])->prefix('orang-tua')->name('orangtua.')->group(function () {
+    
+    // Dashboard Utama Orang Tua (Monitoring Siswa/Anak)
+    Route::get('/dashboard', [OrangTuaDashboardController::class, 'index'])->name('dashboard');
+    
+    // Halaman Riwayat Laporan Harian Anak
+    Route::get('/laporan', [OrangTuaDashboardController::class, 'lihatLaporan'])->name('laporan.index');
+
+    // Halaman Monitoring Absensi Anak
+    Route::get('/monitoring-absensi', [OrangTuaDashboardController::class, 'absensi'])->name('absensi.index');
 
 });

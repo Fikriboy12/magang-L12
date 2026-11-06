@@ -57,22 +57,28 @@ class RegisterController extends Controller
     // --- 2. PROSES REGISTER (DISESUAIKAN DENGAN FORM BARU) ---
     public function register(Request $request)
     {
-        // Validasi input sesuai dengan field di form registrasi baru
         $validated = $request->validate([
             // Data Akun
             'nama_lengkap' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/[a-zA-Z]/', // Wajib ada huruf
+                'regex:/[0-9]/',     // Wajib ada angka
+            ],
             'no_hp_siswa' => 'required|string|max:20', 
             'otp_input' => 'required|numeric', 
-            
-            // Data Orang Tua/Wali
-            'nama_wali' => 'required|string|max:255',
-            'email_wali' => 'required|email|max:255',
-            'no_hp_wali' => 'required|string|max:20',
 
             // Verifikasi Biometrik
             'face_descriptor' => 'required|string', 
+        ], [
+            'password.required' => 'Kata sandi wajib diisi.',
+            'password.min' => 'Kata sandi minimal terdiri dari 8 karakter.',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+            'password.regex' => 'Kata sandi harus berupa kombinasi huruf dan angka (tidak boleh hanya huruf saja atau hanya angka saja).',
         ]);
 
         // Cek kecocokan OTP
@@ -94,11 +100,6 @@ class RegisterController extends Controller
             'status' => 1, 
             'no_telp' => $validated['no_hp_siswa'],       // Input no_hp_siswa disimpan ke kolom no_telp
             'email_verified_at' => now(), 
-
-            // Data Orang Tua/Wali
-            'nama_wali' => $validated['nama_wali'],
-            'email_wali' => $validated['email_wali'],
-            'no_hp_wali' => $validated['no_hp_wali'],
 
             // Data Biometrik Wajah
             'face_descriptor' => $validated['face_descriptor'],

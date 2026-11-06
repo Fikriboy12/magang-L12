@@ -13,6 +13,7 @@ use App\Models\Sertifikat;
 use App\Models\Pendaftaran;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Cache;
 
 class MobileController extends Controller
 {
@@ -43,11 +44,11 @@ class MobileController extends Controller
             ], 401);
         }
 
-        // Cek apakah rolenya pelamar (siswa/mahasiswa) atau pembimbing
-        if (!in_array($user->role, ['pelamar', 'pembimbing'])) {
+        // Cek apakah rolenya pelamar (siswa/mahasiswa), pembimbing, atau orang_tua
+        if (!in_array($user->role, ['pelamar', 'pembimbing', 'orang_tua'])) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Akses ditolak! Hanya siswa atau pembimbing magang yang dapat login.'
+                'message' => 'Akses ditolak! Akun Anda tidak memiliki hak akses aplikasi mobile.'
             ], 403);
         }
 
@@ -56,6 +57,24 @@ class MobileController extends Controller
 
         // Buat token Sanctum baru
         $token = $user->createToken('mobile_token')->plainTextToken;
+
+        $anakData = null;
+        if ($user->role === 'orang_tua') {
+            $anak = $user->anak;
+            if ($anak) {
+                $pendaftaranAnak = Pendaftaran::where('id_users', $anak->id)->first();
+                $anakData = [
+                    'id' => $anak->id,
+                    'name' => $anak->name,
+                    'email' => $anak->email,
+                    'nim' => $anak->nim,
+                    'no_telp' => $anak->no_telp,
+                    'sekolah' => $pendaftaranAnak->universitas ?? $pendaftaranAnak->asal_sekolah ?? $pendaftaranAnak->asal_kampus ?? '-',
+                    'jurusan' => $pendaftaranAnak->jurusan ?? '-',
+                    'status_magang' => $pendaftaranAnak->status_pendaftaran ?? 'pengajuan',
+                ];
+            }
+        }
 
         return response()->json([
             'status' => 'success',
@@ -69,6 +88,7 @@ class MobileController extends Controller
                     'role' => $user->role,
                     'nim' => $user->nim,
                     'no_telp' => $user->no_telp,
+                    'anak' => $anakData,
                 ]
             ]
         ]);
@@ -311,6 +331,178 @@ class MobileController extends Controller
             'message' => 'Berhasil absen pulang (WIB)! Hati-hati di jalan.',
             'data' => $absen
         ]);
+    }
+
+    /**
+     * 📱 Scan Dynamic QR Code Absensi Siswa
+     * Menerima input:
+     * - qr_token (wajib): String token hasil scan QR dari layar Admin
+     * - tipe (opsional): 'masuk' atau 'pulang' (jika tidak dikirim, sistem otomatis mendeteksi)
+     * - foto (opsional): Foto selfie kehadiran
+     * - keterangan (opsional): Catatan kegiatan
+     * - lokasi (opsional): Koordinat GPS / Nama lokasi
+     */
+    public function scanQrAbsensi(Request $request)
+    {
+        $user = $request->user();
+        $rawToken = $request->input('qr_token');
+
+        if (!$rawToken) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Token QR tidak ditemukan. Pastikan Anda memindai QR Code yang tampil di layar kantor.'
+            ], 422);
+        }
+
+        // Ekstrak token jika QR berupa string JSON (misal {"token":"..."})
+        $token = trim($rawToken);
+        if (str_starts_with($token, '{') && str_ends_with($token, '}')) {
+            $json = json_decode($token, true);
+            if (isset($json['token'])) {
+                $token = $json['token'];
+            }
+        }
+
+        // 1. Validasi Token QR dari Cache (Anti-Screenshot / Time-based Security)
+        $cached = Cache::get('active_attendance_qr_' . $token);
+        $nowTimestamp = Carbon::now('Asia/Jakarta')->timestamp;
+
+        if (!$cached || !isset($cached['valid_until']) || $nowTimestamp > $cached['valid_until']) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 'QR_EXPIRED',
+                'message' => 'QR Code sudah kedaluwarsa atau tidak valid! Mohon arahkan kamera ke layar monitor kantor dan pindai QR Code terbaru yang sedang tampil.'
+            ], 400);
+        }
+
+        // 2. Cek status magang user
+        $pendaftaran = Pendaftaran::where('id_users', $user->id)->first();
+        if (!$pendaftaran || strtolower($pendaftaran->status_pendaftaran) !== 'diterima') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Maaf, Anda belum bisa melakukan absensi karena status magang Anda belum DITERIMA.'
+            ], 403);
+        }
+
+        $waktuSekarang = Carbon::now('Asia/Jakarta');
+        $hariIni = $waktuSekarang->format('Y-m-d');
+
+        // 3. Simpan foto jika dilampirkan dari kamera APK
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $namaFoto = time() . '_qr_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/absensi'), $namaFoto);
+            $fotoPath = 'uploads/absensi/' . $namaFoto;
+        }
+
+        $keteranganInput = $request->input('keterangan', 'Hadir via Scan QR Layar Kantor');
+        $lokasiInput = $request->input('lokasi', 'Kantor PT. MEDIA BALAI NUSA (Via QR)');
+        $reqTipe = strtolower($request->input('tipe', ''));
+
+        // 4. Cek record absensi hari ini
+        $absenHariIni = Absensi::where('id_users', $user->id)
+                               ->where('tgl_absen', $hariIni)
+                               ->first();
+
+        // KASUS A: BELUM ABSEN MASUK
+        if (!$absenHariIni) {
+            // Jika siswa memilih mode pulang padahal belum masuk
+            if ($reqTipe === 'pulang') {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Anda belum melakukan absen masuk hari ini. Silakan pilih absen masuk terlebih dahulu.'
+                ], 400);
+            }
+
+            $absen = Absensi::create([
+                'id_users' => $user->id,
+                'tgl_absen' => $hariIni,
+                'jam_masuk' => $waktuSekarang->format('H:i:s'),
+                'status' => 'Hadir',
+                'foto_bukti' => $fotoPath,
+                'lokasi_masuk' => $lokasiInput,
+                'keterangan' => $keteranganInput,
+                'status_validasi' => 'valid'
+            ]);
+
+            // Catat log live feed untuk layar Admin
+            $this->pushLiveScanFeed($user->name, 'Masuk', $waktuSekarang->format('H:i:s'));
+
+            return response()->json([
+                'status' => 'success',
+                'tipe' => 'masuk',
+                'message' => 'Presensi MASUK berhasil! Tercatat pada pukul ' . $waktuSekarang->format('H:i:s') . ' WIB.',
+                'data' => $absen
+            ], 200);
+        }
+
+        // KASUS B: SUDAH ABSEN MASUK, TAPI BELUM ABSEN PULANG
+        if (!$absenHariIni->jam_keluar) {
+            // Jika siswa memaksa mode 'masuk' lagi padahal sudah masuk
+            if ($reqTipe === 'masuk') {
+                return response()->json([
+                    'status' => 'warning',
+                    'message' => 'Anda sudah melakukan absen masuk hari ini pada pukul ' . substr($absenHariIni->jam_masuk, 0, 5) . ' WIB.'
+                ], 400);
+            }
+
+            // Cegah scan beruntun yang tidak sengaja dalam 2 menit
+            $jamMasukCarbon = Carbon::parse($hariIni . ' ' . $absenHariIni->jam_masuk, 'Asia/Jakarta');
+            if ($waktuSekarang->diffInMinutes($jamMasukCarbon) < 2) {
+                return response()->json([
+                    'status' => 'warning',
+                    'message' => 'Anda baru saja absen masuk. Absen pulang dapat dilakukan minimal 2 menit setelah absen masuk.'
+                ], 400);
+            }
+
+            $absenHariIni->update([
+                'jam_keluar' => $waktuSekarang->format('H:i:s'),
+                'foto_keluar' => $fotoPath ?? $absenHariIni->foto_keluar,
+                'lokasi_keluar' => $lokasiInput,
+            ]);
+
+            // Catat log live feed untuk layar Admin
+            $this->pushLiveScanFeed($user->name, 'Pulang', $waktuSekarang->format('H:i:s'));
+
+            return response()->json([
+                'status' => 'success',
+                'tipe' => 'pulang',
+                'message' => 'Presensi PULANG berhasil! Tercatat pada pukul ' . $waktuSekarang->format('H:i:s') . ' WIB. Hati-hati di jalan!',
+                'data' => $absenHariIni
+            ], 200);
+        }
+
+        // KASUS C: SUDAH SELESAI MASUK DAN PULANG HARI INI
+        return response()->json([
+            'status' => 'info',
+            'message' => 'Anda sudah menyelesaikan absensi masuk (' . substr($absenHariIni->jam_masuk, 0, 5) . ' WIB) dan absen pulang (' . substr($absenHariIni->jam_keluar, 0, 5) . ' WIB) untuk hari ini.',
+            'data' => $absenHariIni
+        ], 200);
+    }
+
+    /**
+     * Simpan feed scan langsung ke Cache agar layar Admin bisa menampilkan notifikasi secara instan
+     */
+    protected function pushLiveScanFeed($nama, $tipe, $jam)
+    {
+        try {
+            $scans = Cache::get('recent_attendance_scans', []);
+            if (!is_array($scans)) {
+                $scans = [];
+            }
+            array_unshift($scans, [
+                'nama' => $nama,
+                'tipe' => $tipe,
+                'jam' => $jam,
+                'waktu' => Carbon::now('Asia/Jakarta')->format('d M Y - H:i:s')
+            ]);
+            // Batasi 15 riwayat terbaru
+            $scans = array_slice($scans, 0, 15);
+            Cache::put('recent_attendance_scans', $scans, 3600);
+        } catch (\Exception $e) {
+            // Fail gracefully
+        }
     }
 
     // ==========================================
@@ -657,6 +849,336 @@ class MobileController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Password berhasil diubah!'
+        ]);
+    }
+
+    // ==========================================
+    // 👨‍👩‍👧 8. FITUR KHUSUS ROLE ORANG TUA / WALI (MOBILE)
+    // ==========================================
+
+    /**
+     * Dashboard Utama Orang Tua: Data Anak, Statistik Kehadiran & Laporan, Aktivitas Terbaru
+     */
+    public function getOrangTuaDashboard(Request $request)
+    {
+        $orangTua = $request->user();
+
+        if ($orangTua->role !== 'orang_tua') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Akses ditolak! Anda bukan pengguna dengan role Orang Tua.'
+            ], 403);
+        }
+
+        $anak = $orangTua->anak;
+        if (!$anak) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Akun Orang Tua ini belum dihubungkan dengan data siswa magang.'
+            ], 404);
+        }
+
+        $pendaftaran = Pendaftaran::where('id_users', $anak->id)->first();
+        $pembimbing = $anak->pembimbing_id ? User::find($anak->pembimbing_id) : null;
+
+        // Statistik Absensi Anak
+        $absensiAll = Absensi::where('id_users', $anak->id)->get();
+        $totalHadir = $absensiAll->where('status', 'Hadir')->count();
+        $totalIzin = $absensiAll->where('status', 'Izin')->count();
+        $totalSakit = $absensiAll->where('status', 'Sakit')->count();
+        $totalAlfa = $absensiAll->whereIn('status', ['Alfa', 'Alpa'])->count();
+
+        $hariIni = Carbon::now('Asia/Jakarta')->format('Y-m-d');
+        $absenHariIni = $absensiAll->where('tgl_absen', $hariIni)->first();
+
+        $statusHariIni = 'Belum Ada Presensi';
+        if ($absenHariIni) {
+            if ($absenHariIni->status === 'Hadir') {
+                if ($absenHariIni->jam_keluar) {
+                    $statusHariIni = 'Selesai Magang (Masuk: ' . substr($absenHariIni->jam_masuk, 0, 5) . ', Pulang: ' . substr($absenHariIni->jam_keluar, 0, 5) . ' WIB)';
+                } else {
+                    $statusHariIni = 'Sedang Magang (Masuk: ' . substr($absenHariIni->jam_masuk, 0, 5) . ' WIB)';
+                }
+            } else {
+                $statusHariIni = $absenHariIni->status . ($absenHariIni->keterangan ? ' - ' . $absenHariIni->keterangan : '');
+            }
+        }
+
+        // Statistik Laporan Harian Anak
+        $laporanAll = LaporanHarian::where('user_id', $anak->id)->get();
+        $totalLaporan = $laporanAll->count();
+        $laporanApproved = $laporanAll->where('status', 'approved')->count();
+        $laporanPending = $laporanAll->where('status', 'pending')->count();
+        $laporanRejected = $laporanAll->where('status', 'rejected')->count();
+
+        // 5 Absensi Terbaru Anak
+        $absensiTerbaru = Absensi::where('id_users', $anak->id)
+            ->orderBy('tgl_absen', 'desc')
+            ->take(5)
+            ->get()
+            ->map(function ($row) {
+                return [
+                    'id' => $row->id,
+                    'tanggal' => $row->tgl_absen,
+                    'tanggal_formatted' => Carbon::parse($row->tgl_absen)->translatedFormat('l, d F Y'),
+                    'jam_masuk' => $row->jam_masuk ? substr($row->jam_masuk, 0, 5) : '-',
+                    'jam_keluar' => $row->jam_keluar ? substr($row->jam_keluar, 0, 5) : '-',
+                    'status' => $row->status,
+                    'keterangan' => $row->keterangan,
+                    'foto_masuk_url' => $row->foto_bukti ? url($row->foto_bukti) : null,
+                    'foto_keluar_url' => $row->foto_keluar ? url($row->foto_keluar) : null,
+                ];
+            });
+
+        // 5 Laporan Terbaru Anak
+        $laporanTerbaru = LaporanHarian::where('user_id', $anak->id)
+            ->orderBy('tanggal', 'desc')
+            ->take(5)
+            ->get()
+            ->map(function ($lap) {
+                return [
+                    'id' => $lap->id,
+                    'tanggal' => $lap->tanggal,
+                    'tanggal_formatted' => Carbon::parse($lap->tanggal)->translatedFormat('l, d F Y'),
+                    'kegiatan' => $lap->kegiatan,
+                    'catatan' => $lap->catatan,
+                    'status' => $lap->status,
+                    'foto_url' => $lap->foto ? url($lap->foto) : null,
+                ];
+            });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'orang_tua' => [
+                    'id' => $orangTua->id,
+                    'name' => $orangTua->name,
+                    'email' => $orangTua->email,
+                    'role' => $orangTua->role,
+                ],
+                'anak' => [
+                    'id' => $anak->id,
+                    'name' => $anak->name,
+                    'email' => $anak->email,
+                    'nim' => $anak->nim,
+                    'no_telp' => $anak->no_telp,
+                    'sekolah' => $pendaftaran->universitas ?? $pendaftaran->asal_sekolah ?? $pendaftaran->asal_kampus ?? '-',
+                    'jurusan' => $pendaftaran->jurusan ?? '-',
+                    'kelas' => $pendaftaran->kelas ?? '-',
+                    'status_magang' => $pendaftaran->status_pendaftaran ?? 'pengajuan',
+                    'tanggal_mulai' => $pendaftaran->tanggal_mulai ?? '-',
+                    'tanggal_selesai' => $pendaftaran->tanggal_selesai ?? '-',
+                    'guru_pembimbing' => $pembimbing ? [
+                        'name' => $pembimbing->name,
+                        'email' => $pembimbing->email,
+                        'no_telp' => $pembimbing->no_telp,
+                    ] : null,
+                ],
+                'stats' => [
+                    'kehadiran' => [
+                        'total_hadir' => $totalHadir,
+                        'total_izin' => $totalIzin,
+                        'total_sakit' => $totalSakit,
+                        'total_alfa' => $totalAlfa,
+                        'status_hari_ini' => $statusHariIni,
+                    ],
+                    'laporan' => [
+                        'total_laporan' => $totalLaporan,
+                        'disetujui' => $laporanApproved,
+                        'menunggu' => $laporanPending,
+                        'ditolak' => $laporanRejected,
+                    ],
+                ],
+                'absensi_terbaru' => $absensiTerbaru,
+                'laporan_terbaru' => $laporanTerbaru,
+            ]
+        ]);
+    }
+
+    /**
+     * Monitoring Seluruh Riwayat Absensi / Kehadiran Anak
+     */
+    public function getOrangTuaAbsensi(Request $request)
+    {
+        $orangTua = $request->user();
+
+        if ($orangTua->role !== 'orang_tua') {
+            return response()->json(['status' => 'error', 'message' => 'Akses ditolak!'], 403);
+        }
+
+        $anak = $orangTua->anak;
+        if (!$anak) {
+            return response()->json(['status' => 'error', 'message' => 'Data anak tidak ditemukan.'], 404);
+        }
+
+        $riwayat = Absensi::where('id_users', $anak->id)
+            ->orderBy('tgl_absen', 'desc')
+            ->get()
+            ->map(function ($row) {
+                return [
+                    'id' => $row->id,
+                    'tanggal' => $row->tgl_absen,
+                    'tanggal_formatted' => Carbon::parse($row->tgl_absen)->translatedFormat('l, d F Y'),
+                    'jam_masuk' => $row->jam_masuk ? substr($row->jam_masuk, 0, 5) : '-',
+                    'jam_keluar' => $row->jam_keluar ? substr($row->jam_keluar, 0, 5) : '-',
+                    'status' => $row->status,
+                    'keterangan' => $row->keterangan,
+                    'foto_masuk_url' => $row->foto_bukti ? url($row->foto_bukti) : null,
+                    'foto_keluar_url' => $row->foto_keluar ? url($row->foto_keluar) : null,
+                    'lokasi_masuk' => $row->lokasi_masuk,
+                ];
+            });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'anak' => [
+                    'id' => $anak->id,
+                    'name' => $anak->name,
+                    'nim' => $anak->nim,
+                ],
+                'total_hari' => $riwayat->count(),
+                'total_hadir' => $riwayat->where('status', 'Hadir')->count(),
+                'total_izin' => $riwayat->where('status', 'Izin')->count(),
+                'total_sakit' => $riwayat->where('status', 'Sakit')->count(),
+                'total_alfa' => $riwayat->whereIn('status', ['Alfa', 'Alpa'])->count(),
+                'riwayat' => $riwayat,
+            ]
+        ]);
+    }
+
+    /**
+     * Monitoring Seluruh Laporan Harian Anak
+     */
+    public function getOrangTuaLaporan(Request $request)
+    {
+        $orangTua = $request->user();
+
+        if ($orangTua->role !== 'orang_tua') {
+            return response()->json(['status' => 'error', 'message' => 'Akses ditolak!'], 403);
+        }
+
+        $anak = $orangTua->anak;
+        if (!$anak) {
+            return response()->json(['status' => 'error', 'message' => 'Data anak tidak ditemukan.'], 404);
+        }
+
+        $laporan = LaporanHarian::where('user_id', $anak->id)
+            ->orderBy('tanggal', 'desc')
+            ->get()
+            ->map(function ($lap) {
+                return [
+                    'id' => $lap->id,
+                    'tanggal' => $lap->tanggal,
+                    'tanggal_formatted' => Carbon::parse($lap->tanggal)->translatedFormat('l, d F Y'),
+                    'kegiatan' => $lap->kegiatan,
+                    'catatan' => $lap->catatan,
+                    'status' => $lap->status,
+                    'foto_url' => $lap->foto ? url($lap->foto) : null,
+                    'created_at' => $lap->created_at ? $lap->created_at->format('Y-m-d H:i') : null,
+                ];
+            });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'anak' => [
+                    'id' => $anak->id,
+                    'name' => $anak->name,
+                    'nim' => $anak->nim,
+                ],
+                'total_laporan' => $laporan->count(),
+                'disetujui' => $laporan->where('status', 'approved')->count(),
+                'pending' => $laporan->where('status', 'pending')->count(),
+                'ditolak' => $laporan->where('status', 'rejected')->count(),
+                'laporan' => $laporan,
+            ]
+        ]);
+    }
+
+    /**
+     * Detail Satu Laporan Harian Anak
+     */
+    public function getOrangTuaLaporanDetail(Request $request, $id)
+    {
+        $orangTua = $request->user();
+
+        if ($orangTua->role !== 'orang_tua') {
+            return response()->json(['status' => 'error', 'message' => 'Akses ditolak!'], 403);
+        }
+
+        $anak = $orangTua->anak;
+        if (!$anak) {
+            return response()->json(['status' => 'error', 'message' => 'Data anak tidak ditemukan.'], 404);
+        }
+
+        $laporan = LaporanHarian::where('id', $id)
+            ->where('user_id', $anak->id)
+            ->first();
+
+        if (!$laporan) {
+            return response()->json(['status' => 'error', 'message' => 'Laporan tidak ditemukan atau bukan milik anak Anda.'], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'id' => $laporan->id,
+                'tanggal' => $laporan->tanggal,
+                'tanggal_formatted' => Carbon::parse($laporan->tanggal)->translatedFormat('l, d F Y'),
+                'kegiatan' => $laporan->kegiatan,
+                'catatan' => $laporan->catatan,
+                'status' => $laporan->status,
+                'foto_url' => $laporan->foto ? url($laporan->foto) : null,
+                'created_at' => $laporan->created_at ? $laporan->created_at->format('Y-m-d H:i') : null,
+            ]
+        ]);
+    }
+
+    /**
+     * Profil Lengkap Siswa/Anak yang Diasuh
+     */
+    public function getOrangTuaProfilAnak(Request $request)
+    {
+        $orangTua = $request->user();
+
+        if ($orangTua->role !== 'orang_tua') {
+            return response()->json(['status' => 'error', 'message' => 'Akses ditolak!'], 403);
+        }
+
+        $anak = $orangTua->anak;
+        if (!$anak) {
+            return response()->json(['status' => 'error', 'message' => 'Data anak tidak ditemukan.'], 404);
+        }
+
+        $pendaftaran = Pendaftaran::where('id_users', $anak->id)->first();
+        $pembimbing = $anak->pembimbing_id ? User::find($anak->pembimbing_id) : null;
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'id' => $anak->id,
+                'nama_anak' => $anak->name,
+                'email_anak' => $anak->email,
+                'nis_nim' => $anak->nim,
+                'no_telp_anak' => $anak->no_telp,
+                'sekolah' => $pendaftaran->universitas ?? $pendaftaran->asal_sekolah ?? $pendaftaran->asal_kampus ?? '-',
+                'jurusan' => $pendaftaran->jurusan ?? '-',
+                'kelas' => $pendaftaran->kelas ?? '-',
+                'status_magang' => $pendaftaran->status_pendaftaran ?? 'pengajuan',
+                'tanggal_mulai' => $pendaftaran->tanggal_mulai ?? '-',
+                'tanggal_selesai' => $pendaftaran->tanggal_selesai ?? '-',
+                'guru_pembimbing' => $pembimbing ? [
+                    'name' => $pembimbing->name,
+                    'email' => $pembimbing->email,
+                    'no_telp' => $pembimbing->no_telp,
+                ] : null,
+                'orang_tua' => [
+                    'nama_wali' => $orangTua->name,
+                    'email_wali' => $orangTua->email,
+                    'no_telp_wali' => $orangTua->no_telp,
+                ]
+            ]
         ]);
     }
 }

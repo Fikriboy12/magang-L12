@@ -90,7 +90,7 @@
       <li class="{{ request()->is('pembimbing/laporan*') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('pembimbing.dashboard') }}">
           <i class="fas fa-user-graduate"></i> 
-          <span>Mahasiswa Bimbingan</span>
+          <span>Siswa Bimbingan</span>
         </a>
       </li>
 

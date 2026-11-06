@@ -46,7 +46,7 @@
                                 <th>Dari Tanggal</th>
                                 <th>Sampai Tanggal</th>
                                 <!-- HEADER BARU -->
-                                <th>Atur Pembimbing</th>
+                                <th>Atur Guru Pembimbing</th>
                                 <th>Status</th>
                                 <th class="text-center" width = "20%">Action</th>
                             </tr>
@@ -77,7 +77,7 @@
                                             
                                             <div class="input-group input-group-sm" style="min-width: 200px;">
                                                 <select name="pembimbing_id" class="form-control form-control-sm" required>
-                                                    <option value="">-- Pilih --</option>
+                                                    <option value="">-- Pilih Guru Pembimbing --</option>
                                                     @foreach($data['pembimbings'] as $pembimbing)
                                                         <option value="{{ $pembimbing->id }}" 
                                                             {{-- Otomatis terpilih jika sudah diset sebelumnya --}}

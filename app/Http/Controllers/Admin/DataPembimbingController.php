@@ -16,7 +16,7 @@ class DataPembimbingController extends Controller
     {
         // Kita samakan strukturnya menggunakan array $data
         $data = [
-            'title' => 'Data Pembimbing',
+            'title' => 'Data Guru Pembimbing',
             // Ambil data user yang memiliki role 'pembimbing'
             'pembimbings' => User::where('role', 'pembimbing')->latest()->get()
         ];
@@ -53,7 +53,7 @@ class DataPembimbingController extends Controller
             'role'      => 'pembimbing',
         ]);
 
-        return redirect()->route('admin.pembimbing.index')->with('suc_message', 'Data Pembimbing berhasil ditambahkan!');
+        return redirect()->route('admin.pembimbing.index')->with('suc_message', 'Data Guru Pembimbing berhasil ditambahkan!');
     }
     
     // Tambahkan method update (diambil dari pola Data Admin sebelumnya)

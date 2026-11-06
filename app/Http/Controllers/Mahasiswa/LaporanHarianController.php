@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\LaporanHarian;
+use App\Models\Pendaftaran;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class LaporanHarianController extends Controller
 {
@@ -62,5 +64,37 @@ class LaporanHarianController extends Controller
         ]);
 
         return redirect()->route('mahasiswa.laporan.index')->with('success', 'Laporan berhasil dikirim!');
+    }
+
+    /**
+     * Download / Cetak Rekapitulasi Laporan Harian Siswa (PDF)
+     */
+    public function downloadPdf()
+    {
+        $userId = Auth::id();
+        $user = Auth::user();
+
+        // Ambil data pendaftaran & profil magang siswa
+        $pendaftaran = Pendaftaran::where('id_users', $userId)->first();
+
+        // Ambil seluruh laporan harian siswa urut dari tanggal pertama
+        $laporan = LaporanHarian::where('user_id', $userId)
+                    ->orderBy('tanggal', 'asc')
+                    ->get();
+
+        $data = [
+            'title' => 'Rekapitulasi Laporan Harian Magang',
+            'user' => $user,
+            'pendaftaran' => $pendaftaran,
+            'laporan' => $laporan,
+            'tanggal_cetak' => Carbon::now('Asia/Jakarta')->translatedFormat('d F Y'),
+        ];
+
+        $pdf = Pdf::loadView('mahasiswa.laporan_harian.pdf', $data);
+        $pdf->setPaper('A4', 'portrait');
+
+        $namaFile = 'Laporan_Harian_' . preg_replace('/[^A-Za-z0-9_\-]/', '_', $user->name) . '.pdf';
+
+        return $pdf->stream($namaFile);
     }
 }

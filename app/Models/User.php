@@ -38,8 +38,9 @@ class User extends Authenticatable
         'agama',
         'alamat_lengkap', 
 
-        // TAMBAHKAN 'pembimbing_id' AGAR BISA DISIMPAN OLEH ADMIN
+        // TAMBAHKAN 'pembimbing_id' dan 'siswa_id' AGAR BISA DISIMPAN OLEH ADMIN
         'pembimbing_id',
+        'siswa_id',
 
         // ==========================================
         // == TAMBAHAN BARU: DATA WALI & BIOMETRIK ==
@@ -100,5 +101,37 @@ class User extends Authenticatable
     {
         // 'user_id' adalah nama kolom di tabel 'laporan_harian'
         return $this->hasMany(LaporanHarian::class, 'user_id');
+    }
+
+    /**
+     * Relasi: Akun Orang Tua memiliki SATU Siswa/Anak yang diasuh.
+     */
+    public function anak()
+    {
+        return $this->belongsTo(User::class, 'siswa_id', 'id');
+    }
+
+    /**
+     * Relasi: Akun Siswa/Mahasiswa memiliki SATU akun Orang Tua.
+     */
+    public function orangTua()
+    {
+        return $this->hasOne(User::class, 'siswa_id', 'id');
+    }
+
+    /**
+     * Relasi: Satu Mahasiswa punya SATU Pendaftaran.
+     */
+    public function pendaftaran()
+    {
+        return $this->hasOne(Pendaftaran::class, 'id_users', 'id');
+    }
+
+    /**
+     * Relasi: Satu Mahasiswa punya BANYAK Absensi.
+     */
+    public function absensi()
+    {
+        return $this->hasMany(Absensi::class, 'id_users', 'id');
     }
 }

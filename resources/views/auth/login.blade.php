@@ -197,6 +197,12 @@
             <i class="fas fa-lock"></i>
             <input type="password" name="password" id="password" placeholder="Password">
         </div>
+
+        <div style="text-align: right; margin-top: -6px; margin-bottom: 10px;">
+            <a href="{{ route('password.request') }}" style="color: #3CB9E0; font-size: 11px; text-decoration: none; font-weight: 500;">
+                Lupa Kata Sandi?
+            </a>
+        </div>
         
         <button type="submit" id="btn-login-normal">Login</button>
     </form>
@@ -220,8 +226,8 @@
     </form>
 
     <div class="links">
-        <a href="{{ route('home') }}">Halaman Utama</a> | 
-        <a href="{{ route('register') }}">Registrasi</a>
+        <a href="{{ route('register') }}">Registrasi</a> | 
+        <a href="{{ route('home') }}">Beranda</a>
     </div>
 </div>
 

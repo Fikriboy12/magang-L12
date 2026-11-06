@@ -1,6 +1,6 @@
 @extends('template_admin.master_pembimbing')
 
-@section('title', 'Detail Laporan Mahasiswa')
+@section('title', 'Detail Laporan Siswa')
 
 @section('contents')
 
@@ -30,13 +30,13 @@
                     <div class="card-header">
                         <h3 class="card-title">
                             <i class="fas fa-user-graduate mr-1"></i>
-                            Mahasiswa: <strong>{{ $mahasiswa->name ?? 'Mahasiswa' }}</strong>
+                            Siswa: <strong>{{ $mahasiswa->name ?? 'Siswa' }}</strong>
                         </h3>
                     </div>
                     <div class="card-body">
                         @if ($laporan->isEmpty())
                             <div class="alert alert-warning text-center">
-                                <i class="fas fa-info-circle"></i> Mahasiswa ini belum meng-upload laporan harian.
+                                <i class="fas fa-info-circle"></i> Siswa ini belum meng-upload laporan harian.
                             </div>
                         @else
                             <div class="table-responsive">

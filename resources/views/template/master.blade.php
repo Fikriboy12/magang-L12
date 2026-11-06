@@ -109,6 +109,14 @@
             display: block;
         }
         
+        .logo-box-custom {
+            width: 40px; height: 40px; background: #2563eb; color: #ffffff;
+            font-size: 22px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 8px; margin-right: 8px; flex-shrink: 0; line-height: 1;
+        }
+        #header .logo-text-custom { font-size: 20px; font-weight: 800; color: #0f172a !important; text-transform: uppercase; letter-spacing: -0.5px; }
+        #footer .logo-text-custom { font-size: 20px; font-weight: 800; color: #ffffff !important; text-transform: uppercase; letter-spacing: -0.5px; }
+        
         .logo-container-custom { display: flex; align-items: center; text-decoration: none !important; }
         .nav-menu { margin-left: 40px; }
         .nav-menu ul { margin: 0; padding: 0; list-style: none; display: flex; }
@@ -217,9 +225,13 @@
     <header id="header">
         <div class="container-fluid px-4 d-flex justify-content-between align-items-center h-100">
             
-            {{-- LOGO GAMBAR (DITAMBAH VERSI 'time()' AGAR CACHE LANGSUNG HILANG) --}}
+            {{-- LOGO GAMBAR (DITAMBAH VERSI 'time()' AGAR CACHE LANGSUNG HILANG & FALLBACK JIKA GAGAL LOAD) --}}
             <a href="{{ url('/') }}" class="logo-container-custom">
-                <img src="{{ asset('gambar/logohome.jpeg') }}?v={{ time() }}" alt="Logo Astronet" class="logo-image">
+                <img src="{{ asset('gambar/logohome.png') }}?v={{ time() }}" alt="Logo Astronet" class="logo-image" onerror="this.style.display='none'; document.getElementById('header-logo-fallback').style.display='inline-flex';">
+                <div id="header-logo-fallback" style="display: none; align-items: center;">
+                    <div class="logo-box-custom">A</div>
+                    <span class="logo-text-custom">STRONET.ID</span>
+                </div>
             </a>
 
             <nav class="nav-menu d-none d-lg-block">
@@ -234,9 +246,9 @@
                         @if(!$statusDiterima) <li><a href="{{ route('pendaftaran.index') }}"><i class="fa-solid fa-file-signature"></i> Pendaftaran</a></li> @endif
                         <li><a href="{{ route('pelamar.lamaran.index') }}"><i class="fa-solid fa-briefcase"></i> Lamaran</a></li>
                         @if($statusDiterima) 
-                            <li><a href="{{ route('mahasiswa.laporan.index') }}"><i class="fa-solid fa-file-lines"></i> Laporan</a></li>
+                            <li><a href="{{ route('mahasiswa.laporan.index') }}"><i class="fa-solid fa-file-lines"></i> Data Laporan</a></li>
                             {{-- MENU ABSENSI (BARU) --}}
-                            <li><a href="{{ route('mahasiswa.absensi.index') }}"><i class="fa-solid fa-clock"></i> Absensi</a></li>
+                            <li><a href="{{ route('mahasiswa.absensi.index') }}"><i class="fa-solid fa-clock"></i> Data Absensi</a></li>
                         @endif
                     @endauth
                 </ul>
@@ -273,8 +285,12 @@
                 <div class="col-lg-5 col-md-5 col-sm-12 footer-col">
                     <div class="footer-logo-text">
                         <a href="{{ url('/') }}" class="logo-container-custom">
-                            {{-- LOGO FOOTER JUGA DITAMBAH VERSI BIAR UPDATE --}}
-                            <img src="{{ asset('gambar/logohome.jpeg') }}?v={{ time() }}" alt="Logo Astronet" class="footer-logo-image">
+                            {{-- LOGO FOOTER JUGA DITAMBAH VERSI BIAR UPDATE & FALLBACK --}}
+                            <img src="{{ asset('gambar/logohome.png') }}?v={{ time() }}" alt="Logo Astronet" class="footer-logo-image" onerror="this.style.display='none'; document.getElementById('footer-logo-fallback').style.display='inline-flex';">
+                            <div id="footer-logo-fallback" style="display: none; align-items: center; margin-bottom: 20px;">
+                                <div class="logo-box-custom" style="background: #ffffff; color: #2563eb;">A</div>
+                                <span class="logo-text-custom" style="color: #ffffff;">STRONET.ID</span>
+                            </div>
                         </a>
                     </div>
                     <p class="footer-desc">PT MEDIA BALAI NUSA (ASTRONET.ID) merupakan perusahaan penyedia layanan internet (ISP) berbasis fiber optik yang resmi dan terpercaya.</p>
@@ -299,9 +315,9 @@
                 @if(!$statusDiterima) <li><a href="{{ route('pendaftaran.index') }}" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-file-signature"></i> <span>Pendaftaran</span></a></li> @endif
                 <li><a href="{{ route('pelamar.lamaran.index') }}" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-briefcase"></i> <span>Lamaran</span></a></li>
                 @if($statusDiterima) 
-                    <li><a href="{{ route('mahasiswa.laporan.index') }}" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-file-lines"></i> <span>Laporan</span></a></li>
+                    <li><a href="{{ route('mahasiswa.laporan.index') }}" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-file-lines"></i> <span>Data Laporan</span></a></li>
                     {{-- MENU ABSENSI MOBILE (BARU) --}}
-                    <li><a href="{{ route('mahasiswa.absensi.index') }}" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-clock"></i> <span>Absensi</span></a></li>
+                    <li><a href="{{ route('mahasiswa.absensi.index') }}" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-clock"></i> <span>Data Absensi</span></a></li>
                 @endif
             @endauth
         </ul>

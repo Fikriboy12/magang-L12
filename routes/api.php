@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/absensi', [MobileController::class, 'getAbsensi']);
     Route::post('/absensi/masuk', [MobileController::class, 'absenMasuk']);
     Route::post('/absensi/pulang/{id}', [MobileController::class, 'absenPulang']);
+    Route::post('/absensi/scan-qr', [MobileController::class, 'scanQrAbsensi']);
 
     // Pengajuan Sertifikat
     Route::get('/sertifikat', [MobileController::class, 'getSertifikat']);
@@ -40,5 +41,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/laporan/{id}/reject', [MobileController::class, 'rejectLaporan']);
         Route::get('/monitoring-absensi', [MobileController::class, 'getMonitoringAbsensi']);
         Route::get('/absensi/detail/{mahasiswa_id}', [MobileController::class, 'getAbsensiDetailMahasiswa']);
+    });
+
+    // --- RUTE KHUSUS ORANG TUA / WALI ---
+    Route::prefix('orang-tua')->group(function () {
+        Route::get('/dashboard', [MobileController::class, 'getOrangTuaDashboard']);
+        Route::get('/absensi', [MobileController::class, 'getOrangTuaAbsensi']);
+        Route::get('/laporan', [MobileController::class, 'getOrangTuaLaporan']);
+        Route::get('/laporan/{id}', [MobileController::class, 'getOrangTuaLaporanDetail']);
+        Route::get('/profil-anak', [MobileController::class, 'getOrangTuaProfilAnak']);
     });
 });

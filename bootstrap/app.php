@@ -27,6 +27,9 @@ return Application::configure(basePath: dirname(__DIR__))
             
             // Untuk role Pembimbing (yang baru kita buat)
             'pembimbing' => \App\Http\Middleware\RoleMiddleware::class . ':pembimbing',
+            
+            // Untuk role Orang Tua
+            'orang_tua' => \App\Http\Middleware\RoleMiddleware::class . ':orang_tua',
         ]);
         // ----------------------------------------------
 

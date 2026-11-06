@@ -13,8 +13,11 @@
     <section class="content">
         <div class="container-fluid">
             <div class="card card-primary card-outline">
-                <div class="card-header">
-                    <h3 class="card-title"><i class="fas fa-users mr-1"></i> Daftar Mahasiswa Aktif</h3>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0"><i class="fas fa-users mr-1"></i> Daftar Mahasiswa Aktif</h3>
+                    <a href="{{ route('admin.absensi.portal') }}" class="btn btn-primary btn-sm shadow-sm" style="background: linear-gradient(135deg, #0284c7, #3CB9E0); border: none; font-weight: 600; padding: 6px 14px; border-radius: 8px;">
+                        <i class="fas fa-calendar-check mr-1"></i> Pusat Presensi (QR & Manual)
+                    </a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

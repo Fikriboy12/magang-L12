@@ -16,7 +16,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Daftar Mahasiswa Bimbingan Anda</h4>
+                        <h4>Daftar Siswa Bimbingan Anda</h4>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -25,9 +25,9 @@
                                 <thead class="bg-primary text-white">
                                     <tr>
                                         <th class="text-center" width="5%">No</th>
-                                        <th>Nama Mahasiswa</th>
+                                        <th>Nama Siswa</th>
                                         <th>Email</th>
-                                        <th>Instansi/Kampus</th>
+                                        <th>Asal Sekolah / Instansi</th>
                                         <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
@@ -52,7 +52,7 @@
                                     <tr>
                                         <td colspan="5" class="text-center py-4 text-muted">
                                             <i class="fas fa-user-slash mb-2" style="font-size: 20px;"></i><br>
-                                            Belum ada mahasiswa yang dikaitkan ke Anda.
+                                            Belum ada siswa yang dikaitkan ke Anda.
                                         </td>
                                     </tr>
                                     @endforelse

@@ -9,7 +9,7 @@
     </div>
 
     <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#myModal">
-        <i class="fa fa-plus"></i> Tambah Pembimbing
+        <i class="fa fa-plus"></i> Tambah Guru Pembimbing
     </button>
 
     <div class="section-body">
@@ -99,7 +99,7 @@
         <div class="modal-content">
 
             <div class="modal-header">
-                <h4 class="modal-title">Tambah Pembimbing</h4>
+                <h4 class="modal-title">Tambah Guru Pembimbing</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             
@@ -151,7 +151,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Update Data Pembimbing</h4>
+                    <h4 class="modal-title">Update Data Guru Pembimbing</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
@@ -198,7 +198,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Hapus Data</h4>
+                    <h4 class="modal-title">Hapus Data Guru Pembimbing</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">

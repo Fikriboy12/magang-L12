@@ -240,6 +240,7 @@
 
     <div id="about" class="about-area area-padding">
       <div class="container">
+        {{-- SECTION TITLE --}}
         <div class="row">
           <div class="col-md-12">
             <div class="section-headline text-center animasi-masuk">
@@ -248,64 +249,97 @@
           </div>
         </div>
         
-        <div class="row" style="display: flex; flex-wrap: wrap; align-items: center;">
-          
-          <div class="col-md-6 col-sm-6 col-xs-12">
-            <div class="animasi-masuk">
-                <div class="glass-card" style="padding: 20px; display: flex; justify-content: center; align-items: center;">
-                    <div class="floating-img-container" style="min-height: auto; box-shadow: none; height: auto;">
-                        <img src="{{ asset('assets_admin/img/profile_perusahaan/'.$data['profile']->gambar_perusahaan) }}" 
-                             alt="Profil Perusahaan" 
-                             style="width: 100%; max-width: 450px; height: auto; object-fit: contain;">
-                    </div>
-                </div>
-            </div>
-          </div>
-
-          <div class="col-md-6 col-sm-6 col-xs-12">
-            
-            <div class="animasi-masuk delay-200">
-              <div class="glass-card" style="justify-content: flex-start; height: auto;">
-                  <h4 style="font-size: 26px; font-weight: 700; color: #0f172a; margin-bottom: 20px; border-left: 5px solid #005bea; padding-left: 15px;">
-                      Profile
-                  </h4>
-                  <div class="text-rapi-justify" style="line-height: 1.8; font-size: 16px; color: #555;">
-                      {{ $data['profile']->deskripsi }}
+        {{-- 1. KARTU PROFIL PERUSAHAAN (BANNER UTAMA DENGAN LOGO) --}}
+        <div class="row animasi-masuk" style="margin-bottom: 25px;">
+          <div class="col-md-12">
+            <div class="glass-card" style="padding: 35px 30px; margin-bottom: 0;">
+              <div class="row align-items-center">
+                
+                {{-- BINGKAI LOGO --}}
+                <div class="col-md-4 col-sm-12 text-center mb-4 mb-md-0">
+                  <div style="background: #ffffff; border-radius: 20px; padding: 25px 20px; border: 1px solid rgba(0, 91, 234, 0.1); box-shadow: 0 10px 30px rgba(0, 91, 234, 0.08); display: inline-flex; align-items: center; justify-content: center; width: 100%; max-width: 280px; min-height: 200px;">
+                    <img src="{{ asset('assets_admin/img/profile_perusahaan/'.$data['profile']->gambar_perusahaan) }}" 
+                         alt="Logo PT Media Balai Nusa" 
+                         style="max-width: 100%; max-height: 160px; height: auto; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.05));">
                   </div>
+                </div>
+
+                {{-- DESKRIPSI PROFIL --}}
+                <div class="col-md-8 col-sm-12">
+                  <div style="padding-left: 10px;">
+                    <span style="display: inline-block; background: rgba(0, 91, 234, 0.1); color: #005bea; font-weight: 700; padding: 6px 16px; border-radius: 30px; font-size: 12px; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 12px;">
+                      <i class="fas fa-building mr-1"></i> Profil Perusahaan
+                    </span>
+                    <h3 style="font-size: 26px; font-weight: 800; color: #0f172a; margin-bottom: 14px; letter-spacing: -0.5px;">
+                      PT Media Balai Nusa
+                    </h3>
+                    <p style="font-size: 15.5px; line-height: 1.8; color: #475569; margin-bottom: 20px; text-align: left;">
+                      {{ $data['profile']->deskripsi }}
+                    </p>
+                    
+                    {{-- HIGHLIGHT FITUR / TAG --}}
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                      <span style="display: inline-flex; align-items: center; background: #f1f5f9; color: #334155; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">
+                        <i class="fas fa-bolt text-warning" style="margin-right: 6px;"></i> Internet Serat Optik Cepat
+                      </span>
+                      <span style="display: inline-flex; align-items: center; background: #f1f5f9; color: #334155; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">
+                        <i class="fas fa-map-marker-alt text-danger" style="margin-right: 6px;"></i> Tanjungbalai &amp; Bengkalis
+                      </span>
+                      <span style="display: inline-flex; align-items: center; background: #f1f5f9; color: #334155; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">
+                        <i class="fas fa-shield-alt text-success" style="margin-right: 6px;"></i> Stabil &amp; Terpercaya
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
-
-            <div class="row row-flex" style="margin-top: 25px;">
-                
-                <div class="col-md-6 col-sm-6 col-xs-12 col-flex mb-4"> 
-                    <div class="animasi-masuk delay-100 w-100-flex">
-                        <div class="glass-card" style="margin-bottom: 0; justify-content: flex-start;"> 
-                            <h4 style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 15px; border-left: 5px solid #005bea; padding-left: 15px;">
-                                Visi
-                            </h4>
-                            <div class="text-rapi-justify" style="font-size: 14px; line-height: 1.6; color: #555;">
-                                {{ $data['profile']->visi ?? '-' }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 col-sm-6 col-xs-12 col-flex mb-4">
-                    <div class="animasi-masuk delay-200 w-100-flex">
-                        <div class="glass-card" style="margin-bottom: 0; justify-content: flex-start;">
-                            <h4 style="font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 15px; border-left: 5px solid #005bea; padding-left: 15px;">
-                                Misi
-                            </h4>
-                            <div class="text-rapi-justify" style="font-size: 14px; line-height: 1.6; color: #555;">
-                                {{ $data['profile']->misi ?? '-' }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
           </div>
+        </div>
+
+        {{-- 2. KARTU VISI & MISI (2 KOLOM SEJAJAR: 50% - 50%) --}}
+        <div class="row row-flex" style="display: flex; flex-wrap: wrap;">
+          
+          {{-- KARTU VISI --}}
+          <div class="col-md-6 col-sm-6 col-xs-12 col-flex mb-4">
+            <div class="animasi-masuk delay-100 w-100-flex" style="height: 100%;">
+              <div class="glass-card" style="height: 100%; margin-bottom: 0; padding: 30px; display: flex; flex-direction: column;">
+                <div style="display: flex; align-items: center; margin-bottom: 18px;">
+                  <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #005bea 0%, #00c6fb 100%); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 8px 18px rgba(0, 91, 234, 0.3); margin-right: 15px; flex-shrink: 0;">
+                    <i class="fas fa-eye"></i>
+                  </div>
+                  <div>
+                    <h4 style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0;">Visi Perusahaan</h4>
+                    <span style="font-size: 12px; color: #64748b; font-weight: 500;">Arah &amp; Tujuan Masa Depan</span>
+                  </div>
+                </div>
+                <div style="font-size: 15px; line-height: 1.75; color: #475569; text-align: left; flex-grow: 1;">
+                  {{ $data['profile']->visi ?? '-' }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {{-- KARTU MISI --}}
+          <div class="col-md-6 col-sm-6 col-xs-12 col-flex mb-4">
+            <div class="animasi-masuk delay-200 w-100-flex" style="height: 100%;">
+              <div class="glass-card" style="height: 100%; margin-bottom: 0; padding: 30px; display: flex; flex-direction: column;">
+                <div style="display: flex; align-items: center; margin-bottom: 18px;">
+                  <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #00c6fb 0%, #005bea 100%); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 8px 18px rgba(0, 198, 251, 0.3); margin-right: 15px; flex-shrink: 0;">
+                    <i class="fas fa-bullseye"></i>
+                  </div>
+                  <div>
+                    <h4 style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0;">Misi Perusahaan</h4>
+                    <span style="font-size: 12px; color: #64748b; font-weight: 500;">Langkah &amp; Komitmen Pelayanan</span>
+                  </div>
+                </div>
+                <div style="font-size: 15px; line-height: 1.75; color: #475569; text-align: left; flex-grow: 1;">
+                  {{ $data['profile']->misi ?? '-' }}
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
