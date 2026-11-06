@@ -77,6 +77,24 @@ class MobileController extends Controller
             }
         }
 
+        $pembimbingLapanganData = null;
+        if ($user->role === 'pembimbing_lapangan') {
+            $siswaIds = $this->getMentorSiswaIds($user);
+            $pembimbingLapanganData = [
+                'perusahaan' => 'PT. Media Balai Nusa',
+                'divisi' => $user->alamat_lengkap ?: 'Pembimbing Industri',
+                'total_siswa' => count($siswaIds),
+                'pending_counts' => [
+                    'laporan' => LaporanHarian::whereIn('user_id', $siswaIds)->where('status', 'pending')->count(),
+                    'izin' => Absensi::whereIn('id_users', $siswaIds)->whereIn('status', ['Izin', 'Sakit'])->where(function($q) {
+                        $q->whereNull('status_validasi')->orWhere('status_validasi', 'pending');
+                    })->count(),
+                    'sertifikat' => Sertifikat::whereIn('created_by', $siswaIds)->whereIn('status_pengajuan', ['pending', 'menunggu_verifikasi'])->count(),
+                    'unread_chats' => Chat::where('receiver_id', $user->id)->where('is_read', false)->count(),
+                ]
+            ];
+        }
+
         return response()->json([
             'status' => 'success',
             'message' => 'Login berhasil!',
@@ -90,6 +108,7 @@ class MobileController extends Controller
                     'nim' => $user->nim,
                     'no_telp' => $user->no_telp,
                     'anak' => $anakData,
+                    'pembimbing_lapangan' => $pembimbingLapanganData,
                 ]
             ]
         ]);
@@ -1241,12 +1260,79 @@ class MobileController extends Controller
     {
         $mentor = $request->user();
         $siswaIds = $this->getMentorSiswaIds($mentor);
+        $today = Carbon::today()->toDateString();
 
-        $siswa = User::whereIn('id', $siswaIds)->with('pendaftaran')->get();
+        $siswa = User::whereIn('id', $siswaIds)->with('pendaftaran')->get()->map(function($s) use ($today) {
+            $absensiToday = Absensi::where('id_users', $s->id)->whereDate('tgl_absen', $today)->first();
+            $latestReport = LaporanHarian::where('user_id', $s->id)->latest('tanggal')->first();
+
+            return [
+                'id' => $s->id,
+                'name' => $s->name,
+                'email' => $s->email,
+                'nim' => $s->nim,
+                'no_telp' => $s->no_telp,
+                'asal_sekolah' => $s->pendaftaran->universitas ?? $s->pendaftaran->asal_sekolah ?? '-',
+                'jurusan' => $s->pendaftaran->jurusan ?? '-',
+                'kehadiran_hari_ini' => $absensiToday ? [
+                    'status' => $absensiToday->status,
+                    'jam_masuk' => $absensiToday->jam_masuk,
+                    'jam_keluar' => $absensiToday->jam_keluar,
+                ] : null,
+                'laporan_terakhir' => $latestReport ? [
+                    'id' => $latestReport->id,
+                    'tanggal' => $latestReport->tanggal,
+                    'kegiatan' => $latestReport->kegiatan,
+                    'status' => $latestReport->status,
+                ] : null,
+            ];
+        });
 
         return response()->json([
             'status' => 'success',
             'data' => $siswa
+        ]);
+    }
+
+    public function getPembimbingLapanganChatContacts(Request $request)
+    {
+        $mentor = $request->user();
+        $siswaIds = $this->getMentorSiswaIds($mentor);
+        $students = User::whereIn('id', $siswaIds)->with('pendaftaran')->get();
+
+        $contacts = $students->map(function($s) use ($mentor) {
+            $lastChat = Chat::where(function($q) use ($mentor, $s) {
+                $q->where('sender_id', $mentor->id)->where('receiver_id', $s->id);
+            })->orWhere(function($q) use ($mentor, $s) {
+                $q->where('sender_id', $s->id)->where('receiver_id', $mentor->id);
+            })->latest('created_at')->first();
+
+            $unreadCount = Chat::where('sender_id', $s->id)
+                               ->where('receiver_id', $mentor->id)
+                               ->where('is_read', false)
+                               ->count();
+
+            return [
+                'id' => $s->id,
+                'name' => $s->name,
+                'email' => $s->email,
+                'no_telp' => $s->no_telp,
+                'asal_sekolah' => $s->pendaftaran->universitas ?? $s->pendaftaran->asal_sekolah ?? '-',
+                'jurusan' => $s->pendaftaran->jurusan ?? '-',
+                'unread_count' => $unreadCount,
+                'last_message' => $lastChat ? [
+                    'id' => $lastChat->id,
+                    'is_mine' => $lastChat->sender_id === $mentor->id,
+                    'message' => $lastChat->message ?: '[Lampiran file]',
+                    'time' => Carbon::parse($lastChat->created_at)->format('H:i'),
+                    'date' => Carbon::parse($lastChat->created_at)->toDateString(),
+                ] : null,
+            ];
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $contacts
         ]);
     }
 

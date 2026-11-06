@@ -72,6 +72,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/sertifikat/{id}/approve', [MobileController::class, 'approveSertifikatMobile']);
         Route::post('/sertifikat/{id}/reject', [MobileController::class, 'rejectSertifikatMobile']);
         // Chat
+        Route::get('/chat-contacts', [MobileController::class, 'getPembimbingLapanganChatContacts']);
         Route::get('/chat/{siswa_id}', [MobileController::class, 'getChatMessages']);
         Route::post('/chat/send', [MobileController::class, 'sendChatMessage']);
     });
