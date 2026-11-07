@@ -14,13 +14,52 @@ use Carbon\Carbon;
 class DataAbsensiController extends Controller
 {
     // HALAMAN REKAP & MONITORING SISWA
-    public function index()
+    public function index(Request $request)
     {
+        $today = Carbon::now('Asia/Jakarta')->format('Y-m-d');
+        $selectedDate = $request->input('date', $today);
+        $carbonDate = Carbon::parse($selectedDate, 'Asia/Jakarta');
+
         $mahasiswa = Pendaftaran::with('user')
                         ->where('status_pendaftaran', 'diterima')
                         ->get();
 
-        return view('admin.absensi.index', compact('mahasiswa'));
+        // Ambil data absensi pada tanggal yang dipilih (default: hari ini)
+        $existingAbsensi = Absensi::where('tgl_absen', $selectedDate)
+                                  ->get()
+                                  ->keyBy('id_users');
+
+        // Hitung statistik kehadiran pada tanggal tersebut
+        $totalSiswa = $mahasiswa->count();
+        $totalHadir = 0;
+        $totalIzin = 0;
+        $totalSakit = 0;
+        $totalAlfa = 0;
+
+        foreach ($mahasiswa as $m) {
+            $absen = $existingAbsensi->get($m->id_users);
+            if ($absen) {
+                $st = strtolower($absen->status);
+                if ($st === 'hadir') $totalHadir++;
+                elseif ($st === 'izin') $totalIzin++;
+                elseif ($st === 'sakit') $totalSakit++;
+                elseif (in_array($st, ['alfa', 'alpa'])) $totalAlfa++;
+            }
+        }
+
+        $totalSudah = $totalHadir + $totalIzin + $totalSakit + $totalAlfa;
+        $totalBelum = max(0, $totalSiswa - $totalSudah);
+
+        $stats = [
+            'total' => $totalSiswa,
+            'hadir' => $totalHadir,
+            'izin' => $totalIzin,
+            'sakit' => $totalSakit,
+            'alfa' => $totalAlfa,
+            'belum' => $totalBelum,
+        ];
+
+        return view('admin.absensi.index', compact('mahasiswa', 'existingAbsensi', 'selectedDate', 'carbonDate', 'stats', 'today'));
     }
 
     // DETAIL RIWAYAT ABSENSI PER SISWA
