@@ -67,13 +67,15 @@
         text-align: left;
     }
 
-    .input-group i {
+    .input-group > i.input-icon-left,
+    .input-group > i:first-child {
         position: absolute;
         top: 50%;
         left: 12px;
         transform: translateY(-50%);
         color: #3CB9E0;
         font-size: 13px;
+        pointer-events: none;
     }
 
     .input-group input {
@@ -86,9 +88,47 @@
         box-sizing: border-box;
     }
 
+    .input-group input[type="password"],
+    .input-group input.has-toggle {
+        padding-right: 38px;
+    }
+
     .input-group input:focus {
         border-color: #3CB9E0;
         box-shadow: 0 0 6px rgba(74, 193, 224, 0.4);
+    }
+
+    /* Toggle Show/Hide Password */
+    .toggle-password-btn {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #8fa0b5;
+        font-size: 14px;
+        padding: 5px;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s ease;
+        z-index: 5;
+        background: transparent;
+        border: none;
+        outline: none;
+        user-select: none;
+    }
+
+    .toggle-password-btn:hover {
+        color: #3CB9E0;
+    }
+
+    .toggle-password-btn i {
+        position: static !important;
+        transform: none !important;
+        font-size: 14px !important;
+        color: inherit !important;
     }
 
     /* Style Khusus Input OTP */
@@ -221,8 +261,11 @@
         </div>
 
         <div class="input-group mt-3">
-            <i class="fas fa-lock"></i>
-            <input type="password" name="password" id="password" placeholder="Kata Sandi Baru" required minlength="8">
+            <i class="fas fa-lock input-icon-left"></i>
+            <input type="password" name="password" id="reset_password" class="has-toggle" placeholder="Kata Sandi Baru" required minlength="8" autocomplete="new-password">
+            <span class="toggle-password-btn" onclick="togglePasswordVisibility('reset_password', this)" role="button" tabindex="0" title="Tampilkan Kata Sandi">
+                <i class="fas fa-eye"></i>
+            </span>
         </div>
 
         <span class="password-hint">
@@ -230,8 +273,11 @@
         </span>
 
         <div class="input-group">
-            <i class="fas fa-check-double"></i>
-            <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Ulangi Kata Sandi Baru" required minlength="8">
+            <i class="fas fa-check-double input-icon-left"></i>
+            <input type="password" name="password_confirmation" id="reset_password_confirmation" class="has-toggle" placeholder="Ulangi Kata Sandi Baru" required minlength="8" autocomplete="new-password">
+            <span class="toggle-password-btn" onclick="togglePasswordVisibility('reset_password_confirmation', this)" role="button" tabindex="0" title="Tampilkan Konfirmasi Kata Sandi">
+                <i class="fas fa-eye"></i>
+            </span>
         </div>
         
         <button type="submit" class="btn-submit">
@@ -254,5 +300,24 @@
     </div>
 </div>
 
+<script>
+    function togglePasswordVisibility(inputId, btn) {
+        const input = document.getElementById(inputId);
+        const icon = btn.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+            btn.style.color = '#3CB9E0';
+            btn.setAttribute('title', 'Sembunyikan Kata Sandi');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+            btn.style.color = '#8fa0b5';
+            btn.setAttribute('title', 'Tampilkan Kata Sandi');
+        }
+    }
+</script>
 </body>
 </html>

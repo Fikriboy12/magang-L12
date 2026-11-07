@@ -156,7 +156,12 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
                             </div>
-                            <input id="password" type="password" class="form-control" name="password" placeholder="Password" required>
+                            <input id="admin_password" type="password" class="form-control" name="password" placeholder="Password" required autocomplete="current-password">
+                            <div class="input-group-append">
+                                <button type="button" class="btn input-group-text" id="btnToggleAdminPassword" style="cursor: pointer; border: none; background: #ffffff; color: #8fa0b5;" title="Tampilkan kata sandi">
+                                    <i class="fas fa-eye" id="iconToggleAdminPassword"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -187,5 +192,29 @@
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const btnToggleAdmin = document.getElementById('btnToggleAdminPassword');
+    const inputAdminPass = document.getElementById('admin_password');
+    const iconToggleAdmin = document.getElementById('iconToggleAdminPassword');
+
+    if (btnToggleAdmin && inputAdminPass && iconToggleAdmin) {
+        btnToggleAdmin.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (inputAdminPass.type === 'password') {
+                inputAdminPass.type = 'text';
+                iconToggleAdmin.classList.remove('fa-eye');
+                iconToggleAdmin.classList.add('fa-eye-slash');
+                btnToggleAdmin.style.color = '#3CB9E0';
+                btnToggleAdmin.setAttribute('title', 'Sembunyikan kata sandi');
+            } else {
+                inputAdminPass.type = 'password';
+                iconToggleAdmin.classList.remove('fa-eye-slash');
+                iconToggleAdmin.classList.add('fa-eye');
+                btnToggleAdmin.style.color = '#8fa0b5';
+                btnToggleAdmin.setAttribute('title', 'Tampilkan kata sandi');
+            }
+        });
+    }
+</script>
 </body>
 </html>

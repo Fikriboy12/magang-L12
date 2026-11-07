@@ -69,13 +69,15 @@
         max-width: 100%;
     }
 
-    .input-group i {
+    .input-group > i.input-icon-left,
+    .input-group > i:first-child {
         position: absolute;
         top: 50%;
         left: 12px;
         transform: translateY(-50%);
         color: #3CB9E0; /* --- BERUBAH: Ikon menggunakan warna biru cerah logo --- */
         font-size: 13px;
+        pointer-events: none;
     }
 
     .input-group input {
@@ -86,11 +88,53 @@
         outline: none;
         font-size: 13px;
         box-sizing: border-box;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-group input#password {
+        padding-right: 38px;
     }
 
     .input-group input:focus {
         border-color: #3CB9E0; /* --- BERUBAH: Border focus menggunakan warna biru cerah logo --- */
         box-shadow: 0 0 6px rgba(74, 193, 224, 0.4); /* --- BERUBAH: Shadow focus menggunakan warna biru logo yang transparan --- */
+    }
+
+    /* Toggle Show/Hide Password */
+    .toggle-password-btn {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #8fa0b5;
+        font-size: 14px;
+        padding: 5px;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s ease, transform 0.1s ease;
+        z-index: 5;
+        background: transparent;
+        border: none;
+        outline: none;
+        user-select: none;
+    }
+
+    .toggle-password-btn:hover {
+        color: #3CB9E0;
+    }
+
+    .toggle-password-btn:active {
+        transform: translateY(-50%) scale(0.92);
+    }
+
+    .toggle-password-btn i {
+        position: static !important;
+        transform: none !important;
+        font-size: 14px !important;
+        color: inherit !important;
     }
 
     /* Button */
@@ -194,8 +238,11 @@
             <input type="email" name="email" id="email" placeholder="Email" required value="{{ old('email') }}">
         </div>
         <div class="input-group" id="password-group">
-            <i class="fas fa-lock"></i>
-            <input type="password" name="password" id="password" placeholder="Password">
+            <i class="fas fa-lock input-icon-left"></i>
+            <input type="password" name="password" id="password" placeholder="Password" required autocomplete="current-password">
+            <span class="toggle-password-btn" id="btnTogglePassword" role="button" tabindex="0" title="Tampilkan Kata Sandi">
+                <i class="fas fa-eye" id="iconTogglePassword"></i>
+            </span>
         </div>
 
         <div style="text-align: right; margin-top: -6px; margin-bottom: 10px;">
@@ -232,6 +279,37 @@
 </div>
 
 <script>
+    // Fitur Toggle Lihat / Sembunyikan Password
+    const btnTogglePassword = document.getElementById('btnTogglePassword');
+    const passwordInput = document.getElementById('password');
+    const iconTogglePassword = document.getElementById('iconTogglePassword');
+
+    if (btnTogglePassword && passwordInput && iconTogglePassword) {
+        function togglePasswordVisibility() {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                iconTogglePassword.classList.remove('fa-eye');
+                iconTogglePassword.classList.add('fa-eye-slash');
+                btnTogglePassword.style.color = '#3CB9E0';
+                btnTogglePassword.setAttribute('title', 'Sembunyikan Kata Sandi');
+            } else {
+                passwordInput.type = 'password';
+                iconTogglePassword.classList.remove('fa-eye-slash');
+                iconTogglePassword.classList.add('fa-eye');
+                btnTogglePassword.style.color = '#8fa0b5';
+                btnTogglePassword.setAttribute('title', 'Tampilkan Kata Sandi');
+            }
+        }
+
+        btnTogglePassword.addEventListener('click', togglePasswordVisibility);
+        btnTogglePassword.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                togglePasswordVisibility();
+            }
+        });
+    }
+
     const btnShowCamera = document.getElementById('btn-show-camera');
     const cameraSection = document.getElementById('camera-section');
     const video = document.getElementById('video-webcam');

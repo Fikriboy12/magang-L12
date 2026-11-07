@@ -59,6 +59,35 @@
 
         .form-control:focus {
             border-color: #3CB9E0;
+            box-shadow: 0 0 0 0.2rem rgba(60, 185, 224, 0.25);
+        }
+
+        /* TOGGLE PASSWORD */
+        .password-field-wrapper {
+            position: relative;
+        }
+        .password-field-wrapper input {
+            padding-right: 40px !important;
+        }
+        .password-field-wrapper .btn-toggle-eye {
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #94a3b8;
+            background: transparent;
+            border: none;
+            padding: 4px;
+            font-size: 14px;
+            line-height: 1;
+            z-index: 5;
+            transition: color 0.2s;
+        }
+        .password-field-wrapper .btn-toggle-eye:hover {
+            color: #3CB9E0;
+        }
+            border-color: #3CB9E0;
             box-shadow: 0 0 0 3px rgba(60, 185, 224, 0.1);
         }
 
@@ -211,13 +240,23 @@
                 <div class="col-6">
                     <div class="form-group mb-1">
                         <label>Password</label>
-                        <input type="password" name="password" class="form-control" placeholder="Min 8 karakter" required>
+                        <div class="password-field-wrapper">
+                            <input type="password" name="password" id="reg_password" class="form-control" placeholder="Min 8 karakter" required>
+                            <button type="button" class="btn-toggle-eye" onclick="toggleRegPassword('reg_password', this)" title="Tampilkan Password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="form-group mb-1">
                         <label>Konfirmasi Password</label>
-                        <input type="password" name="password_confirmation" class="form-control" placeholder="Ulangi" required>
+                        <div class="password-field-wrapper">
+                            <input type="password" name="password_confirmation" id="reg_password_confirmation" class="form-control" placeholder="Ulangi" required>
+                            <button type="button" class="btn-toggle-eye" onclick="toggleRegPassword('reg_password_confirmation', this)" title="Tampilkan Konfirmasi Password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -443,6 +482,24 @@
                 statusText.className = "mt-2 text-danger font-weight-bold";
             }
         });
+        // Toggle Show/Hide Password Register
+        function toggleRegPassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+                btn.style.color = '#3CB9E0';
+                btn.setAttribute('title', 'Sembunyikan Kata Sandi');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+                btn.style.color = '#94a3b8';
+                btn.setAttribute('title', 'Tampilkan Kata Sandi');
+            }
+        }
     </script>
 </body>
 </html>
