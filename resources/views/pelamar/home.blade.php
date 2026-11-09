@@ -65,35 +65,51 @@
         align-items: center; justify-content: center; pointer-events: none;
     }
     .nivo-caption .container { position: relative; z-index: 25; width: 100%; display: flex; justify-content: center; pointer-events: none; }
-    .slider-content { pointer-events: auto; }
+    .slider-content { pointer-events: auto; width: 100%; display: flex; justify-content: center; }
 
     /* CARD SLIDER */
     .slider-glass-card {
-        background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); 
-        border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 30px;
-        width: 90%; max-width: 700px; min-height: 500px; padding: 60px 40px;
+        background: rgba(15, 23, 42, 0.55); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 28px;
+        width: 90%; max-width: 680px; padding: 45px 35px;
         display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-        box-shadow: 0 30px 60px rgba(0,0,0,0.5); animation: cardZoom 0.8s ease-out;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); animation: cardZoom 0.8s ease-out;
     }
-    @keyframes cardZoom { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @keyframes cardZoom { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     .title1-hero {
-        font-size: 16px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #00c6fb;
-        margin-bottom: 25px; display: inline-block; background: rgba(0, 198, 251, 0.15); padding: 10px 30px; border-radius: 50px; border: 1px solid rgba(0, 198, 251, 0.5);
+        font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #38bdf8;
+        margin-bottom: 18px; display: inline-flex; align-items: center; gap: 8px;
+        background: rgba(56, 189, 248, 0.15); padding: 8px 22px; border-radius: 50px; border: 1px solid rgba(56, 189, 248, 0.4);
     }
     .title2-hero {
-        font-size: 42px; font-weight: 800; color: #ffffff; line-height: 1.2; margin-bottom: 40px; text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        font-size: 36px; font-weight: 800; color: #ffffff; line-height: 1.25; margin-bottom: 14px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
-    .btn-action-wrapper { display: flex; justify-content: center; gap: 15px; width: 100%; max-width: 400px; flex-wrap: wrap; margin-top: auto; }
+    .title2-hero .text-accent-hero {
+        color: #38bdf8;
+        background: linear-gradient(135deg, #38bdf8 0%, #60a5fa 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .hero-subtext {
+        font-size: 15px; line-height: 1.6; color: #e2e8f0; margin-bottom: 26px; max-width: 520px; text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+    .btn-action-wrapper {
+        display: flex; justify-content: center; align-items: center; gap: 14px; width: 100%; max-width: 420px;
+    }
     .btn-world-class {
-        background: linear-gradient(135deg, #005bea 0%, #00c6fb 100%); border: none; color: white !important; padding: 16px 0; border-radius: 50px;
-        font-weight: 700; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; width: 100%; display: block; box-shadow: 0 10px 30px -5px rgba(0, 91, 234, 0.5);
+        background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%); border: none; color: white !important;
+        padding: 14px 28px; border-radius: 50px; font-weight: 700; font-size: 13px; letter-spacing: 0.5px;
+        text-transform: uppercase; text-decoration: none !important; display: inline-flex; align-items: center;
+        justify-content: center; gap: 8px; box-shadow: 0 8px 25px rgba(2, 132, 199, 0.4); transition: all 0.3s ease;
     }
-    .btn-world-class:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -5px rgba(0, 91, 234, 0.7); }
+    .btn-world-class:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(2, 132, 199, 0.6); }
     .btn-glass-outline {
-        background: rgba(255, 255, 255, 0.1); border: 2px solid #fff; color: #fff !important; padding: 14px 0; border-radius: 50px;
-        font-weight: 600; text-transform: uppercase; text-decoration: none; width: 100%; display: block; backdrop-filter: blur(4px);
+        background: rgba(255, 255, 255, 0.12); border: 1.5px solid rgba(255, 255, 255, 0.7); color: #fff !important;
+        padding: 13px 26px; border-radius: 50px; font-weight: 700; font-size: 13px; letter-spacing: 0.5px;
+        text-transform: uppercase; text-decoration: none !important; display: inline-flex; align-items: center;
+        justify-content: center; gap: 8px; backdrop-filter: blur(4px); transition: all 0.3s ease;
     }
-    .btn-glass-outline:hover { background: #fff; color: #005bea !important; }
+    .btn-glass-outline:hover { background: #ffffff; color: #0284c7 !important; border-color: #ffffff; transform: translateY(-2px); }
 
     /* 4. CONTENT STYLE (FIXED) */
     .glass-card {
@@ -163,11 +179,101 @@
 
     @media (max-width: 768px) {
         .slider-area, .nivoSlider img { height: 100vh !important; }
-        .slider-glass-card { width: 90%; padding: 40px 20px; min-height: 450px; }
-        .title1-hero { font-size: 11px; padding: 6px 15px; }
-        .title2-hero { font-size: 28px; line-height: 1.3; }
-        .btn-action-wrapper { width: 100%; }
-        .glass-card { padding: 25px; margin-bottom: 20px; }
+
+        /* HERO CARD KHUSUS HP (KOMPAK, RAPI, TIDAK ADA KOTAK KOSONG GEDE) */
+        .slider-glass-card {
+            width: 92% !important;
+            max-width: 380px !important;
+            min-height: auto !important;
+            height: auto !important;
+            padding: 26px 18px !important;
+            border-radius: 22px !important;
+            background: rgba(15, 23, 42, 0.58) !important;
+            backdrop-filter: blur(14px) !important;
+            -webkit-backdrop-filter: blur(14px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.22) !important;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5) !important;
+            margin: 0 auto !important;
+        }
+
+        .title1-hero {
+            font-size: 10.5px !important;
+            padding: 5px 14px !important;
+            letter-spacing: 1px !important;
+            margin-bottom: 12px !important;
+        }
+
+        .title2-hero {
+            font-size: 21px !important;
+            line-height: 1.32 !important;
+            margin-bottom: 10px !important;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+        }
+
+        .hero-subtext {
+            font-size: 12px !important;
+            line-height: 1.5 !important;
+            margin-bottom: 20px !important;
+            color: #f1f5f9 !important;
+            display: block !important;
+            max-width: 290px !important;
+        }
+
+        /* TOMBOL SEJAJAR PROPORSIONAL DI HP */
+        .btn-action-wrapper {
+            display: flex !important;
+            flex-direction: row !important;
+            justify-content: center !important;
+            gap: 10px !important;
+            width: 100% !important;
+            max-width: 320px !important;
+            margin-top: 0 !important;
+        }
+
+        .btn-action-wrapper .btn-world-class,
+        .btn-action-wrapper .btn-glass-outline {
+            flex: 1 1 0% !important;
+            width: auto !important;
+            min-width: 120px !important;
+            padding: 11px 12px !important;
+            font-size: 11.5px !important;
+            font-weight: 700 !important;
+            border-radius: 50px !important;
+            text-align: center !important;
+            letter-spacing: 0.3px !important;
+            margin: 0 !important;
+        }
+
+        .nivo-controlNav {
+            bottom: 25px !important;
+        }
+
+        /* KONTEN SECTIONS LAINNYA DI HP */
+        .section-headline h2 {
+            font-size: 28px !important;
+        }
+        .section-headline {
+            margin-bottom: 30px !important;
+        }
+        .area-padding {
+            padding: 50px 0 !important;
+        }
+        .glass-card {
+            padding: 22px !important;
+            margin-bottom: 20px !important;
+        }
+        .floating-img-container {
+            min-height: 220px !important;
+            height: 220px !important;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .title2-hero { font-size: 18px !important; }
+        .hero-subtext { font-size: 11px !important; }
+        .btn-action-wrapper { flex-direction: column !important; gap: 8px !important; }
+        .btn-action-wrapper .btn-world-class,
+        .btn-action-wrapper .btn-glass-outline { width: 100% !important; min-width: 100% !important; }
     }
 </style>
 
@@ -185,11 +291,12 @@
             <div class="col-md-12">
               <div class="slider-content">
                 <div class="slider-glass-card">
-                    <span class="title1-hero">PT Media Balai Nusa</span>
-                    <h1 class="title2-hero">Selamat Datang di <br> <span style="color: #00c6fb;">PT.MEDIA BALAI NUSA astro net</span></h1>
+                    <span class="title1-hero"><i class="fas fa-satellite-dish"></i> PT Media Balai Nusa</span>
+                    <h1 class="title2-hero">Selamat Datang di <br> <span class="text-accent-hero">PT. MEDIA BALAI NUSA astro net</span></h1>
+                    <p class="hero-subtext">Sistem Manajemen Praktik Kerja Lapangan (PKL) &amp; Presensi Siswa SMK Berbasis Digital</p>
                     <div class="btn-action-wrapper">
-                      <a class="btn-world-class ready-btn right-btn page-scroll" href="{{ url('registrasi') }}">REGISTRASI</a>
-                      <a class="btn-glass-outline ready-btn page-scroll" href="#contact">CONTACT US</a>
+                      <a class="btn-world-class page-scroll" href="{{ url('registrasi') }}"><i class="fas fa-user-plus"></i> Registrasi</a>
+                      <a class="btn-glass-outline page-scroll" href="#contact"><i class="fas fa-envelope"></i> Kontak</a>
                     </div>
                 </div>
               </div>
@@ -203,11 +310,12 @@
             <div class="col-md-12">
               <div class="slider-content text-center">
                 <div class="slider-glass-card">
-                    <span class="title1-hero">ASTRONET.ID</span>
-                    <h1 class="title2-hero">Bangun Pengalaman <br> dan Wujudkan Masa Depan</h1>
+                    <span class="title1-hero"><i class="fas fa-network-wired"></i> ASTRONET.ID</span>
+                    <h1 class="title2-hero">Bangun Pengalaman <br> <span class="text-accent-hero">Wujudkan Masa Depan</span></h1>
+                    <p class="hero-subtext">Pengembangan kompetensi teknologi jaringan internet &amp; serat optik bersama praktisi industri</p>
                     <div class="btn-action-wrapper">
-                      <a class="btn-world-class ready-btn right-btn page-scroll" href="{{ url('registrasi') }}">REGISTRASI</a>
-                      <a class="btn-glass-outline ready-btn page-scroll" href="#contact">CONTACT US</a>
+                      <a class="btn-world-class page-scroll" href="{{ url('registrasi') }}"><i class="fas fa-user-plus"></i> Registrasi</a>
+                      <a class="btn-glass-outline page-scroll" href="#contact"><i class="fas fa-envelope"></i> Kontak</a>
                     </div>
                 </div>
               </div>
@@ -221,11 +329,12 @@
             <div class="col-md-12">
               <div class="slider-content">
                 <div class="slider-glass-card">
-                    <span class="title1-hero">ASTRONET.ID</span>
-                    <h1 class="title2-hero">Lebih Cepat, Lebih Baik <br> Daftar Dari Rumah</h1>
+                    <span class="title1-hero"><i class="fas fa-laptop-code"></i> DAFTAR PRAKTIS</span>
+                    <h1 class="title2-hero">Lebih Cepat, Lebih Baik <br> <span class="text-accent-hero">Daftar Dari Rumah</span></h1>
+                    <p class="hero-subtext">Pengajuan pendaftaran magang SMK dan verifikasi berkas secara online dari mana saja</p>
                     <div class="btn-action-wrapper">
-                        <a class="btn-world-class ready-btn right-btn page-scroll" href="{{ url('registrasi') }}">REGISTRASI</a>
-                        <a class="btn-glass-outline ready-btn page-scroll" href="#contact">CONTACT US</a>
+                        <a class="btn-world-class page-scroll" href="{{ url('registrasi') }}"><i class="fas fa-user-plus"></i> Registrasi</a>
+                        <a class="btn-glass-outline page-scroll" href="#contact"><i class="fas fa-envelope"></i> Kontak</a>
                     </div>
                 </div>
               </div>
