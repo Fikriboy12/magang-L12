@@ -189,11 +189,11 @@
             }
             .custom-mobile-toggle:focus { outline: none !important; }
 
-            .header-right .user-toggle { position: fixed; right: 65px; top: 18px; z-index: 9998; }
+            .header-right .user-toggle { position: fixed; right: 65px; top: 15px; z-index: 9998; }
             
             .mobile-menu-popup, .menu-backdrop { 
-                top: 70px !important; 
-                max-height: calc(100vh - 70px);
+                top: 60px !important; 
+                max-height: calc(100vh - 60px);
             }
             
             .mobile-nav, .mobile-nav-overly, #mobile-nav { display: none !important; opacity: 0 !important; visibility: hidden !important; }
@@ -202,14 +202,13 @@
             .footer-desc { text-align: center; }
             .footer-links a { justify-content: center; }
             .btn-admin-footer, .footer-title { margin: 0 auto 20px auto; }
-        }
-
-        /* Nonaktifkan kursor kustom di perangkat layar sentuh / HP */
-        @media (hover: none) and (pointer: coarse) {
-            .cursor-trail-dot { display: none !important; }
-            html, body, a, button, input, select, textarea, .nav-menu a, .user-toggle, .mobile-nav-toggle, .mm-item, .mm-btn {
-                cursor: auto !important;
-            }
+            
+            .slider-glass-card { padding: 20px 15px !important; margin: 40px auto 0 auto !important; background: rgba(255, 255, 255, 0.18) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1.5px solid rgba(255, 255, 255, 0.4) !important; border-radius: 20px; max-width: 85% !important; height: auto !important; display: flex; flex-direction: column; align-items: center; }
+            .slider-glass-card h2 { font-size: 36px !important; color: #fff !important; text-shadow: 0 2px 4px rgba(0,0,0,0.2); line-height: 1.1 !important; }
+            .slider-glass-card strong { font-size: 30px !important; color: #38bdf8 !important; display: block; margin-top: 10px; }
+            .slider-glass-card .btn, .slider-glass-card a[class*="btn"] { width: 130px !important; padding: 8px 10px !important; font-size: 10px !important; border-radius: 8px !important; margin: 5px auto !important; display: block !important; font-weight: 700 !important; text-transform: uppercase; }
+            .slider-glass-card .btn-info, a[href*="registrasi"] { background-color: #38bdf8 !important; color: #ffffff !important; border: none !important; }
+            .slider-glass-card .btn-secondary, a[href*="contact"] { background-color: transparent !important; color: #ffffff !important; border: 1.5px solid #ffffff !important; }
         }
     </style>
 
