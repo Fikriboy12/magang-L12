@@ -163,11 +163,33 @@
 
     @media (max-width: 768px) {
         .slider-area, .nivoSlider img { height: 100vh !important; }
-        .slider-glass-card { width: 90%; padding: 40px 20px; min-height: 450px; }
-        .title1-hero { font-size: 11px; padding: 6px 15px; }
-        .title2-hero { font-size: 28px; line-height: 1.3; }
-        .btn-action-wrapper { width: 100%; }
+        .slider-glass-card { 
+            width: 90% !important; 
+            max-width: 380px !important;
+            padding: 35px 20px !important; 
+            min-height: auto !important; 
+            height: auto !important; 
+        }
+        .title1-hero { 
+            font-size: 12px !important; 
+            padding: 7px 18px !important; 
+            margin-bottom: 15px !important; 
+        }
+        .title2-hero { 
+            font-size: 33px !important; 
+            line-height: 1.25 !important; 
+            font-weight: 800 !important;
+            margin-bottom: 0 !important; 
+        }
+        .btn-action-wrapper { 
+            width: 100% !important; 
+            margin-top: 25px !important; 
+        }
         .glass-card { padding: 25px; margin-bottom: 20px; }
+    }
+
+    @media (max-width: 380px) {
+        .title2-hero { font-size: 27px !important; }
     }
 </style>
 
