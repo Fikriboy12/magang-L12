@@ -137,8 +137,8 @@ class LoginController extends Controller
             'live_desc_sample' => array_slice($liveDescriptor, 0, 5),
         ]);
 
-        // 4. Validasi Threshold (SESUAI DIAGRAM ALUR: THRESHOLD = 0.60)
-        if ($distance < 0.60) {
+        // 4. Validasi Threshold (SESUAI TABEL INTERPRETASI: THRESHOLD <= 0.60)
+        if ($distance <= 0.60) {
             
             // Terapkan Blokir Admin juga di Login Biometrik
             if ($user->role === 'admin') {
