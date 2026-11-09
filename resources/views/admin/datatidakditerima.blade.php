@@ -37,16 +37,16 @@
                         <thead >
                             <tr >
                                 <th width = "5%">No.</th>
-                                <th>Nama</th>
-                                <th>Universitas</th>
+                                <th>Nama Siswa</th>
+                                <th>Asal SMK / Sekolah</th>
                                 <th>Jurusan</th>
-                                <th>Gambar</th>
+                                <th class="text-center">Foto</th>
                                 <th>Email</th>
                                 <th>No Telepon</th>
                                 <th>Dari Tanggal</th>
                                 <th>Sampai Tanggal</th>
                                 <th>Status</th>
-                                <th class="text-center" width = "20%">Action</th>
+                                <th class="text-center" width = "12%">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -56,23 +56,35 @@
                                     <td>{{$no++}}</td>
                                     
                                     {{-- PERBAIKAN DI SINI: Ambil Nama dari relasi User --}}
-                                    <td>{{ $item->user->name ?? '-' }}</td>
+                                    <td class="font-weight-600">{{ $item->nama_lengkap ?? $item->user->name ?? '-' }}</td>
                                     
                                     <td>{{$item->universitas}}</td>
                                     <td>{{$item->jurusan}}</td>
-                                    <td width = "10%" class ="text-center"><img src="<?= asset('')?>gambar/<?= $item->gambar?>" alt="" width ="90%"></td>
+                                    <td class="text-center">
+                                        @if($item->gambar && file_exists(public_path('gambar/' . $item->gambar)))
+                                            <img src="{{ asset('gambar/' . $item->gambar) }}" alt="{{ $item->nama_lengkap }}" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                        @else
+                                            <div style="width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #ef4444, #f87171); color: #fff; font-weight: bold; display: inline-flex; align-items: center; justify-content: center; font-size: 14px;">
+                                                {{ strtoupper(substr($item->nama_lengkap ?? $item->user->name ?? 'S', 0, 1)) }}
+                                            </div>
+                                        @endif
+                                    </td>
                                     
                                     {{-- PERBAIKAN DI SINI: Ambil Email dari relasi User --}}
-                                    <td>{{ $item->user->email ?? '-' }}</td>
+                                    <td>{{ $item->email ?? $item->user->email ?? '-' }}</td>
                                     
                                     {{-- PERBAIKAN DI SINI: Ambil No Telp dari relasi User --}}
-                                    <td>{{ $item->user->no_telp ?? '-' }}</td>
+                                    <td>{{ $item->no_telp ?? $item->user->no_telp ?? '-' }}</td>
                                     
                                     <td>{{$item->dari_tanggal}}</td>
                                     <td>{{$item->sampai_tanggal}}</td>
-                                    <td>{{$item->status_pendaftaran}}</td>
-                                    <td width = "10%" class="text-center">
-                                        <a href="<?= url('detail-diterima/'.$item->id_pendaftaran) ?>" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
+                                    <td>
+                                        <span class="badge badge-danger text-capitalize">{{$item->status_pendaftaran}}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{{ url('detail-tidak-diterima/'.$item->id_pendaftaran) }}" class="btn btn-info btn-sm shadow-sm" title="Lihat Detail">
+                                            <i class="fas fa-eye mr-1"></i> Detail
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach
