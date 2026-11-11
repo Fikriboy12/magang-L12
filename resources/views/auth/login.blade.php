@@ -379,143 +379,216 @@
             }
 
             // 5. Mulai pemindaian saat video berjalan
-            video.addEventListener('play', () => {
-                const displaySize = { width: video.videoWidth, height: video.videoHeight };
+            function startLivenessScanner() {
+                const displaySize = { width: video.videoWidth || 320, height: video.videoHeight || 240 };
                 faceapi.matchDimensions(canvas, displaySize);
 
                 let isSubmitted = false;
+                let isProcessingBlink = false;
                 let faceAlignedFrames = 0;
-                const REQUIRED_ALIGNED_FRAMES = 5; // Wajah wajib stabil 5 frame di awal
+                const REQUIRED_ALIGNED_FRAMES = 3; // 3 frame stabil di awal untuk kalibrasi baseline EAR
                 let eyeWasClosed = false;
-                let blinkVerified = false;
-
-                // Threshold EAR (Berdasarkan Standar Computer Vision)
-                const EAR_THRESHOLD_CLOSED = 0.22; // Kelopak mata tertutup / berkedip
-                const EAR_THRESHOLD_OPEN   = 0.26; // Kelopak mata terbuka normal
+                let closedTimestamp = 0;
+                let baselineEAR = null;
+                let consecutiveLostFrames = 0;
 
                 const livenessBadge = document.getElementById('liveness-badge');
                 const earValueText  = document.getElementById('ear-value');
 
-                const scanInterval = setInterval(async () => {
-                    if (isSubmitted) return;
+                let isLoopRunning = true;
 
-                    const detection = await faceapi.detectSingleFace(video)
-                        .withFaceLandmarks()
-                        .withFaceDescriptor();
-                    
-                    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+                async function loop() {
+                    if (!isLoopRunning || isSubmitted) return;
 
-                    if (detection) {
-                        const resizedDetection = faceapi.resizeResults(detection, displaySize);
-                        const landmarks = resizedDetection.landmarks;
-                        const leftEye  = landmarks.getLeftEye();
-                        const rightEye = landmarks.getRightEye();
+                    try {
+                        // KUNCI PERFORMA: Hanya deteksi landmarks saat loop pelacakan (15-25+ FPS lancar)
+                        // TIDAK memanggil withFaceDescriptor() di sini agar tidak membebani CPU!
+                        const detection = await faceapi.detectSingleFace(video).withFaceLandmarks();
 
-                        // 1. Hitung Nilai EAR untuk Kedua Belah Mata
-                        const leftEAR  = calculateEyeEAR(leftEye);
-                        const rightEAR = calculateEyeEAR(rightEye);
-                        const avgEAR   = (leftEAR + rightEAR) / 2.0;
+                        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 
-                        if (earValueText) {
-                            earValueText.innerText = `EAR: ${avgEAR.toFixed(2)}`;
-                        }
+                        if (detection) {
+                            consecutiveLostFrames = 0;
+                            const resizedDetection = faceapi.resizeResults(detection, displaySize);
+                            const landmarks = resizedDetection.landmarks;
+                            const leftEye  = landmarks.getLeftEye();
+                            const rightEye = landmarks.getRightEye();
 
-                        // 2. Gambar 68 Titik Karakteristik Wajah (Landmarks)
-                        faceapi.draw.drawFaceLandmarks(canvas, resizedDetection);
+                            // 1. Hitung Nilai EAR untuk Kedua Belah Mata
+                            const leftEAR  = calculateEyeEAR(leftEye);
+                            const rightEAR = calculateEyeEAR(rightEye);
+                            const avgEAR   = (leftEAR + rightEAR) / 2.0;
 
-                        if (!blinkVerified) {
-                            // FASE A: Penyelarasan Posisi Wajah
-                            if (faceAlignedFrames < REQUIRED_ALIGNED_FRAMES) {
-                                faceAlignedFrames++;
-                                statusText.innerText = `Menyelaraskan wajah... (${Math.round((faceAlignedFrames / REQUIRED_ALIGNED_FRAMES) * 100)}%)`;
-                                statusText.style.color = "#3CB9E0";
+                            if (earValueText) {
+                                earValueText.innerText = `EAR: ${avgEAR.toFixed(2)}`;
+                            }
 
-                                const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
-                                    label: 'Wajah Terdeteksi (0.60)', 
-                                    boxColor: '#3CB9E0' 
-                                });
-                                drawBox.draw(canvas);
-                            } else {
-                                // FASE B: Uji Liveness Kedipan Mata (Anti-Spoofing)
-                                if (avgEAR < EAR_THRESHOLD_CLOSED) {
-                                    eyeWasClosed = true;
-                                    statusText.innerText = "Kedip terdeteksi! Silakan buka kembali mata Anda...";
-                                    statusText.style.color = "#f59e0b"; // Oranye
+                            // 2. Gambar 68 Titik Karakteristik Wajah (Landmarks)
+                            faceapi.draw.drawFaceLandmarks(canvas, resizedDetection);
 
-                                    if (livenessBadge) {
-                                        livenessBadge.innerHTML = '<i class="fas fa-eye-slash"></i> Mata Menutup';
-                                        livenessBadge.style.background = '#fef3c7';
-                                        livenessBadge.style.color = '#b45309';
+                            if (!isProcessingBlink) {
+                                // FASE A: Penyelarasan Posisi Wajah & Kalibrasi Baseline EAR
+                                if (faceAlignedFrames < REQUIRED_ALIGNED_FRAMES) {
+                                    faceAlignedFrames++;
+                                    if (baselineEAR === null) {
+                                        baselineEAR = avgEAR;
+                                    } else {
+                                        baselineEAR = (baselineEAR + avgEAR) / 2.0;
                                     }
-                                } else if (eyeWasClosed && avgEAR >= EAR_THRESHOLD_OPEN) {
-                                    // SIKLUS KEDIP LENGKAP: Terbuka -> Menutup -> Terbuka Kembali (100% Manusia Asli)
-                                    blinkVerified = true;
-                                    
-                                    if (livenessBadge) {
-                                        livenessBadge.innerHTML = '<i class="fas fa-check-circle"></i> Kedip Valid!';
-                                        livenessBadge.style.background = '#dcfce7';
-                                        livenessBadge.style.color = '#15803d';
-                                    }
+
+                                    statusText.innerText = `Menyelaraskan wajah... (${Math.round((faceAlignedFrames / REQUIRED_ALIGNED_FRAMES) * 100)}%)`;
+                                    statusText.style.color = "#3CB9E0";
+
+                                    const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
+                                        label: 'Wajah Terdeteksi', 
+                                        boxColor: '#3CB9E0' 
+                                    });
+                                    drawBox.draw(canvas);
                                 } else {
-                                    statusText.innerText = "UJI LIVENESS: Silakan KEDIPKAN MATA Anda sekali...";
-                                    statusText.style.color = "#0284c7"; // Biru
+                                    // FASE B: Uji Liveness Kedipan Mata (Anti-Spoofing)
+                                    // Threshold adaptif yang responsif:
+                                    const effectiveBaseline = baselineEAR || 0.30;
+                                    const earClosedThreshold = Math.min(0.245, effectiveBaseline * 0.82);
+                                    const earOpenThreshold   = Math.max(0.255, effectiveBaseline * 0.88);
 
-                                    if (livenessBadge) {
-                                        livenessBadge.innerHTML = '<i class="fas fa-eye"></i> Menunggu Kedipan Mata';
-                                        livenessBadge.style.background = '#e0f2fe';
-                                        livenessBadge.style.color = '#0284c7';
+                                    const isEyesClosed = (avgEAR <= earClosedThreshold) || (leftEAR <= 0.24 && rightEAR <= 0.24);
+
+                                    if (isEyesClosed) {
+                                        if (!eyeWasClosed) {
+                                            eyeWasClosed = true;
+                                            closedTimestamp = Date.now();
+                                        }
+
+                                        statusText.innerText = "Kedip terdeteksi! Silakan buka kembali mata Anda...";
+                                        statusText.style.color = "#f59e0b"; // Oranye
+
+                                        if (livenessBadge) {
+                                            livenessBadge.innerHTML = '<i class="fas fa-eye-slash"></i> Mata Menutup! Buka kembali...';
+                                            livenessBadge.style.background = '#fef3c7';
+                                            livenessBadge.style.color = '#b45309';
+                                        }
+
+                                        const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
+                                            label: 'Mata Menutup (Liveness)', 
+                                            boxColor: '#f59e0b' 
+                                        });
+                                        drawBox.draw(canvas);
+
+                                    } else if (eyeWasClosed && avgEAR >= earOpenThreshold) {
+                                        // SIKLUS KEDIP LENGKAP: Terbuka -> Menutup -> Terbuka Kembali (100% Manusia Asli)
+                                        const blinkDuration = Date.now() - closedTimestamp;
+                                        
+                                        // Rentang durasi kedip manusia normal (80ms - 3000ms)
+                                        if (blinkDuration >= 80 && blinkDuration <= 3000) {
+                                            isProcessingBlink = true;
+                                            isLoopRunning = false;
+
+                                            statusText.innerText = "Liveness Valid (Manusia Hidup)! Mengekstrak biometrik wajah...";
+                                            statusText.style.color = "#16a34a"; // Hijau
+
+                                            if (livenessBadge) {
+                                                livenessBadge.innerHTML = '<i class="fas fa-check-circle"></i> Kedip Valid! Memverifikasi...';
+                                                livenessBadge.style.background = '#dcfce7';
+                                                livenessBadge.style.color = '#15803d';
+                                            }
+
+                                            const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
+                                                label: 'Liveness: TERVERIFIKASI (Asli)', 
+                                                boxColor: '#22c55e' 
+                                            });
+                                            drawBox.draw(canvas);
+
+                                            // FASE C: Ekstraksi Face Descriptor (ResNet-34) 1 Kali Saja
+                                            let fullDetection = null;
+                                            for (let r = 0; r < 5; r++) {
+                                                fullDetection = await faceapi.detectSingleFace(video)
+                                                    .withFaceLandmarks()
+                                                    .withFaceDescriptor();
+                                                if (fullDetection) break;
+                                                await new Promise(res => setTimeout(res, 80));
+                                            }
+
+                                            if (fullDetection) {
+                                                isSubmitted = true;
+                                                statusText.innerText = "Verifikasi selesai! Mengalihkan ke sistem...";
+                                                
+                                                document.getElementById('bio_email').value = emailInput.value;
+                                                document.getElementById('bio_face_descriptor').value = JSON.stringify(Array.from(fullDetection.descriptor));
+                                                document.getElementById('bio_liveness_status').value = "1";
+
+                                                setTimeout(() => {
+                                                    formBiometric.submit();
+                                                }, 400);
+                                                return;
+                                            } else {
+                                                // Jika ekstraksi descriptor sesaat terlewat, pulihkan ke loop
+                                                isProcessingBlink = false;
+                                                isLoopRunning = true;
+                                                eyeWasClosed = false;
+                                                statusText.innerText = "Posisikan wajah menghadap kamera dan silakan kedip lagi...";
+                                            }
+                                        } else {
+                                            // Terlalu lama tutup mata (>3 detik), reset agar bisa kedip ulang secara alami
+                                            eyeWasClosed = false;
+                                        }
+
+                                    } else {
+                                        // Update baseline perlahan jika mata tetap terbuka
+                                        if (!eyeWasClosed && avgEAR >= 0.26) {
+                                            baselineEAR = (baselineEAR * 0.9) + (avgEAR * 0.1);
+                                        }
+
+                                        statusText.innerText = "UJI LIVENESS: Silakan KEDIPKAN MATA Anda sekali...";
+                                        statusText.style.color = "#0284c7"; // Biru
+
+                                        if (livenessBadge) {
+                                            livenessBadge.innerHTML = '<i class="fas fa-eye"></i> Menunggu Kedipan Mata';
+                                            livenessBadge.style.background = '#e0f2fe';
+                                            livenessBadge.style.color = '#0284c7';
+                                        }
+
+                                        const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
+                                            label: 'Uji Liveness: Kedipkan Mata', 
+                                            boxColor: '#3CB9E0' 
+                                        });
+                                        drawBox.draw(canvas);
                                     }
                                 }
-
-                                const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
-                                    label: eyeWasClosed ? 'Kedip Terdeteksi...' : 'Uji Liveness: Kedipkan Mata', 
-                                    boxColor: eyeWasClosed ? '#f59e0b' : '#3CB9E0' 
-                                });
-                                drawBox.draw(canvas);
                             }
                         } else {
-                            // FASE C: Liveness Berhasil & Kirim Data Biometrik
-                            isSubmitted = true;
-                            clearInterval(scanInterval);
-
-                            const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
-                                label: 'Liveness: TERVERIFIKASI (Asli)', 
-                                boxColor: '#22c55e' 
-                            });
-                            drawBox.draw(canvas);
-
-                            statusText.innerText = "Liveness Valid (Manusia Hidup)! Memproses login...";
-                            statusText.style.color = "#16a34a"; // Hijau
-
-                            if (livenessBadge) {
-                                livenessBadge.innerHTML = '<i class="fas fa-shield-alt"></i> Liveness: OK (Manusia Asli)';
-                                livenessBadge.style.background = '#dcfce7';
-                                livenessBadge.style.color = '#15803d';
+                            // Toleransi kehilangan deteksi singkat (misal saat kelopak mata menutup cepat)
+                            consecutiveLostFrames++;
+                            if (consecutiveLostFrames > 8) {
+                                faceAlignedFrames = 0;
+                                eyeWasClosed = false;
+                                baselineEAR = null;
+                                statusText.innerText = "Posisikan wajah Anda di tengah kamera...";
+                                statusText.style.color = "#cc0000"; // Merah
+                                if (earValueText) earValueText.innerText = "EAR: --";
+                                if (livenessBadge) {
+                                    livenessBadge.innerHTML = '<i class="fas fa-user-times"></i> Wajah Belum Terdeteksi';
+                                    livenessBadge.style.background = '#fee2e2';
+                                    livenessBadge.style.color = '#b91c1c';
+                                }
                             }
-
-                            // Kirim data ke controller
-                            document.getElementById('bio_email').value = emailInput.value;
-                            document.getElementById('bio_face_descriptor').value = JSON.stringify(Array.from(detection.descriptor));
-                            document.getElementById('bio_liveness_status').value = "1";
-
-                            setTimeout(() => {
-                                formBiometric.submit();
-                            }, 500);
                         }
-                    } else {
-                        statusText.innerText = "Posisikan wajah Anda di tengah kamera...";
-                        statusText.style.color = "#cc0000"; // Merah
-                        faceAlignedFrames = 0;
-                        eyeWasClosed = false;
-                        if (earValueText) earValueText.innerText = "EAR: --";
-                        if (livenessBadge) {
-                            livenessBadge.innerHTML = '<i class="fas fa-user-times"></i> Wajah Belum Terdeteksi';
-                            livenessBadge.style.background = '#fee2e2';
-                            livenessBadge.style.color = '#b91c1c';
-                        }
+                    } catch (e) {
+                        console.error("Kesalahan loop liveness:", e);
                     }
-                }, 110); // Interval 110ms ideal untuk menangkap kedipan kelopak mata alami
-            });
+
+                    if (isLoopRunning && !isSubmitted) {
+                        setTimeout(loop, 40); // 40ms interval = ~25 FPS sangat responsif
+                    }
+                }
+
+                loop();
+            }
+
+            video.addEventListener('play', startLivenessScanner);
+            // Cadangan jika video sudah berjalan saat event didaftarkan
+            if (!video.paused && video.readyState >= 2) {
+                startLivenessScanner();
+            }
 
         } catch (err) {
             console.error("Error Kamera:", err);
