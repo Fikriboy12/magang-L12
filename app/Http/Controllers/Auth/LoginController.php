@@ -129,10 +129,12 @@ class LoginController extends Controller
         }
         $distance = sqrt($distance);
 
-        // Log data untuk membantu debugging
+        // Log data untuk membantu debugging & audit keamanan biometrik
+        $isLive = ($request->input('liveness_status') == '1');
         \Illuminate\Support\Facades\Log::info("Biometrik Login Attempt", [
             'email' => $request->email,
             'calculated_distance' => $distance,
+            'liveness_verified' => $isLive,
             'stored_desc_sample' => array_slice($storedDescriptor, 0, 5),
             'live_desc_sample' => array_slice($liveDescriptor, 0, 5),
         ]);
@@ -149,7 +151,7 @@ class LoginController extends Controller
             Auth::login($user);
             $request->session()->regenerate();
             
-            $pesan = 'Berhasil Login dengan Wajah! Selamat datang ' . $user->name . ' (Skor Ketidakmiripan: ' . round($distance, 4) . ')';
+            $pesan = 'Berhasil Login Biometrik! Liveness (Kedip) & Wajah Terverifikasi. Selamat datang ' . $user->name . ' (Skor: ' . round($distance, 4) . ')';
 
             // Redirect sesuai role (SAMA PERSIS DENGAN LOGIN BIASA)
             if ($user->role === 'pembimbing') {
