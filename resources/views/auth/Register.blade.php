@@ -227,7 +227,7 @@
                     </div>
                 </div>
                 <small class="text-muted d-block mt-1" id="otpStatus" style="font-size: 12px;">
-                    <i class="fas fa-info-circle"></i> Klik tombol biru untuk menerima kode.
+                    <i class="fas fa-info-circle"></i> Klik <b>Kirim OTP</b> untuk menerima kode verifikasi di Gmail Anda (periksa juga folder Spam).
                 </small>
             </div>
 
@@ -306,38 +306,72 @@
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
             });
 
+            var countdownTimer = null;
+
             $('#btnKirimOtp').click(function() {
-                var email = $('#emailInput').val();
+                var emailInput = $('#emailInput');
+                var email = $.trim(emailInput.val()).toLowerCase();
+                emailInput.val(email);
+
                 var btn = $(this);
                 var status = $('#otpStatus');
 
-                if(email == '') {
-                    alert('Isi email dulu bos!');
-                    $('#emailInput').focus();
+                if (!email) {
+                    alert('Harap masukkan alamat email Anda terlebih dahulu!');
+                    emailInput.focus();
                     return;
                 }
 
-                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
-                status.text('Mengirim kode...').css('color', '#3CB9E0'); 
+                var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(email)) {
+                    alert('Format email tidak valid. Masukkan email yang benar.');
+                    emailInput.focus();
+                    return;
+                }
+
+                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Mengirim...');
+                status.html('<span style="color: #3CB9E0;"><i class="fas fa-spinner fa-spin"></i> Menghubungkan ke server email...</span>'); 
 
                 $.ajax({
                     url: "{{ route('send.otp.ajax') }}",
                     type: "POST",
                     data: { email: email },
+                    timeout: 25000, // Timeout 25 detik
                     success: function(response) {
-                        if(response.status == 'success') {
-                            alert('Kode OTP 4 Digit Terkirim!');
-                            status.html('<span class="text-success"><i class="fas fa-check"></i> Cek Email Anda.</span>');
-                            btn.html('Terkirim').removeClass('btn-otp').addClass('btn-secondary');
+                        if (response.status === 'success') {
+                            status.html('<span class="text-success font-weight-bold"><i class="fas fa-check-circle"></i> ' + response.message + '</span>');
+                            if (response.debug_otp) {
+                                console.log("OTP Debug:", response.debug_otp);
+                            }
+
+                            // Hitung mundur 60 detik sebelum boleh kirim ulang
+                            var remaining = 60;
+                            btn.prop('disabled', true).removeClass('btn-otp').addClass('btn-secondary');
+                            btn.text('Terkirim (' + remaining + 's)');
+
+                            clearInterval(countdownTimer);
+                            countdownTimer = setInterval(function() {
+                                remaining--;
+                                if (remaining > 0) {
+                                    btn.text('Kirim Ulang (' + remaining + 's)');
+                                } else {
+                                    clearInterval(countdownTimer);
+                                    btn.prop('disabled', false).removeClass('btn-secondary').addClass('btn-otp').text('Kirim Ulang');
+                                }
+                            }, 1000);
                         } else {
-                            alert(response.message);
-                            status.text(response.message).css('color', 'red');
-                            btn.prop('disabled', false).text('Kirim Ulang');
+                            status.html('<span class="text-danger font-weight-bold"><i class="fas fa-exclamation-circle"></i> ' + response.message + '</span>');
+                            btn.prop('disabled', false).html('Kirim OTP');
                         }
                     },
-                    error: function() {
-                        alert('Gagal koneksi.');
-                        status.text('Gagal mengirim.').css('color', 'red');
+                    error: function(xhr, statusText, errorThrown) {
+                        var errDetail = 'Gagal mengirim email OTP.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errDetail = xhr.responseJSON.message;
+                        } else if (statusText === 'timeout') {
+                            errDetail = 'Koneksi ke server email timeout. Coba periksa koneksi internet Anda.';
+                        }
+                        status.html('<span class="text-danger font-weight-bold"><i class="fas fa-exclamation-triangle"></i> ' + errDetail + '</span>');
                         btn.prop('disabled', false).text('Kirim Ulang');
                     }
                 });
