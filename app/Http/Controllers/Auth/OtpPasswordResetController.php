@@ -30,6 +30,8 @@ class OtpPasswordResetController extends Controller
      */
     public function sendResetOtp(Request $request)
     {
+        $request->merge(['email' => strtolower(trim($request->email ?? ''))]);
+
         $request->validate([
             'email' => 'required|email|exists:users,email',
         ], [
@@ -58,12 +60,14 @@ class OtpPasswordResetController extends Controller
 
         try {
             Mail::to($user->email)->send(new SendOtpMail($details));
+            \Illuminate\Support\Facades\Log::info("OTP Reset Kata Sandi terkirim ke {$user->email}: {$otp}");
             return redirect()->route('password.reset.form')
                 ->with('success', 'Kode OTP verifikasi telah dikirimkan ke email Anda (' . $user->email . '). Silakan cek kotak masuk atau folder spam.');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Gagal kirim OTP reset password ke {$user->email}: " . $e->getMessage());
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Gagal mengirim email OTP. Silakan pastikan koneksi internet stabil atau hubungi Administrator.');
+                ->with('error', 'Gagal mengirim email OTP: ' . $e->getMessage() . '. Pastikan koneksi internet stabil.');
         }
     }
 
@@ -99,11 +103,13 @@ class OtpPasswordResetController extends Controller
 
         try {
             Mail::to($user->email)->send(new SendOtpMail($details));
+            \Illuminate\Support\Facades\Log::info("OTP Reset Kata Sandi (Resend) terkirim ke {$user->email}: {$otp}");
             return redirect()->back()
-                ->with('success', 'Kode OTP baru berhasil dikirim ulang ke email Anda!');
-        } catch (\Exception $e) {
+                ->with('success', 'Kode OTP baru berhasil dikirim ulang ke email Anda! Silakan cek kotak masuk atau folder spam.');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Gagal kirim ulang OTP ke {$user->email}: " . $e->getMessage());
             return redirect()->back()
-                ->with('error', 'Gagal mengirim ulang email OTP. Silakan coba beberapa saat lagi.');
+                ->with('error', 'Gagal mengirim ulang email OTP: ' . $e->getMessage() . '. Silakan coba beberapa saat lagi.');
         }
     }
 

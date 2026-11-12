@@ -25,38 +25,68 @@ class RegisterController extends Controller
         return view('auth.register');
     }
 
-    // --- 1. KIRIM OTP (TETAP SAMA SEPERTI ASLINYA) ---
+    // --- 1. KIRIM OTP (PENDAFTARAN SISWA) ---
     public function sendOtpAjax(Request $request)
     {
+        $email = strtolower(trim($request->email ?? ''));
+        $request->merge(['email' => $email]);
+
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users,email'
+        ], [
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email'    => 'Format alamat email tidak valid.',
+            'email.unique'   => 'Email ini sudah terdaftar di sistem! Silakan langsung login.'
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['status' => 'error', 'message' => 'Email tidak valid atau sudah terdaftar!']);
+            return response()->json([
+                'status' => 'error', 
+                'message' => $validator->errors()->first('email')
+            ]);
         }
 
         $otp = rand(1000, 9999); 
 
         Session::put('registrasi_otp', $otp);
-        Session::put('registrasi_email', $request->email);
+        Session::put('registrasi_email', $email);
 
         $details = [
-            'nama' => 'Calon Pendaftar', 
-            'otp'  => $otp
+            'nama'    => 'Calon Siswa / Pendaftar', 
+            'otp'     => $otp,
+            'subject' => 'Kode OTP Registrasi Akun - PT MEDIA BALAI NUSA',
+            'judul'   => 'Verifikasi Akun Siswa Magang',
+            'pesan'   => 'Terima kasih telah mendaftar di PT. MEDIA BALAI NUSA. Gunakan kode OTP 4 digit berikut untuk menyelesaikan proses registrasi akun Anda:'
         ];
 
         try {
-            Mail::to($request->email)->send(new SendOtpMail($details));
-            return response()->json(['status' => 'success', 'message' => 'Kode OTP 4 digit berhasil dikirim!']);
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => 'Gagal mengirim email. Cek koneksi internet.']);
+            Mail::to($email)->send(new SendOtpMail($details));
+            \Illuminate\Support\Facades\Log::info("OTP Registrasi berhasil dikirim ke {$email}: {$otp}");
+
+            $responseData = [
+                'status'  => 'success', 
+                'message' => 'Kode OTP 4 digit telah dikirim ke ' . $email . '. Silakan cek Kotak Masuk atau folder Spam.'
+            ];
+
+            if (config('app.debug')) {
+                $responseData['debug_otp'] = $otp;
+            }
+
+            return response()->json($responseData);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Gagal mengirim email OTP ke {$email}: " . $e->getMessage());
+            return response()->json([
+                'status'  => 'error', 
+                'message' => 'Gagal mengirim email: ' . $e->getMessage() . '. Pastikan koneksi internet stabil.'
+            ]);
         }
     }
 
     // --- 2. PROSES REGISTER (DISESUAIKAN DENGAN FORM BARU) ---
     public function register(Request $request)
     {
+        $request->merge(['email' => strtolower(trim($request->email ?? ''))]);
+
         $validated = $request->validate([
             // Data Akun
             'nama_lengkap' => 'required|string|max:255',
@@ -85,7 +115,7 @@ class RegisterController extends Controller
         $sessionOtp = Session::get('registrasi_otp');
         $sessionEmail = Session::get('registrasi_email');
 
-        if ($request->otp_input != $sessionOtp || $request->email != $sessionEmail) {
+        if ($request->otp_input != $sessionOtp || strtolower(trim($request->email)) != strtolower(trim($sessionEmail))) {
             return back()->withInput()->with('error', 'Kode OTP Salah atau Email berubah!');
         }
 
