@@ -54,9 +54,9 @@ class RegisterController extends Controller
         $details = [
             'nama'    => 'Calon Siswa / Pendaftar', 
             'otp'     => $otp,
-            'subject' => 'Kode Verifikasi OTP: ' . $otp . ' - PT MEDIA BALAI NUSA',
-            'judul'   => 'Verifikasi Akun Siswa Magang',
-            'pesan'   => 'Terima kasih telah mendaftar di PT. MEDIA BALAI NUSA. Gunakan kode OTP 4 digit berikut untuk menyelesaikan proses registrasi akun Anda:'
+            'subject' => 'Kode verifikasi akun Anda: ' . $otp,
+            'judul'   => 'Verifikasi Pendaftaran Akun Magang',
+            'pesan'   => 'Gunakan kode verifikasi berikut untuk menyelesaikan pendaftaran akun magang Anda:'
         ];
 
         try {
