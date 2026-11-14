@@ -119,6 +119,12 @@ class RegisterController extends Controller
             return back()->withInput()->with('error', 'Kode OTP Salah atau Email berubah!');
         }
 
+        // Validasi keaslian fitur biometrik wajah 68 Landmark (128 nilai floating point)
+        $desc = json_decode($validated['face_descriptor'], true);
+        if (!is_array($desc) || count($desc) !== 128) {
+            return back()->withInput()->with('error', 'Data biometrik wajah tidak valid. Silakan ambil foto wajah dengan 68 landmark menghadap depan kembali.');
+        }
+
         // Simpan ke Database
         $user = User::create([
             // Data Akun

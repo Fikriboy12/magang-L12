@@ -273,16 +273,28 @@
             <h5 class="section-title">Verifikasi Biometrik</h5>
 
             <div class="form-group text-center">
-                <div style="position: relative; display: inline-block; background: #e9ecef; border-radius: 8px; overflow: hidden; border: 2px solid #3CB9E0;">
-                    <video id="video-webcam" width="320" height="240" autoplay muted></video>
-                    <canvas id="overlay-canvas" style="position: absolute; top: 0; left: 0; z-index: 10; pointer-events: none;"></canvas>
+                <div style="position: relative; display: inline-block; width: 100%; max-width: 360px; background: #e9ecef; border-radius: 8px; overflow: hidden; border: 2px solid #3CB9E0; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
+                    <video id="video-webcam" style="width: 100%; height: auto; display: block;" autoplay muted playsinline></video>
+                    <canvas id="overlay-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none;"></canvas>
+                </div>
+
+                {{-- Status Bar 68 Landmark & Pose Menghadap Depan --}}
+                <div style="display: flex; justify-content: space-between; align-items: center; max-width: 360px; margin: 8px auto 0; padding: 6px 12px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 11.5px;">
+                    <span id="landmark-badge" style="background: #e2e8f0; color: #475569; padding: 3px 8px; border-radius: 12px; font-weight: 700;">
+                        <i class="fas fa-dot-circle"></i> Landmark: <span id="landmark-count-text">--/68 Titik</span>
+                    </span>
+                    <span id="pose-badge" style="background: #e2e8f0; color: #475569; padding: 3px 8px; border-radius: 12px; font-weight: 700;">
+                        <i class="fas fa-user"></i> Pose: Menunggu...
+                    </span>
                 </div>
                 
-                <br>
-                <button type="button" class="btn btn-outline-info mt-3 font-weight-bold" id="btn-capture-face">
+                <p id="biometric-status" class="mt-2 text-danger font-weight-bold" style="font-size: 12px; line-height: 1.4;">
+                    Posisikan wajah Anda tepat di depan kamera menghadap lurus...
+                </p>
+
+                <button type="button" class="btn btn-outline-info mt-1 font-weight-bold" id="btn-capture-face">
                     <i class="fas fa-camera"></i> Ambil Foto Wajah (Biometrik)
                 </button>
-                <p id="biometric-status" class="mt-2 text-danger font-weight-bold">Wajah belum dipindai.</p>
 
                 <input type="hidden" name="face_descriptor" id="face_descriptor">
             </div>
@@ -339,10 +351,14 @@
                     timeout: 25000, // Timeout 25 detik
                     success: function(response) {
                         if (response.status === 'success') {
-                            status.html('<span class="text-success font-weight-bold"><i class="fas fa-check-circle"></i> ' + response.message + '</span>');
+                            var msgHtml = '<span class="text-success font-weight-bold"><i class="fas fa-check-circle"></i> ' + response.message + '</span>';
                             if (response.debug_otp) {
-                                console.log("OTP Debug:", response.debug_otp);
+                                msgHtml += '<div class="alert alert-info py-2 px-3 mt-2 text-center" style="border: 2px dashed #0284c7; background: #e0f2fe; color: #0369a1; border-radius: 8px;">' +
+                                           '<b>KODE OTP ANDA:</b> <span style="font-size: 20px; font-weight: 800; letter-spacing: 5px; color: #0284c7; margin-left: 8px;">' + response.debug_otp + '</span>' +
+                                           '<br><small style="font-size: 11px;">(Kode otomatis diisikan ke kolom OTP di bawah untuk kenyamanan registrasi)</small></div>';
+                                $('input[name="otp_input"]').val(response.debug_otp);
                             }
+                            status.html(msgHtml);
 
                             // Hitung mundur 60 detik sebelum boleh kirim ulang
                             var remaining = 60;
@@ -385,8 +401,10 @@
         const statusText = document.getElementById('biometric-status');
         const faceDescriptorInput = document.getElementById('face_descriptor');
         const canvas = document.getElementById('overlay-canvas');
+        const landmarkBadge = document.getElementById('landmark-badge');
+        const landmarkCountText = document.getElementById('landmark-count-text');
+        const poseBadge = document.getElementById('pose-badge');
 
-        // URL ke folder model yang harus Anda siapkan di public/models
         const MODEL_URL = '/models'; 
 
         let latestDetection = null;
@@ -394,26 +412,125 @@
         let scanInterval = null;
         let detectionStarted = false;
 
-        // Load Model secara async (SSD Mobilenet, 68 Landmarks, Face Recognition)
+        // 1. Evaluasi Pose Frontal & Kelengkapan 68 Titik Landmark
+        function evaluateFrontalPose(landmarks) {
+            const pts = landmarks ? landmarks.positions : null;
+            if (!pts || pts.length !== 68) {
+                return {
+                    isValid: false,
+                    count: pts ? pts.length : 0,
+                    reason: "Titik landmark tidak lengkap (Harus persis 68 titik)"
+                };
+            }
+
+            const p0  = pts[0];  // Ujung kiri garis rahang (cheek/jaw left)
+            const p16 = pts[16]; // Ujung kanan garis rahang (cheek/jaw right)
+            const p8  = pts[8];  // Ujung dagu (chin)
+            const p27 = pts[27]; // Pangkal hidung (nose bridge)
+            const p30 = pts[30]; // Ujung hidung (nose tip)
+            const p36 = pts[36]; // Sudut luar mata kiri
+            const p45 = pts[45]; // Sudut luar mata kanan
+            const p39 = pts[39]; // Sudut dalam mata kiri
+            const p42 = pts[42]; // Sudut dalam mata kanan
+
+            // Uji A: Roll (Kemiringan kepala ke kiri/kanan berdasarkan garis mata)
+            const dy = p45.y - p36.y;
+            const dx = p45.x - p36.x;
+            const rollAngle = Math.abs(Math.atan2(dy, dx) * (180 / Math.PI));
+            if (rollAngle > 8.0) {
+                return {
+                    isValid: false,
+                    count: 68,
+                    reason: "Kepala miring! Harap tegakkan posisi kepala Anda."
+                };
+            }
+
+            // Uji B: Yaw (Menoleh ke kiri/kanan - Simetri hidung terhadap batas rahang)
+            const dLeftJaw  = p30.x - p0.x;
+            const dRightJaw = p16.x - p30.x;
+            if (dLeftJaw <= 0 || dRightJaw <= 0) {
+                return {
+                    isValid: false,
+                    count: 68,
+                    reason: "Wajah menoleh! Harap hadap lurus ke kamera."
+                };
+            }
+
+            const yawRatio = dLeftJaw / dRightJaw;
+            if (yawRatio < 0.68) {
+                return {
+                    isValid: false,
+                    count: 68,
+                    reason: "Wajah menoleh ke kiri! Harap hadap lurus ke depan."
+                };
+            }
+            if (yawRatio > 1.47) {
+                return {
+                    isValid: false,
+                    count: 68,
+                    reason: "Wajah menoleh ke kanan! Harap hadap lurus ke depan."
+                };
+            }
+
+            // Uji B2: Simetri hidung terhadap jarak kedua mata
+            const eyeDist = p42.x - p39.x;
+            if (eyeDist > 5) {
+                const eyeCenter = (p39.x + p42.x) / 2;
+                const noseOffset = Math.abs(p30.x - eyeCenter) / eyeDist;
+                if (noseOffset > 0.35) {
+                    return {
+                        isValid: false,
+                        count: 68,
+                        reason: "Wajah belum simetris! Harap menghadap lurus ke depan."
+                    };
+                }
+            }
+
+            // Uji C: Pitch (Menunduk atau Mendongak)
+            const vNose = p30.y - p27.y;
+            const vChin = p8.y - p30.y;
+            if (vNose > 0 && vChin > 0) {
+                const pitchRatio = vChin / vNose;
+                if (pitchRatio < 0.95) {
+                    return {
+                        isValid: false,
+                        count: 68,
+                        reason: "Wajah mendongak ke atas! Pandang lurus ke kamera."
+                    };
+                }
+                if (pitchRatio > 2.70) {
+                    return {
+                        isValid: false,
+                        count: 68,
+                        reason: "Wajah menunduk! Angkat kepala dan pandang lurus."
+                    };
+                }
+            }
+
+            return {
+                isValid: true,
+                count: 68,
+                reason: "Posisi Sempurna (68 Titik Valid & Menghadap Depan)"
+            };
+        }
+
+        // 2. Muat Model AI (SSD Mobilenet, 68 Landmarks, Face Recognition)
         Promise.all([
             faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
             faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
             faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
         ]).then(startVideo).catch(err => {
-            console.error("Gagal load model. Pastikan folder public/models berisi file model face-api.", err);
-            statusText.innerText = "Error memuat sistem kamera.";
+            console.error("Gagal load model face-api:", err);
+            statusText.innerText = "Error memuat sistem AI biometrik. Pastikan folder public/models tersedia.";
         });
 
         function startVideo() {
-            // Bind events ke video terlebih dahulu untuk menghindari race condition
             video.addEventListener('play', startDetection);
             video.addEventListener('playing', startDetection);
 
             navigator.mediaDevices.getUserMedia({ video: true })
                 .then(stream => {
                     video.srcObject = stream;
-                    
-                    // Backup pemicu jika event play/playing terlewat oleh browser
                     setTimeout(() => {
                         if (video.srcObject && !video.paused) {
                             startDetection();
@@ -426,96 +543,189 @@
                 });
         }
 
-        // Mulai pemindaian dan render landmarks secara real-time
+        // 3. Pelacakan Real-Time (68 Landmark & Pose Menghadap Depan)
         function startDetection() {
             if (detectionStarted) return;
             detectionStarted = true;
 
-            const displaySize = { width: video.width || 320, height: video.height || 240 };
+            const displaySize = { width: video.videoWidth || 320, height: video.videoHeight || 240 };
             faceapi.matchDimensions(canvas, displaySize);
 
             scanInterval = setInterval(async () => {
                 if (isCaptured) return;
 
-                const detection = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor();
+                // Pelacakan ringan: hanya deteksi wajah dan 68 landmarks agar FPS sangat cepat dan responsif
+                const detection = await faceapi.detectSingleFace(video).withFaceLandmarks();
                 canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 
                 if (detection) {
                     latestDetection = detection;
                     const resizedDetection = faceapi.resizeResults(detection, displaySize);
-                    
-                    // Gambar Kotak Deteksi & 68 Titik Karakteristik Wajah (Landmarks) secara real-time
-                    const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { label: 'Wajah' });
-                    drawBox.draw(canvas);
+                    const landmarks = resizedDetection.landmarks;
+
+                    // Evaluasi ketat syarat 68 titik & pose frontal
+                    const pose = evaluateFrontalPose(landmarks);
+
+                    // Perbarui badge landmark
+                    if (landmarkCountText) {
+                        landmarkCountText.innerText = `${pose.count}/68 Titik`;
+                    }
+                    if (pose.count === 68) {
+                        landmarkBadge.style.background = '#dcfce7';
+                        landmarkBadge.style.color = '#15803d';
+                        landmarkBadge.innerHTML = '<i class="fas fa-check-circle"></i> 68 Titik Lengkap';
+                    } else {
+                        landmarkBadge.style.background = '#fee2e2';
+                        landmarkBadge.style.color = '#b91c1c';
+                        landmarkBadge.innerHTML = `<i class="fas fa-times-circle"></i> ${pose.count}/68 Titik`;
+                    }
+
+                    // Gambar 68 titik landmark pada kanvas
                     faceapi.draw.drawFaceLandmarks(canvas, resizedDetection);
 
-                    if (faceDescriptorInput.value === "") {
-                        statusText.innerText = "Wajah terdeteksi! Silakan klik 'Ambil Foto Wajah'.";
-                        statusText.className = "mt-2 text-info font-weight-bold";
+                    if (pose.isValid) {
+                        // Pose sempurna (menghadap ke depan dan 68 titik lengkap)
+                        poseBadge.style.background = '#dcfce7';
+                        poseBadge.style.color = '#15803d';
+                        poseBadge.innerHTML = '<i class="fas fa-check-circle"></i> Menghadap Depan (OK)';
+
+                        const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
+                            label: '68 Titik: Menghadap Depan (OK)', 
+                            boxColor: '#22c55e' 
+                        });
+                        drawBox.draw(canvas);
+
+                        if (!faceDescriptorInput.value) {
+                            statusText.innerHTML = '<span class="text-success font-weight-bold"><i class="fas fa-check-circle"></i> ' + pose.reason + '. Silakan klik <b>Ambil Foto Wajah</b>!</span>';
+                            captureBtn.className = "btn btn-info mt-1 font-weight-bold shadow-sm";
+                        }
+                    } else {
+                        // Posisi miring, menoleh, mendongak, atau menunduk
+                        poseBadge.style.background = '#fef3c7';
+                        poseBadge.style.color = '#b45309';
+                        poseBadge.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Posisi Belum Pas';
+
+                        const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
+                            label: pose.reason, 
+                            boxColor: '#f59e0b' 
+                        });
+                        drawBox.draw(canvas);
+
+                        if (!faceDescriptorInput.value) {
+                            statusText.innerHTML = '<span class="text-warning font-weight-bold"><i class="fas fa-exclamation-triangle"></i> ' + pose.reason + '</span>';
+                            captureBtn.className = "btn btn-outline-secondary mt-1 font-weight-bold";
+                        }
                     }
                 } else {
                     latestDetection = null;
-                    if (faceDescriptorInput.value === "") {
-                        statusText.innerText = "Posisikan wajah Anda di depan kamera...";
-                        statusText.className = "mt-2 text-danger font-weight-bold";
+                    if (landmarkBadge) {
+                        landmarkBadge.style.background = '#e2e8f0';
+                        landmarkBadge.style.color = '#475569';
+                        landmarkBadge.innerHTML = '<i class="fas fa-dot-circle"></i> Landmark: --/68 Titik';
+                    }
+                    if (poseBadge) {
+                        poseBadge.style.background = '#e2e8f0';
+                        poseBadge.style.color = '#475569';
+                        poseBadge.innerHTML = '<i class="fas fa-user"></i> Pose: Menunggu...';
+                    }
+                    if (!faceDescriptorInput.value) {
+                        statusText.innerHTML = '<span class="text-danger font-weight-bold"><i class="fas fa-user-times"></i> Posisikan wajah Anda tepat di depan kamera menghadap lurus...</span>';
+                        captureBtn.className = "btn btn-outline-info mt-1 font-weight-bold";
                     }
                 }
-            }, 150); // Scan setiap 150ms agar visualisasi real-time lancar
+            }, 120);
         }
 
-        captureBtn.addEventListener('click', () => {
+        // 4. Tombol Ambil Foto Wajah (Wajib 68 Landmark & Menghadap Depan)
+        captureBtn.addEventListener('click', async () => {
             if (!video.srcObject) {
                 alert("Kamera belum siap atau tidak menyala.");
                 return;
             }
 
-            // Jika sedang dalam status ter-capture, tombol berfungsi untuk membatalkan/mengulang
+            // Batalkan / Ambil Ulang jika sudah ter-capture
             if (isCaptured) {
                 isCaptured = false;
                 faceDescriptorInput.value = "";
-                statusText.innerText = "Posisikan wajah Anda di depan kamera...";
-                statusText.className = "mt-2 text-danger font-weight-bold";
+                statusText.innerHTML = '<span class="text-info font-weight-bold">Posisikan wajah Anda tepat di depan kamera menghadap lurus...</span>';
                 captureBtn.innerHTML = '<i class="fas fa-camera"></i> Ambil Foto Wajah (Biometrik)';
-                captureBtn.className = "btn btn-outline-info mt-3 font-weight-bold";
+                captureBtn.className = "btn btn-outline-info mt-1 font-weight-bold";
                 return;
             }
 
-            if (latestDetection) {
-                isCaptured = true;
-                const descriptor = latestDetection.descriptor;
-                
-                // Simpan descriptor wajah 128 dimensi sebagai string JSON
-                faceDescriptorInput.value = JSON.stringify(Array.from(descriptor));
-                
-                statusText.innerText = "Wajah berhasil dipindai dan disimpan!";
-                statusText.className = "mt-2 text-success font-weight-bold";
+            if (!latestDetection) {
+                alert("Wajah tidak terdeteksi! Mohon posisikan wajah Anda tepat di depan kamera.");
+                return;
+            }
 
-                // Gambarkan visual terakhir di canvas agar membeku (freeze) sebagai konfirmasi
-                const displaySize = { width: video.width || 320, height: video.height || 240 };
-                faceapi.matchDimensions(canvas, displaySize);
-                const resizedDetection = faceapi.resizeResults(latestDetection, displaySize);
-                canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-                const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { label: 'Wajah' });
-                drawBox.draw(canvas);
-                faceapi.draw.drawFaceLandmarks(canvas, resizedDetection);
+            // Uji Kelayakan Pose Frontal & 68 Titik
+            const pose = evaluateFrontalPose(latestDetection.landmarks);
+            if (!pose.isValid) {
+                alert("Foto Wajah Belum Memenuhi Syarat Biometrik:\n\n" + pose.reason + "\n\nSesuai standar biometrik sistem, wajah wajib terdeteksi persis 68 titik landmark dan menghadap lurus ke depan.");
+                return;
+            }
 
-                // Ubah tampilan tombol untuk opsi ambil ulang
-                captureBtn.innerHTML = '<i class="fas fa-undo"></i> Ambil Ulang Foto Wajah';
-                captureBtn.className = "btn btn-outline-warning mt-3 font-weight-bold";
-            } else {
-                alert("Wajah tidak terdeteksi! Mohon sejajarkan wajah Anda di depan kamera sebelum mengambil foto.");
+            captureBtn.disabled = true;
+            captureBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengekstrak 68 Landmark...';
+
+            try {
+                // Ekstraksi 128-dimensi Face Descriptor
+                const fullDetection = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor();
+
+                if (fullDetection && fullDetection.descriptor) {
+                    isCaptured = true;
+                    faceDescriptorInput.value = JSON.stringify(Array.from(fullDetection.descriptor));
+
+                    statusText.innerHTML = '<span class="text-success font-weight-bold"><i class="fas fa-check-double"></i> Wajah Berhasil Diverifikasi & Disimpan (68 Titik Frontal)!</span>';
+
+                    // Bekukan visual 68 landmark hijau di kanvas
+                    const displaySize = { width: video.videoWidth || 320, height: video.videoHeight || 240 };
+                    faceapi.matchDimensions(canvas, displaySize);
+                    const resizedDetection = faceapi.resizeResults(fullDetection, displaySize);
+                    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
+                        label: 'Biometrik Terverifikasi (68 Titik Frontal)',
+                        boxColor: '#22c55e'
+                    });
+                    drawBox.draw(canvas);
+                    faceapi.draw.drawFaceLandmarks(canvas, resizedDetection);
+
+                    captureBtn.disabled = false;
+                    captureBtn.innerHTML = '<i class="fas fa-undo"></i> Ambil Ulang Foto Wajah';
+                    captureBtn.className = "btn btn-outline-warning mt-1 font-weight-bold";
+                } else {
+                    captureBtn.disabled = false;
+                    captureBtn.innerHTML = '<i class="fas fa-camera"></i> Ambil Foto Wajah (Biometrik)';
+                    alert("Gagal membaca deskriptor wajah. Silakan coba kembali menghadap kamera.");
+                }
+            } catch (err) {
+                console.error("Gagal ekstrak descriptor:", err);
+                captureBtn.disabled = false;
+                captureBtn.innerHTML = '<i class="fas fa-camera"></i> Ambil Foto Wajah (Biometrik)';
+                alert("Terjadi kesalahan saat mengekstrak fitur wajah.");
             }
         });
 
-        // Validasi form agar tidak submit jika data biometrik kosong
+        // 5. Validasi Submit Formulir Registrasi
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             if (!faceDescriptorInput.value) {
                 e.preventDefault();
-                alert('Peringatan: Anda wajib melakukan Verifikasi Biometrik (Ambil Foto Wajah) sebelum mendaftar!');
-                statusText.innerText = "WAJIB: Silakan ambil foto wajah terlebih dahulu!";
-                statusText.className = "mt-2 text-danger font-weight-bold";
+                alert('Peringatan: Anda WAJIB melakukan Verifikasi Biometrik (Ambil Foto Wajah 68 Titik Menghadap Depan) sebelum mendaftar!');
+                statusText.innerHTML = '<span class="text-danger font-weight-bold"><i class="fas fa-exclamation-circle"></i> WAJIB: Ambil foto wajah 68 titik menghadap depan terlebih dahulu!</span>';
+                document.getElementById('video-webcam').scrollIntoView({ behavior: 'smooth' });
+                return false;
+            }
+
+            const otpVal = $('input[name="otp_input"]').val();
+            if (!otpVal || otpVal.length < 4) {
+                e.preventDefault();
+                alert('Peringatan: Harap masukkan 4 digit Kode OTP verifikasi email Anda!');
+                $('input[name="otp_input"]').focus();
+                return false;
             }
         });
+
         // Toggle Show/Hide Password Register
         function toggleRegPassword(inputId, btn) {
             const input = document.getElementById(inputId);
