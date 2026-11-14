@@ -53,7 +53,7 @@ class OtpPasswordResetController extends Controller
         $details = [
             'nama'    => $user->name,
             'otp'     => $otp,
-            'subject' => 'Kode OTP Reset Kata Sandi - PT MEDIA BALAI NUSA',
+            'subject' => 'Kode OTP Reset Kata Sandi: ' . $otp . ' - PT MEDIA BALAI NUSA',
             'judul'   => 'Reset Kata Sandi Akun',
             'pesan'   => 'Kami menerima permintaan untuk mereset kata sandi akun Anda. Masukkan kode OTP berikut untuk melanjutkan pembuatan kata sandi baru:'
         ];

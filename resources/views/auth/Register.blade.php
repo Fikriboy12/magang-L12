@@ -352,13 +352,10 @@
                     success: function(response) {
                         if (response.status === 'success') {
                             var msgHtml = '<span class="text-success font-weight-bold"><i class="fas fa-check-circle"></i> ' + response.message + '</span>';
-                            if (response.debug_otp) {
-                                msgHtml += '<div class="alert alert-info py-2 px-3 mt-2 text-center" style="border: 2px dashed #0284c7; background: #e0f2fe; color: #0369a1; border-radius: 8px;">' +
-                                           '<b>KODE OTP ANDA:</b> <span style="font-size: 20px; font-weight: 800; letter-spacing: 5px; color: #0284c7; margin-left: 8px;">' + response.debug_otp + '</span>' +
-                                           '<br><small style="font-size: 11px;">(Kode otomatis diisikan ke kolom OTP di bawah untuk kenyamanan registrasi)</small></div>';
-                                $('input[name="otp_input"]').val(response.debug_otp);
-                            }
                             status.html(msgHtml);
+
+                            // Fokuskan ke kolom OTP agar pengguna langsung dapat mengisinya setelah membuka Gmail
+                            $('input[name="otp_input"]').val('').focus();
 
                             // Hitung mundur 60 detik sebelum boleh kirim ulang
                             var remaining = 60;

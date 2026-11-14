@@ -54,7 +54,7 @@ class RegisterController extends Controller
         $details = [
             'nama'    => 'Calon Siswa / Pendaftar', 
             'otp'     => $otp,
-            'subject' => 'Kode OTP Registrasi Akun - PT MEDIA BALAI NUSA',
+            'subject' => 'Kode Verifikasi OTP: ' . $otp . ' - PT MEDIA BALAI NUSA',
             'judul'   => 'Verifikasi Akun Siswa Magang',
             'pesan'   => 'Terima kasih telah mendaftar di PT. MEDIA BALAI NUSA. Gunakan kode OTP 4 digit berikut untuk menyelesaikan proses registrasi akun Anda:'
         ];
@@ -63,16 +63,10 @@ class RegisterController extends Controller
             Mail::to($email)->send(new SendOtpMail($details));
             \Illuminate\Support\Facades\Log::info("OTP Registrasi berhasil dikirim ke {$email}: {$otp}");
 
-            $responseData = [
+            return response()->json([
                 'status'  => 'success', 
-                'message' => 'Kode OTP 4 digit telah dikirim ke ' . $email . '. Silakan cek Kotak Masuk atau folder Spam.'
-            ];
-
-            if (config('app.debug')) {
-                $responseData['debug_otp'] = $otp;
-            }
-
-            return response()->json($responseData);
+                'message' => 'Kode OTP 4 digit telah dikirim ke ' . $email . '. Silakan periksa Kotak Masuk atau folder Spam di Gmail Anda.'
+            ]);
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("Gagal mengirim email OTP ke {$email}: " . $e->getMessage());
             return response()->json([
