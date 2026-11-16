@@ -142,14 +142,14 @@
     #blog .floating-img-container { min-height: 220px !important; height: 220px !important; border-radius: 20px 20px 0 0; }
 
     .icon-box-modern {
-        width: 70px; height: 70px; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        width: 70px; height: 70px; background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
         border-radius: 50%; display: flex; align-items: center; justify-content: center;
-        margin: 0 auto 20px; color: #005bea; font-size: 28px;
+        margin: 0 auto 20px; color: #0284c7; font-size: 28px;
         transition: all 0.5s ease; flex-shrink: 0;
     }
     .glass-card:hover .icon-box-modern { 
-        transform: rotate(15deg) scale(1.1); background: linear-gradient(135deg, #005bea 0%, #00c6fb 100%); 
-        color: #fff; box-shadow: 0 10px 20px rgba(0, 91, 234, 0.3);
+        transform: rotate(15deg) scale(1.1); background: linear-gradient(135deg, #3ECCE9 0%, #0284c7 100%); 
+        color: #fff; box-shadow: 0 10px 20px rgba(2, 132, 199, 0.35);
     }
 
     .animasi-masuk { opacity: 0; transform: translateY(40px); transition: 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
@@ -481,7 +481,7 @@
                         <i class="fa fa-mobile" style="font-size: 30px;"></i>
                     </div>
                     <h4 style="font-size: 18px; font-weight: 700; color: #0f172a;">No telepon</h4>
-                    <p style="font-weight: 600; font-size: 16px; color: #005bea;">{{ $data['profile']->no_hp }}</p>
+                    <p style="font-weight: 600; font-size: 16px; color: #0284c7;">{{ $data['profile']->no_hp }}</p>
                 </div>
             </div>
           </div>
@@ -493,7 +493,7 @@
                     </div>
                     <h4 style="font-size: 18px; font-weight: 700; color: #0f172a;">Email & Sosmed</h4>
                     <p style="font-size: 14px; margin-bottom: 5px;">{{ $data['profile']->email }}</p>
-                    <p style="font-size: 14px; color: #005bea; font-weight: 600;">Facebook: {{ $data['profile']->facebook }}</p>
+                    <p style="font-size: 14px; color: #0284c7; font-weight: 600;">Facebook: {{ $data['profile']->facebook }}</p>
                 </div>
             </div>
           </div>

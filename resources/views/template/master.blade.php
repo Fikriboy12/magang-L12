@@ -122,45 +122,125 @@
         .nav-menu ul { margin: 0; padding: 0; list-style: none; display: flex; }
         .nav-menu li { margin: 0 5px; }
         .nav-menu a { color: #64748b !important; font-size: 14px; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 5px; cursor: pointer; }
-        .nav-menu a:hover, .nav-menu .active > a { color: #2563eb !important; }
+        .nav-menu a:hover, .nav-menu .active > a { color: #0284c7 !important; }
         
         .header-right-btn { background: #0f172a; color: white !important; padding: 8px 20px; border-radius: 50px; font-size: 13px; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
-        .header-right-btn:hover { background: #2563eb; transform: translateY(-2px); }
+        .header-right-btn:hover { background: #0284c7; transform: translateY(-2px); }
 
         .user-dropdown { position: relative; display: inline-block; }
         .user-toggle { display: flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 50px; background: #f1f5f9; color: #0f172a !important; font-weight: 700; font-size: 13px; cursor: pointer; text-decoration: none; }
-        .user-avatar { width: 28px; height: 28px; background: #2563eb; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        .user-avatar { width: 28px; height: 28px; background: #0284c7; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
         .dropdown-menu-custom { position: absolute; right: 0; top: 110%; background: white; min-width: 180px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); border-radius: 10px; padding: 5px 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: 0.3s; border: 1px solid #f1f5f9; z-index: 9999; }
         .user-dropdown:hover .dropdown-menu-custom { opacity: 1; visibility: visible; transform: translateY(0); }
         .dropdown-item-custom { display: flex; align-items: center; gap: 8px; padding: 8px 15px; color: #64748b; font-size: 13px; font-weight: 500; text-decoration: none; }
-        .dropdown-item-custom:hover { background: #f8fafc; color: #2563eb; }
+        .dropdown-item-custom:hover { background: #f8fafc; color: #0284c7; }
 
-        /* FOOTER & LAINNYA */
-        #footer { background-color: #2563eb !important; padding: 60px 0 0 0; color: #ffffff; position: relative; z-index: 10; width: 100%; }
+        /* FOOTER & LAINNYA - Tema Deep Corporate Navy & Aksen Cyan Logo */
+        #footer { 
+            background: linear-gradient(180deg, #0f172a 0%, #090d16 100%) !important; 
+            border-top: 3px solid #3ECCE9; 
+            padding: 60px 0 0 0; 
+            color: #ffffff; 
+            position: relative; 
+            z-index: 10; 
+            width: 100%; 
+        }
         .footer-row { display: flex; flex-wrap: wrap; align-items: flex-start; }
         .footer-col { padding-bottom: 40px; }
         
         /* LOGO FOOTER */
         .footer-logo-image { 
-            max-height: 45px; 
+            max-height: 44px; 
             width: auto; 
-            display: block; 
+            display: inline-block; 
             margin-bottom: 20px; 
             background: #ffffff; 
-            padding: 8px;        
+            padding: 7px 14px;        
             border-radius: 8px;  
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
         }
         
-        .footer-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #bfdbfe; margin-bottom: 25px; display: block; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; width: fit-content; }
-        .footer-desc { font-size: 14px; color: #f1f5f9; line-height: 1.7; margin-bottom: 20px; text-align: justify; }
-        .btn-admin-footer { display: inline-flex; align-items: center; gap: 8px; background: #ffffff; color: #2563eb; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; text-decoration: none; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .btn-admin-footer:hover { background: #f1f5f9; transform: translateY(-2px); }
+        .footer-title { 
+            font-size: 14px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            color: #38bdf8; 
+            margin-bottom: 25px; 
+            display: block; 
+            border-bottom: 2px solid rgba(56, 189, 248, 0.3); 
+            padding-bottom: 8px; 
+            width: fit-content; 
+        }
+        .footer-desc { 
+            font-size: 14px; 
+            color: #94a3b8; 
+            line-height: 1.7; 
+            margin-bottom: 20px; 
+            text-align: justify; 
+        }
+        .btn-admin-footer { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            background: linear-gradient(135deg, #3ECCE9 0%, #0284c7 100%); 
+            color: #ffffff !important; 
+            padding: 10px 22px; 
+            border-radius: 8px; 
+            font-size: 13px; 
+            font-weight: 700; 
+            text-decoration: none !important; 
+            transition: all 0.3s ease; 
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35); 
+        }
+        .btn-admin-footer:hover { 
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.5); 
+            color: #ffffff !important; 
+        }
         .footer-links { list-style: none; padding: 0; margin: 0; }
         .footer-links li { margin-bottom: 15px; }
-        .footer-links a { color: #f1f5f9; font-size: 14px; text-decoration: none; display: flex; align-items: flex-start; gap: 10px; }
-        .footer-links i { color: #2563eb; font-size: 14px; margin-top: 3px; background: #ffffff; padding: 6px; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
-        .footer-bottom { background: rgba(0, 0, 0, 0.2); padding: 20px 0; margin-top: 20px; text-align: center; font-size: 13px; color: #e2e8f0; width: 100%; }
+        .footer-links a { 
+            color: #94a3b8; 
+            font-size: 14px; 
+            text-decoration: none; 
+            display: flex; 
+            align-items: flex-start; 
+            gap: 12px; 
+            transition: color 0.2s ease;
+        }
+        .footer-links a:hover { 
+            color: #38bdf8; 
+        }
+        .footer-links i { 
+            color: #38bdf8; 
+            font-size: 13px; 
+            margin-top: 2px; 
+            background: rgba(56, 189, 248, 0.12); 
+            border: 1px solid rgba(56, 189, 248, 0.25); 
+            padding: 6px; 
+            border-radius: 50%; 
+            width: 28px; 
+            height: 28px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-shrink: 0; 
+        }
+        .footer-bottom { 
+            background: #080d1a; 
+            padding: 20px 0; 
+            margin-top: 20px; 
+            text-align: center; 
+            font-size: 13px; 
+            color: #64748b; 
+            border-top: 1px solid rgba(255, 255, 255, 0.06); 
+            width: 100%; 
+        }
+        .footer-bottom strong { 
+            color: #38bdf8; 
+        }
 
         #about .col-md-6 img { max-width: 150px !important; display: block; margin: 0 auto 20px auto; }
         .slider-content { height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; }
@@ -288,13 +368,13 @@
                             {{-- LOGO FOOTER JUGA DITAMBAH VERSI BIAR UPDATE & FALLBACK --}}
                             <img src="{{ asset('gambar/logohome.png') }}?v={{ time() }}" alt="Logo Astronet" class="footer-logo-image" onerror="this.style.display='none'; document.getElementById('footer-logo-fallback').style.display='inline-flex';">
                             <div id="footer-logo-fallback" style="display: none; align-items: center; margin-bottom: 20px;">
-                                <div class="logo-box-custom" style="background: #ffffff; color: #2563eb;">A</div>
+                                <div class="logo-box-custom" style="background: #ffffff; color: #0284c7;">A</div>
                                 <span class="logo-text-custom" style="color: #ffffff;">STRONET.ID</span>
                             </div>
                         </a>
                     </div>
                     <p class="footer-desc">PT MEDIA BALAI NUSA (ASTRONET.ID) merupakan perusahaan penyedia layanan internet (ISP) berbasis fiber optik yang resmi dan terpercaya.</p>
-                    <a href="{{ url('login') }}" class="btn-admin-footer"><i class="fa-solid fa-user-shield"></i> Login Admin</a>
+                    <a href="{{ route('admin.login') }}" class="btn-admin-footer"><i class="fa-solid fa-user-shield"></i> Login Admin</a>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-12 footer-col"><span class="footer-title">INFORMASI</span><p class="footer-desc">Kelola data magang dengan mudah dan efisien.</p></div>
                 <div class="col-lg-3 col-md-3 col-sm-12 footer-col"><span class="footer-title">KONTAK KAMI</span><ul class="footer-links"><li><a href="#"><i class="fa-solid fa-location-dot"></i><span>Jl. Letjend. Kec. Teluk Nibung, Kota Tanjung Balai.</span></a></li><li><a href="#"><i class="fa-solid fa-clock"></i><span>08.00 - 17.00 WIB</span></a></li><li><a href="#"><i class="fa-solid fa-phone"></i><span>+62 851-5712-7721</span></a></li></ul></div>
