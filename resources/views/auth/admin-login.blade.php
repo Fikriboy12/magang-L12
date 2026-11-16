@@ -215,7 +215,9 @@
                     <div class="text-center">
                         @if (Request::is('admin/login'))
                             <small>
-                                <a href="{{ route('login') }}" class="text-secondary">Kembali ke Login Pelamar</a>
+                                <a href="{{ route('login') }}" class="text-secondary">
+                                    <i class="fas fa-arrow-left mr-1"></i> Kembali ke Login Portal Utama
+                                </a>
                             </small>
                         @else
                             <small>
