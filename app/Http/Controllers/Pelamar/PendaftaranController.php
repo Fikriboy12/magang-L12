@@ -148,6 +148,8 @@ class PendaftaranController extends Controller
             'surat_pengantar'       => $suratPengantarName,
             'surat_rekomendasi'     => $suratPengantarName, // Kompatibilitas dengan fitur lama
             'surat_izin_wali'       => $suratIzinWaliName,
+            'ktp'                   => null,                // Kompatibilitas sistem lama
+            'proposal'              => null,                // Kompatibilitas sistem lama
             
             'status_pendaftaran'    => 'pengajuan',
             'keterangan'            => 'Sedang diverifikasi',
