@@ -6,108 +6,140 @@
 
 {{-- CSS MODERN PROFILE --}}
 <style>
-    /* Background Halaman */
+    /* Background Halaman Ambient Light Tech (Selaras dengan Login) */
     body {
-        background-color: #f8fafc !important;
-        font-family: 'Nunito', sans-serif;
+        background: radial-gradient(circle at 12% 18%, rgba(62, 204, 233, 0.22) 0%, transparent 45%),
+                    radial-gradient(circle at 88% 82%, rgba(2, 132, 199, 0.18) 0%, transparent 45%),
+                    radial-gradient(circle at 50% 50%, rgba(240, 249, 255, 0.5) 0%, transparent 70%),
+                    linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 45%, #e2e8f0 100%) !important;
+        font-family: 'Roboto', 'Plus Jakarta Sans', sans-serif;
     }
 
-    /* Kartu Utama */
+    .content-wrapper {
+        background: transparent !important;
+    }
+
+    /* Kartu Utama Berdimensi & Aksen Garis Atas Logo */
     .card-custom {
-        border: none;
-        border-radius: 15px;
-        box-shadow: 0 0 30px rgba(0,0,0,0.05);
-        margin-top: 40px;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        border-top: 4px solid #3ECCE9; /* Garis aksen atas warna Cyan Logo ANMS */
+        border-radius: 18px;
+        box-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.12), 0 0 25px rgba(62, 204, 233, 0.12);
+        margin-top: 30px;
         margin-bottom: 40px;
-        background: white;
+        background: #ffffff;
         overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    /* Header Kartu */
+    /* Header Kartu Bersih & Berkelas */
     .card-header-custom {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        color: white;
-        padding: 25px;
-        border-radius: 15px 15px 0 0 !important;
+        background: #ffffff;
+        padding: 35px 25px 20px 25px;
+        border-radius: 18px 18px 0 0 !important;
         text-align: center;
-        border-bottom: 2px solid #f1f1f1;
+        border-bottom: 1px solid #f1f5f9;
+        position: relative;
+    }
+
+    .header-icon-badge {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(62, 204, 233, 0.18) 0%, rgba(2, 132, 199, 0.18) 100%);
+        border: 1.5px solid rgba(62, 204, 233, 0.45);
+        color: #0284c7;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-bottom: 12px;
+        box-shadow: 0 4px 15px rgba(62, 204, 233, 0.25);
     }
 
     .card-header-custom h2 {
         font-weight: 800;
-        letter-spacing: 0.5px;
-        margin-bottom: 5px;
-        color: white;
+        letter-spacing: -0.3px;
+        margin-bottom: 6px;
+        color: #0f172a; /* Deep Navy Korporat */
         font-size: 1.8rem;
+    }
+
+    .card-header-custom p {
+        color: #64748b;
+        font-size: 0.92rem;
+        font-weight: 500;
     }
 
     /* Label Input */
     .form-label {
-        font-weight: 600;
-        color: #5a5c69;
+        font-weight: 700;
+        color: #0f172a;
         margin-bottom: 8px;
-        font-size: 0.9rem;
+        font-size: 0.92rem;
         display: block;
     }
 
     /* Input Field Modern */
     .form-control {
-        border: 1px solid #e3e6f0;
-        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
         padding: 12px 15px;
         font-size: 0.95rem;
-        background-color: #fdfdfd;
-        transition: all 0.3s ease;
-        color: #495057;
-        height: 50px; /* Tinggi fix agar semua sejajar */
+        background-color: #f8fafc;
+        transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+        color: #0f172a;
+        height: 48px;
     }
 
     .form-control:focus {
-        background-color: white;
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        background-color: #ffffff;
+        border-color: #0284c7;
+        box-shadow: 0 0 0 3px rgba(62, 204, 233, 0.28);
+        color: #0f172a;
     }
 
     /* --- PERBAIKAN DROPDOWN (SELECT) --- */
     select.form-control {
-        appearance: none; /* Hapus panah bawaan browser */
+        appearance: none;
         -webkit-appearance: none;
         -moz-appearance: none;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%231e3c72' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%230284c7' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
         background-repeat: no-repeat;
         background-position: right 15px center;
         background-size: 16px 12px;
         cursor: pointer;
-        padding-right: 40px; /* Ruang untuk panah */
+        padding-right: 40px;
     }
-    /* ----------------------------------- */
 
     /* Readonly Input Style */
     .form-control[readonly] {
-        background-color: #eaecf4;
-        color: #6e707e;
+        background-color: #f1f5f9;
+        border-color: #e2e8f0;
+        color: #64748b;
         cursor: not-allowed;
     }
 
-    /* Tombol Update */
+    /* Tombol Update Gradasi Logo */
     .btn-update-custom {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        color: white;
+        background: linear-gradient(135deg, #3ECCE9 0%, #0284c7 100%);
+        color: #ffffff;
         font-weight: 700;
         border: none;
         border-radius: 50px;
-        padding: 14px 40px;
+        padding: 13px 45px;
         font-size: 1rem;
-        letter-spacing: 0.5px;
-        transition: all 0.3s;
-        box-shadow: 0 4px 15px rgba(30, 60, 114, 0.2);
+        letter-spacing: 0.3px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 16px rgba(2, 132, 199, 0.35);
         margin-top: 20px;
     }
 
     .btn-update-custom:hover {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(30, 60, 114, 0.3);
-        color: white;
+        box-shadow: 0 8px 22px rgba(2, 132, 199, 0.45);
+        color: #ffffff;
     }
 
     /* Alert Styles */
@@ -123,7 +155,7 @@
     }
 </style>
 
-<div class="content-wrapper" style="background-color: #f4f6f9; min-height: 90vh;">
+<div class="content-wrapper" style="min-height: 90vh;">
     <section class="content pt-4 pb-5">
         <div class="container">
             <div class="row justify-content-center">
@@ -132,8 +164,11 @@
                     <div class="card card-custom">
                         
                         <div class="card-header-custom">
-                            <h2><i class="fas fa-user-circle mr-2"></i> Update Profile</h2>
-                            <p class="mb-0 text-white-50 small">Perbarui informasi data diri Anda dengan benar</p>
+                            <div class="header-icon-badge">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <h2>Update Profile</h2>
+                            <p class="mb-0">Perbarui informasi data diri Anda dengan benar</p>
                         </div>
 
                         <div class="card-body p-4 p-md-5">
