@@ -16,8 +16,11 @@
 <style>
     body {
         font-family: 'Roboto', sans-serif;
-        /* Background bersih, terang & elegan (Off-White modern) */
-        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        /* Background Ambient Light Tech: Lembut, berdimensi, tidak silau & harmonis presisi dengan warna logo */
+        background: radial-gradient(circle at 12% 18%, rgba(62, 204, 233, 0.22) 0%, transparent 45%),
+                    radial-gradient(circle at 88% 82%, rgba(2, 132, 199, 0.18) 0%, transparent 45%),
+                    radial-gradient(circle at 50% 50%, rgba(240, 249, 255, 0.5) 0%, transparent 70%),
+                    linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 45%, #e2e8f0 100%);
         min-height: 100vh;
         margin: 0;
         display: flex;
@@ -27,44 +30,54 @@
         box-sizing: border-box;
     }
 
-    /* Card Login Modern */
+    /* Card Login Modern, Elegan & Berdimensi */
     .login-card {
         background: #ffffff;
-        border: 1px solid #e2e8f0;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        border-top: 4px solid #3ECCE9; /* Garis aksen atas warna Cyan Logo ANMS */
         border-radius: 16px;
-        padding: 30px 24px;
+        padding: 34px 26px;
         width: 100%;        
-        max-width: 310px;   
-        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.07);
+        max-width: 350px; /* Ukuran proporsional & mantap di layar */
+        box-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.12), 0 0 25px rgba(62, 204, 233, 0.12);
         text-align: center;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
+        position: relative;
     }
 
-    /* Logo juga disesuaikan ukurannya */
+    /* Logo ANMS */
     .login-card img {
-        width: 80px; /* Diperkecil sedikit agar proporsional dengan kotak baru */
+        width: 82px;
         height: auto;
-        margin-bottom: 15px;
+        margin-bottom: 12px;
+        filter: drop-shadow(0 4px 10px rgba(62, 204, 233, 0.25));
     }
 
     .company-name {
-        font-size: 13px; /* Font diperkecil sedikit */
-        font-weight: 500;
-        color: #3CB9E0; /* --- BERUBAH: Teks menggunakan warna biru cerah logo --- */
-        margin-bottom: 12px;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #0f172a; /* Warna Navy Korporat - Kontras tinggi, tegas & mudah dibaca */
+        margin-bottom: 4px;
+        letter-spacing: 0.3px;
+    }
+
+    .company-name span {
+        color: #0284c7; /* Warna Cyan Biru Logo */
+        font-weight: 600;
     }
 
     .login-card h2 {
         margin-bottom: 18px;
-        color: #3CB9E0; /* --- BERUBAH: Teks menggunakan warna biru cerah logo --- */
-        font-weight: 700;
-        font-size: 20px; /* Judul diperkecil sedikit */
+        color: #0f172a; /* Warna Navy Gelap */
+        font-weight: 800;
+        font-size: 21px;
+        letter-spacing: -0.3px;
     }
 
     /* Input */
     .input-group {
         position: relative;
-        margin-bottom: 12px;
+        margin-bottom: 13px;
         max-width: 100%;
     }
 
@@ -72,22 +85,24 @@
     .input-group > i:first-child {
         position: absolute;
         top: 50%;
-        left: 12px;
+        left: 13px;
         transform: translateY(-50%);
-        color: #3CB9E0; /* --- BERUBAH: Ikon menggunakan warna biru cerah logo --- */
-        font-size: 13px;
+        color: #0284c7; /* Biru logo tegas */
+        font-size: 13.5px;
         pointer-events: none;
     }
 
     .input-group input {
         width: 100%;
-        padding: 9px 12px 9px 35px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
+        padding: 10px 12px 10px 38px;
+        border-radius: 9px;
+        border: 1px solid #cbd5e1;
         outline: none;
         font-size: 13px;
         box-sizing: border-box;
-        transition: border-color 0.2s, box-shadow 0.2s;
+        transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+        background: #f8fafc;
+        color: #1e293b;
     }
 
     .input-group input#password {
@@ -95,8 +110,9 @@
     }
 
     .input-group input:focus {
-        border-color: #3CB9E0; /* --- BERUBAH: Border focus menggunakan warna biru cerah logo --- */
-        box-shadow: 0 0 6px rgba(74, 193, 224, 0.4); /* --- BERUBAH: Shadow focus menggunakan warna biru logo yang transparan --- */
+        background: #ffffff;
+        border-color: #0284c7;
+        box-shadow: 0 0 0 3px rgba(62, 204, 233, 0.28);
     }
 
     /* Toggle Show/Hide Password */
@@ -122,7 +138,7 @@
     }
 
     .toggle-password-btn:hover {
-        color: #3CB9E0;
+        color: #0284c7;
     }
 
     .toggle-password-btn:active {
@@ -136,49 +152,59 @@
         color: inherit !important;
     }
 
-    /* Button */
+    /* Button Utama Login */
     .login-card button {
         width: 100%;
-        padding: 10px;
+        padding: 11px;
         border: none;
-        border-radius: 8px;
-        /* --- BERUBAH: Button gradient menggunakan warna biru cerah dari logo --- */
-        background: linear-gradient(135deg, #4AC1E0, #3CB9E0);
-        color: #fff;
-        font-weight: bold;
+        border-radius: 9px;
+        /* Gradasi presisi palet logo: dari Cyan Cerah ke Biru Royal */
+        background: linear-gradient(135deg, #3ECCE9 0%, #0284c7 100%);
+        color: #ffffff;
+        font-weight: 700;
         cursor: pointer;
         margin-top: 10px;
-        font-size: 13px;
-        transition: 0.3s;
+        font-size: 13.5px;
+        letter-spacing: 0.3px;
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+        transition: all 0.3s ease;
     }
 
     .login-card button:hover {
-        /* --- BERUBAH: Hover button gradient menggunakan warna biru cerah dari logo --- */
-        background: linear-gradient(135deg, #3CB9E0, #4AC1E0);
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
         transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4);
     }
 
-    /* --- TAMBAHAN: Style Button Login Biometrik --- */
+    /* Style Button Login Biometrik */
     .btn-face {
-        background: transparent !important;
-        border: 2px solid #3CB9E0 !important;
-        color: #3CB9E0 !important;
-        margin-top: 8px !important;
+        background: #f0f9ff !important;
+        border: 1.5px solid #0284c7 !important;
+        color: #0284c7 !important;
+        margin-top: 10px !important;
+        box-shadow: none !important;
+        font-weight: 600 !important;
     }
     .btn-face:hover {
-        background: #3CB9E0 !important;
-        color: #fff !important;
+        background: #0284c7 !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25) !important;
     }
 
     /* Links */
     .login-card .links {
-        margin-top: 15px;
-        font-size: 12px;
+        margin-top: 18px;
+        font-size: 12.5px;
     }
     .login-card .links a {
-        color: #3CB9E0; /* --- BERUBAH: Link menggunakan warna biru cerah logo --- */
+        color: #0284c7;
         text-decoration: none;
-        font-weight: 500;
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+    .login-card .links a:hover {
+        color: #0369a1;
+        text-decoration: underline;
     }
 
     /* Alert Style Modern */
@@ -209,7 +235,7 @@
 
 <div class="login-card">
     <img src="{{ asset('gambar/ANMS-logo.png') }}" alt="Logo ANMS">
-    <div class="company-name">PT.MEDIA BALAI NUSA astro net</div>
+    <div class="company-name">PT. MEDIA BALAI NUSA <span>astro net</span></div>
     <h2>Login</h2>
 
     @if (session('success'))
@@ -248,8 +274,8 @@
             </span>
         </div>
 
-        <div style="text-align: right; margin-top: -6px; margin-bottom: 10px;">
-            <a href="{{ route('password.request') }}" style="color: #3CB9E0; font-size: 11px; text-decoration: none; font-weight: 500;">
+        <div style="text-align: right; margin-top: -4px; margin-bottom: 12px;">
+            <a href="{{ route('password.request') }}" style="color: #0284c7; font-size: 11.5px; text-decoration: none; font-weight: 600;">
                 Lupa Kata Sandi?
             </a>
         </div>
@@ -262,7 +288,7 @@
     </button>
 
     <div id="camera-section" style="display: none; margin-top: 15px;">
-        <div style="position: relative; display: inline-block; width: 100%; border-radius: 8px; overflow: hidden; border: 2px solid #3CB9E0; background: #eee;">
+        <div style="position: relative; display: inline-block; width: 100%; border-radius: 10px; overflow: hidden; border: 2px solid #0284c7; background: #eee;">
             <video id="video-webcam" style="width: 100%; height: auto;" autoplay muted></video>
             <canvas id="overlay-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
         </div>
@@ -275,7 +301,7 @@
             <span id="ear-value" style="color: #64748b; font-weight: 700; font-family: monospace;">EAR: --</span>
         </div>
 
-        <p id="biometric-status" style="font-size: 11.5px; color: #3CB9E0; margin-top: 8px; font-weight: bold; line-height: 1.4;">Menyiapkan kamera...</p>
+        <p id="biometric-status" style="font-size: 11.5px; color: #0284c7; margin-top: 8px; font-weight: bold; line-height: 1.4;">Menyiapkan kamera...</p>
     </div>
 
     <form method="POST" action="{{ route('login.biometric') }}" id="form-login-biometric" style="display: none;">
@@ -303,7 +329,7 @@
                 passwordInput.type = 'text';
                 iconTogglePassword.classList.remove('fa-eye');
                 iconTogglePassword.classList.add('fa-eye-slash');
-                btnTogglePassword.style.color = '#3CB9E0';
+                btnTogglePassword.style.color = '#0284c7';
                 btnTogglePassword.setAttribute('title', 'Sembunyikan Kata Sandi');
             } else {
                 passwordInput.type = 'password';
@@ -440,11 +466,11 @@
                                     }
 
                                     statusText.innerText = `Menyelaraskan wajah... (${Math.round((faceAlignedFrames / REQUIRED_ALIGNED_FRAMES) * 100)}%)`;
-                                    statusText.style.color = "#3CB9E0";
+                                    statusText.style.color = "#0284c7";
 
                                     const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
                                         label: 'Wajah Terdeteksi', 
-                                        boxColor: '#3CB9E0' 
+                                        boxColor: '#0284c7' 
                                     });
                                     drawBox.draw(canvas);
                                 } else {
@@ -552,7 +578,7 @@
 
                                         const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
                                             label: 'Uji Liveness: Kedipkan Mata', 
-                                            boxColor: '#3CB9E0' 
+                                            boxColor: '#0284c7' 
                                         });
                                         drawBox.draw(canvas);
                                     }
