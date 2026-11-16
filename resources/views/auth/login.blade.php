@@ -16,9 +16,9 @@
 <style>
     body {
         font-family: 'Roboto', sans-serif;
-        /* --- BERUBAH: Background gradient menggunakan warna biru cerah dari logo --- */
-        background: linear-gradient(135deg, #4AC1E0, #3CB9E0);
-        height: 100vh;
+        /* Background bersih, terang & elegan (Off-White modern) */
+        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: 100vh;
         margin: 0;
         display: flex;
         justify-content: center;
@@ -27,18 +27,17 @@
         box-sizing: border-box;
     }
 
-    /* Card Login diperkecil lagi */
+    /* Card Login Modern */
     .login-card {
-        background: #fff;
-        border-radius: 12px;
-        padding: 25px 20px;
-        
-        /* --- PERUBAHAN: Lebar maksimal diperkecil menjadi 300px agar lebih mungil --- */
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 30px 24px;
         width: 100%;        
-        max-width: 300px;   
-        
-        box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        max-width: 310px;   
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.07);
         text-align: center;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     /* Logo juga disesuaikan ukurannya */
@@ -182,23 +181,27 @@
         font-weight: 500;
     }
 
-    /* Alert Style */
+    /* Alert Style Modern */
     .alert {
-        padding: 8px;
-        margin-bottom: 12px;
-        border-radius: 6px;
-        font-size: 11px;
+        padding: 9px 12px;
+        margin-bottom: 14px;
+        border-radius: 8px;
+        font-size: 11.5px;
         text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        line-height: 1.4;
     }
     .alert-danger {
-        background: #ffe6e6;
-        color: #cc0000;
-        border: 1px solid #ffcccc;
+        background: #fef2f2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
     }
     .alert-success {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
+        background: #ecfdf5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
     }
 </style>
 </head>
