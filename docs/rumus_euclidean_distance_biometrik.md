@@ -8,24 +8,30 @@ Dokumen ini mencatat secara lengkap penerapan matematis dan teknis dari sistem a
 
 ## 1. 👁️ METODE 1: Liveness Detection (Eye Aspect Ratio / EAR)
 
-### A. Konsep & Rumus Matematis
-Untuk memastikan bahwa objek di depan kamera adalah manusia hidup (bukan foto 2D), sistem menghitung rasio bukaan kelopak mata (*Eye Aspect Ratio / EAR*) dari 6 titik landmark mata (titik 36–41 untuk mata kiri, titik 42–47 untuk mata kanan):
+### A. Konsep & Rumus Matematis (Subbab 2.2.9)
+Liveness Detection merupakan proses yang digunakan untuk memastikan bahwa wajah yang terdeteksi berasal dari pengguna yang berada secara langsung di depan kamera dan bukan berasal dari representasi wajah seperti foto atau video. Teknologi face recognition memiliki kerentanan terhadap serangan *spoofing* karena pengguna yang tidak berwenang dapat mencoba menggunakan representasi wajah untuk melewati proses autentikasi. Liveness Detection digunakan sebagai pemeriksaan tambahan untuk memastikan keberadaan pengguna secara nyata. Pada penelitian ini digunakan deteksi kedipan mata berdasarkan Eye Aspect Ratio (EAR) yang dihitung dari titik facial landmarks mata.
 
-$$EAR = \frac{||p_2 - p_6|| + ||p_3 - p_5||}{2 \cdot ||p_1 - p_4||}$$
+Rumus Eye Aspect Ratio (EAR):
 
-- $p_1, p_4$ : Titik sudut luar dan sudut dalam mata (jarak horizontal).
-- $p_2, p_6$ : Titik kelopak mata atas dan bawah bagian luar (jarak vertikal 1).
-- $p_3, p_5$ : Titik kelopak mata atas dan bawah bagian dalam (jarak vertikal 2).
-- $||\dots||$ : Jarak Euclidean 2D antar koordinat titik piksel.
+$$EAR = \frac{(P_2 - P_6) + (P_3 - P_5)}{2(P_1 - P_4)}$$
 
-### B. Tabel Interpretasi Nilai EAR (Deteksi Kedipan)
+**Keterangan:**
+- $P_1$ dan $P_4$ = titik *landmark* horizontal mata (sudut luar dan sudut dalam).
+- $P_2$ dan $P_6$ = titik *landmark* vertikal pertama (kelopak atas dan bawah).
+- $P_3$ dan $P_5$ = titik *landmark* vertikal kedua (kelopak atas dan bawah).
+- $EAR$ = nilai rasio aspek mata.
 
-| Kondisi Mata | Nilai Rata-rata EAR | Status Liveness | Respon Sistem |
+---
+
+### B. Tabel 2.4 Interpretasi Nilai EAR pada Liveness Detection
+
+| Nilai EAR | Interpretasi | Status di Sistem | Respon Sistem |
 | :--- | :--- | :--- | :--- |
-| **Mata Terbuka Normal** | $EAR \ge 0{,}26$ | Menunggu kedipan | Sistem meminta user mengedipkan mata. |
-| **Mata Menutup (Berkedip)** | $EAR < 0{,}22$ | Kedipan berlangsung | Kelopak mata menutup tercatat dalam siklus kedip. |
-| **Mata Terbuka Kembali** | $EAR \ge 0{,}26$ | **Liveness VALID (Manusia Asli)** | Siklus kedip lengkap terverifikasi, ekstraksi wajah disetujui. |
-| **Foto Mati / Layar HP** | $EAR$ konstan ($\approx 0{,}30$) | **GAGAL / DITOLAK** | Tidak ada siklus kedip, sistem tidak akan pernah submit login. |
+| **$EAR > 0{,}20$** | **Mata terbuka** | Menunggu kedipan / Siklus selesai | Sistem menunggu pengguna mengedipkan mata; jika kedip selesai, liveness terverifikasi. |
+| **$EAR \le 0{,}20$** | **Mata tertutup / kedipan terdeteksi** | Kedipan terdeteksi | Sistem merekam bahwa kelopak mata telah menutup, meminta membuka mata kembali. |
+
+> **Catatan Ilmiah Jurnal:**  
+> Nilai EAR menurun ketika mata menutup dan kembali naik ketika mata terbuka. Penelitian terdahulu menggunakan *threshold* EAR sebesar $0{,}20$. Penelitian ini menggunakan nilai tersebut sebagai nilai acuan validasi sistem ($EAR \le 0{,}20$ untuk mata tertutup, dan $EAR > 0{,}20$ untuk mata terbuka). Siklus kedip alami dinyatakan valid jika berlangsung dalam rentang durasi 80 ms hingga 3.000 ms.
 
 ---
 

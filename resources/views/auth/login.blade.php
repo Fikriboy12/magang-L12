@@ -398,11 +398,18 @@
             }
 
             // Fungsi Pembantu: Hitung Eye Aspect Ratio (EAR) dari 6 titik landmark mata
-            // Formula Soukupová & Čech: EAR = (||p2 - p6|| + ||p3 - p5||) / (2 * ||p1 - p4||)
+            // Sesuai Jurnal Penelitian Subbab 2.2.9:
+            // Rumus Eye Aspect Ratio (EAR):
+            // EAR = ((P2 - P6) + (P3 - P5)) / (2 * (P1 - P4))
+            // Keterangan:
+            // - P1 dan P4 = titik landmark horizontal mata (eye[0] dan eye[3])
+            // - P2 dan P6 = titik landmark vertikal pertama (eye[1] dan eye[5])
+            // - P3 dan P5 = titik landmark vertikal kedua (eye[2] dan eye[4])
+            // - EAR       = nilai rasio aspek mata
             function calculateEyeEAR(eye) {
-                const v1 = euclideanDist2D(eye[1], eye[5]);
-                const v2 = euclideanDist2D(eye[2], eye[4]);
-                const h  = euclideanDist2D(eye[0], eye[3]);
+                const v1 = euclideanDist2D(eye[1], eye[5]); // |P2 - P6|
+                const v2 = euclideanDist2D(eye[2], eye[4]); // |P3 - P5|
+                const h  = euclideanDist2D(eye[0], eye[3]); // |P1 - P4|
                 if (h === 0) return 0;
                 return (v1 + v2) / (2.0 * h);
             }
@@ -415,11 +422,17 @@
                 let isSubmitted = false;
                 let isProcessingBlink = false;
                 let faceAlignedFrames = 0;
-                const REQUIRED_ALIGNED_FRAMES = 3; // 3 frame stabil di awal untuk kalibrasi baseline EAR
+                const REQUIRED_ALIGNED_FRAMES = 3; // 3 frame stabil di awal
                 let eyeWasClosed = false;
                 let closedTimestamp = 0;
-                let baselineEAR = null;
                 let consecutiveLostFrames = 0;
+
+                // =========================================================================
+                // THRESHOLD EAR LIVENESS DETECTION (SESUAI JURNAL TABEL 2.4)
+                // - EAR > 0.20  : Mata terbuka
+                // - EAR <= 0.20 : Mata tertutup / kedipan terdeteksi
+                // =========================================================================
+                const EAR_THRESHOLD = 0.20;
 
                 const livenessBadge = document.getElementById('liveness-badge');
                 const earValueText  = document.getElementById('ear-value');
@@ -443,7 +456,7 @@
                             const leftEye  = landmarks.getLeftEye();
                             const rightEye = landmarks.getRightEye();
 
-                            // 1. Hitung Nilai EAR untuk Kedua Belah Mata
+                            // 1. Hitung Nilai EAR untuk Kedua Belah Mata (Subbab 2.2.9)
                             const leftEAR  = calculateEyeEAR(leftEye);
                             const rightEAR = calculateEyeEAR(rightEye);
                             const avgEAR   = (leftEAR + rightEAR) / 2.0;
@@ -456,14 +469,9 @@
                             faceapi.draw.drawFaceLandmarks(canvas, resizedDetection);
 
                             if (!isProcessingBlink) {
-                                // FASE A: Penyelarasan Posisi Wajah & Kalibrasi Baseline EAR
+                                // FASE A: Penyelarasan Posisi Wajah Awal
                                 if (faceAlignedFrames < REQUIRED_ALIGNED_FRAMES) {
                                     faceAlignedFrames++;
-                                    if (baselineEAR === null) {
-                                        baselineEAR = avgEAR;
-                                    } else {
-                                        baselineEAR = (baselineEAR + avgEAR) / 2.0;
-                                    }
 
                                     statusText.innerText = `Menyelaraskan wajah... (${Math.round((faceAlignedFrames / REQUIRED_ALIGNED_FRAMES) * 100)}%)`;
                                     statusText.style.color = "#0284c7";
@@ -474,13 +482,10 @@
                                     });
                                     drawBox.draw(canvas);
                                 } else {
-                                    // FASE B: Uji Liveness Kedipan Mata (Anti-Spoofing)
-                                    // Threshold adaptif yang responsif:
-                                    const effectiveBaseline = baselineEAR || 0.30;
-                                    const earClosedThreshold = Math.min(0.245, effectiveBaseline * 0.82);
-                                    const earOpenThreshold   = Math.max(0.255, effectiveBaseline * 0.88);
-
-                                    const isEyesClosed = (avgEAR <= earClosedThreshold) || (leftEAR <= 0.24 && rightEAR <= 0.24);
+                                    // FASE B: Uji Liveness Kedipan Mata (Anti-Spoofing) Sesuai Tabel 2.4 Jurnal:
+                                    // - EAR <= 0.20 : Mata tertutup / kedipan terdeteksi
+                                    // - EAR >  0.20 : Mata terbuka
+                                    const isEyesClosed = (avgEAR <= EAR_THRESHOLD) || (leftEAR <= EAR_THRESHOLD && rightEAR <= EAR_THRESHOLD);
 
                                     if (isEyesClosed) {
                                         if (!eyeWasClosed) {
@@ -488,23 +493,24 @@
                                             closedTimestamp = Date.now();
                                         }
 
-                                        statusText.innerText = "Kedip terdeteksi! Silakan buka kembali mata Anda...";
+                                        statusText.innerText = "Kedip terdeteksi (EAR <= 0.20)! Silakan buka kembali mata Anda...";
                                         statusText.style.color = "#f59e0b"; // Oranye
 
                                         if (livenessBadge) {
-                                            livenessBadge.innerHTML = '<i class="fas fa-eye-slash"></i> Mata Menutup! Buka kembali...';
+                                            livenessBadge.innerHTML = '<i class="fas fa-eye-slash"></i> Mata Menutup (EAR ≤ 0.20)';
                                             livenessBadge.style.background = '#fef3c7';
                                             livenessBadge.style.color = '#b45309';
                                         }
 
                                         const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
-                                            label: 'Mata Menutup (Liveness)', 
+                                            label: `Mata Menutup (EAR: ${avgEAR.toFixed(2)} ≤ 0.20)`, 
                                             boxColor: '#f59e0b' 
                                         });
                                         drawBox.draw(canvas);
 
-                                    } else if (eyeWasClosed && avgEAR >= earOpenThreshold) {
-                                        // SIKLUS KEDIP LENGKAP: Terbuka -> Menutup -> Terbuka Kembali (100% Manusia Asli)
+                                    } else if (eyeWasClosed && avgEAR > EAR_THRESHOLD) {
+                                        // SIKLUS KEDIP LENGKAP SESUAI JURNAL:
+                                        // Mata Terbuka (>0.20) -> Mata Menutup (<=0.20) -> Mata Terbuka Kembali (>0.20)
                                         const blinkDuration = Date.now() - closedTimestamp;
                                         
                                         // Rentang durasi kedip manusia normal (80ms - 3000ms)
@@ -562,22 +568,17 @@
                                         }
 
                                     } else {
-                                        // Update baseline perlahan jika mata tetap terbuka
-                                        if (!eyeWasClosed && avgEAR >= 0.26) {
-                                            baselineEAR = (baselineEAR * 0.9) + (avgEAR * 0.1);
-                                        }
-
                                         statusText.innerText = "UJI LIVENESS: Silakan KEDIPKAN MATA Anda sekali...";
                                         statusText.style.color = "#0284c7"; // Biru
 
                                         if (livenessBadge) {
-                                            livenessBadge.innerHTML = '<i class="fas fa-eye"></i> Menunggu Kedipan Mata';
+                                            livenessBadge.innerHTML = '<i class="fas fa-eye"></i> Menunggu Kedipan (EAR > 0.20)';
                                             livenessBadge.style.background = '#e0f2fe';
                                             livenessBadge.style.color = '#0284c7';
                                         }
 
                                         const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
-                                            label: 'Uji Liveness: Kedipkan Mata', 
+                                            label: `Uji Liveness: Kedipkan Mata (EAR: ${avgEAR.toFixed(2)})`, 
                                             boxColor: '#0284c7' 
                                         });
                                         drawBox.draw(canvas);
