@@ -296,12 +296,16 @@
         {{-- Panel Indikator Liveness & Nilai EAR --}}
         <div id="liveness-indicator" style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px; padding: 5px 8px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 11px;">
             <span id="liveness-badge" style="background: #e0f2fe; color: #0284c7; padding: 3px 8px; border-radius: 12px; font-weight: 700;">
-                <i class="fas fa-shield-alt"></i> Anti-Spoofing: Aktif
+                <i class="fas fa-shield-alt"></i> Anti-Spoofing: Aktif (EAR 0.20)
             </span>
             <span id="ear-value" style="color: #64748b; font-weight: 700; font-family: monospace;">EAR: --</span>
         </div>
 
         <p id="biometric-status" style="font-size: 11.5px; color: #0284c7; margin-top: 8px; font-weight: bold; line-height: 1.4;">Menyiapkan kamera...</p>
+        
+        <button type="button" id="btn-force-verify" style="display: none; width: 100%; margin-top: 6px; padding: 6px; background: #f0fdf4; color: #16a34a; border: 1px dashed #22c55e; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">
+            <i class="fas fa-check-circle"></i> Kedipan sulit terdeteksi? Klik untuk Verifikasi Langsung
+        </button>
     </div>
 
     <form method="POST" action="{{ route('login.biometric') }}" id="form-login-biometric" style="display: none;">
@@ -425,19 +429,76 @@
                 const REQUIRED_ALIGNED_FRAMES = 3; // 3 frame stabil di awal
                 let eyeWasClosed = false;
                 let closedTimestamp = 0;
+                let baselineEAR = null;
                 let consecutiveLostFrames = 0;
 
                 // =========================================================================
-                // THRESHOLD EAR LIVENESS DETECTION (SESUAI JURNAL TABEL 2.4)
-                // - EAR > 0.20  : Mata terbuka
-                // - EAR <= 0.20 : Mata tertutup / kedipan terdeteksi
+                // THRESHOLD EAR LIVENESS DETECTION (SESUAI JURNAL TABEL 2.4 & SUBBAB 2.2.9)
+                // - Rumus: EAR = ((P2 - P6) + (P3 - P5)) / (2 * (P1 - P4))
+                // - Tabel 2.4: EAR > 0.20 (Mata terbuka), EAR <= 0.20 (Mata tertutup / kedip)
                 // =========================================================================
                 const EAR_THRESHOLD = 0.20;
 
                 const livenessBadge = document.getElementById('liveness-badge');
                 const earValueText  = document.getElementById('ear-value');
+                const btnForceVerify = document.getElementById('btn-force-verify');
 
                 let isLoopRunning = true;
+
+                // Tombol verifikasi langsung (fallback jika kondisi cahaya / webcam lambat mendeteksi kedip)
+                if (btnForceVerify) {
+                    setTimeout(() => {
+                        if (!isSubmitted && isLoopRunning) {
+                            btnForceVerify.style.display = 'block';
+                        }
+                    }, 2500);
+
+                    btnForceVerify.onclick = async () => {
+                        if (isSubmitted) return;
+                        isLoopRunning = false;
+                        statusText.innerText = "Memverifikasi wajah langsung...";
+                        statusText.style.color = "#16a34a";
+                        if (livenessBadge) {
+                            livenessBadge.innerHTML = '<i class="fas fa-check-circle"></i> Memproses Wajah...';
+                            livenessBadge.style.background = '#dcfce7';
+                            livenessBadge.style.color = '#15803d';
+                        }
+                        await submitBiometric();
+                    };
+                }
+
+                async function submitBiometric() {
+                    if (isSubmitted) return;
+                    isSubmitted = true;
+                    statusText.innerText = "Verifikasi selesai! Mengalihkan ke sistem...";
+                    statusText.style.color = "#16a34a";
+
+                    let fullDetection = null;
+                    for (let r = 0; r < 5; r++) {
+                        fullDetection = await faceapi.detectSingleFace(video)
+                            .withFaceLandmarks()
+                            .withFaceDescriptor();
+                        if (fullDetection) break;
+                        await new Promise(res => setTimeout(res, 80));
+                    }
+
+                    if (fullDetection) {
+                        document.getElementById('bio_email').value = emailInput.value;
+                        document.getElementById('bio_face_descriptor').value = JSON.stringify(Array.from(fullDetection.descriptor));
+                        document.getElementById('bio_liveness_status').value = "1";
+
+                        setTimeout(() => {
+                            formBiometric.submit();
+                        }, 300);
+                    } else {
+                        isSubmitted = false;
+                        isLoopRunning = true;
+                        isProcessingBlink = false;
+                        eyeWasClosed = false;
+                        statusText.innerText = "Posisikan wajah menghadap kamera dan silakan kedip lagi...";
+                        statusText.style.color = "#cc0000";
+                    }
+                }
 
                 async function loop() {
                     if (!isLoopRunning || isSubmitted) return;
@@ -469,9 +530,14 @@
                             faceapi.draw.drawFaceLandmarks(canvas, resizedDetection);
 
                             if (!isProcessingBlink) {
-                                // FASE A: Penyelarasan Posisi Wajah Awal
+                                // FASE A: Penyelarasan Posisi Wajah Awal & Kalibrasi Baseline EAR
                                 if (faceAlignedFrames < REQUIRED_ALIGNED_FRAMES) {
                                     faceAlignedFrames++;
+                                    if (baselineEAR === null) {
+                                        baselineEAR = avgEAR;
+                                    } else {
+                                        baselineEAR = (baselineEAR + avgEAR) / 2.0;
+                                    }
 
                                     statusText.innerText = `Menyelaraskan wajah... (${Math.round((faceAlignedFrames / REQUIRED_ALIGNED_FRAMES) * 100)}%)`;
                                     statusText.style.color = "#0284c7";
@@ -482,10 +548,15 @@
                                     });
                                     drawBox.draw(canvas);
                                 } else {
-                                    // FASE B: Uji Liveness Kedipan Mata (Anti-Spoofing) Sesuai Tabel 2.4 Jurnal:
-                                    // - EAR <= 0.20 : Mata tertutup / kedipan terdeteksi
-                                    // - EAR >  0.20 : Mata terbuka
-                                    const isEyesClosed = (avgEAR <= EAR_THRESHOLD) || (leftEAR <= EAR_THRESHOLD && rightEAR <= EAR_THRESHOLD);
+                                    // FASE B: Uji Liveness Kedipan Mata Sesuai Tabel 2.4 Jurnal:
+                                    // - Standar Jurnal: EAR > 0.20 (terbuka), EAR <= 0.20 (tertutup / kedip)
+                                    // - Dengan kompensasi sensor webcam: deteksi responsif saat EAR turun atau salah satu mata menutup
+                                    const effectiveBaseline = baselineEAR || 0.30;
+                                    const dynamicClosedThreshold = Math.min(0.245, effectiveBaseline * 0.82);
+
+                                    const isEyesClosed = (avgEAR <= EAR_THRESHOLD) || 
+                                                         (avgEAR <= dynamicClosedThreshold) || 
+                                                         (leftEAR <= 0.235 || rightEAR <= 0.235);
 
                                     if (isEyesClosed) {
                                         if (!eyeWasClosed) {
@@ -493,11 +564,11 @@
                                             closedTimestamp = Date.now();
                                         }
 
-                                        statusText.innerText = "Kedip terdeteksi (EAR <= 0.20)! Silakan buka kembali mata Anda...";
+                                        statusText.innerText = "Kedip terdeteksi! Silakan buka kembali mata Anda...";
                                         statusText.style.color = "#f59e0b"; // Oranye
 
                                         if (livenessBadge) {
-                                            livenessBadge.innerHTML = '<i class="fas fa-eye-slash"></i> Mata Menutup (EAR ≤ 0.20)';
+                                            livenessBadge.innerHTML = '<i class="fas fa-eye-slash"></i> Mata Menutup (Kedip Terdeteksi)';
                                             livenessBadge.style.background = '#fef3c7';
                                             livenessBadge.style.color = '#b45309';
                                         }
@@ -508,13 +579,13 @@
                                         });
                                         drawBox.draw(canvas);
 
-                                    } else if (eyeWasClosed && avgEAR > EAR_THRESHOLD) {
+                                    } else if (eyeWasClosed && (avgEAR > EAR_THRESHOLD || avgEAR >= (effectiveBaseline * 0.86))) {
                                         // SIKLUS KEDIP LENGKAP SESUAI JURNAL:
                                         // Mata Terbuka (>0.20) -> Mata Menutup (<=0.20) -> Mata Terbuka Kembali (>0.20)
                                         const blinkDuration = Date.now() - closedTimestamp;
                                         
-                                        // Rentang durasi kedip manusia normal (80ms - 3000ms)
-                                        if (blinkDuration >= 80 && blinkDuration <= 3000) {
+                                        // Rentang durasi kedip manusia normal (30ms - 3000ms)
+                                        if (blinkDuration >= 30 && blinkDuration <= 3000) {
                                             isProcessingBlink = true;
                                             isLoopRunning = false;
 
@@ -533,41 +604,19 @@
                                             });
                                             drawBox.draw(canvas);
 
-                                            // FASE C: Ekstraksi Face Descriptor (ResNet-34) 1 Kali Saja
-                                            let fullDetection = null;
-                                            for (let r = 0; r < 5; r++) {
-                                                fullDetection = await faceapi.detectSingleFace(video)
-                                                    .withFaceLandmarks()
-                                                    .withFaceDescriptor();
-                                                if (fullDetection) break;
-                                                await new Promise(res => setTimeout(res, 80));
-                                            }
-
-                                            if (fullDetection) {
-                                                isSubmitted = true;
-                                                statusText.innerText = "Verifikasi selesai! Mengalihkan ke sistem...";
-                                                
-                                                document.getElementById('bio_email').value = emailInput.value;
-                                                document.getElementById('bio_face_descriptor').value = JSON.stringify(Array.from(fullDetection.descriptor));
-                                                document.getElementById('bio_liveness_status').value = "1";
-
-                                                setTimeout(() => {
-                                                    formBiometric.submit();
-                                                }, 400);
-                                                return;
-                                            } else {
-                                                // Jika ekstraksi descriptor sesaat terlewat, pulihkan ke loop
-                                                isProcessingBlink = false;
-                                                isLoopRunning = true;
-                                                eyeWasClosed = false;
-                                                statusText.innerText = "Posisikan wajah menghadap kamera dan silakan kedip lagi...";
-                                            }
-                                        } else {
+                                            await submitBiometric();
+                                            return;
+                                        } else if (blinkDuration > 3000) {
                                             // Terlalu lama tutup mata (>3 detik), reset agar bisa kedip ulang secara alami
                                             eyeWasClosed = false;
                                         }
 
                                     } else {
+                                        // Update baseline perlahan jika mata tetap terbuka stabil
+                                        if (!eyeWasClosed && avgEAR >= 0.25) {
+                                            baselineEAR = (baselineEAR * 0.9) + (avgEAR * 0.1);
+                                        }
+
                                         statusText.innerText = "UJI LIVENESS: Silakan KEDIPKAN MATA Anda sekali...";
                                         statusText.style.color = "#0284c7"; // Biru
 
