@@ -243,10 +243,6 @@ class LoginController extends Controller
             'email' => 'required|email',
             'no_telp' => 'required',
             'nim' => 'required',
-            'tempat_lahir' => 'required',
-            'tanggal_lahir' => 'required',
-            'jenis_kelamin' => 'required',
-            'alamat' => 'required', 
         ]);
 
         // 2. Cek Password Baru
@@ -260,10 +256,6 @@ class LoginController extends Controller
             'email'          => $request->email,
             'no_telp'        => $request->no_telp,
             'nim'            => $request->nim,
-            'tempat_lahir'   => $request->tempat_lahir,
-            'tanggal_lahir'  => $request->tanggal_lahir,
-            'jenis_kelamin'  => $request->jenis_kelamin,
-            'alamat_lengkap' => $request->alamat 
         ]);
 
         return back()->with('success', 'Profil berhasil diperbarui!');

@@ -222,18 +222,8 @@
                                     <div class="info-value">{{ $p->no_telp ?? '-' }}</div>
                                 </div>
                                 <div class="col-sm-6 mb-3">
-                                    <div class="info-label">Jenis Kelamin</div>
-                                    <div class="info-value">{{ $p->jenis_kelamin ?? '-' }}</div>
-                                </div>
-                                <div class="col-sm-6 mb-3">
-                                    <div class="info-label">Tempat, Tanggal Lahir</div>
-                                    <div class="info-value">
-                                        {{ $p->tempat_lahir ?? '-' }}, {{ $p->tanggal_lahir ? date('d F Y', strtotime($p->tanggal_lahir)) : '-' }}
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="info-label">Alamat Lengkap</div>
-                                    <div class="info-value" style="font-weight: 500;">{{ $p->alamat_lengkap ?? '-' }}</div>
+                                    <div class="info-label">Email Siswa</div>
+                                    <div class="info-value">{{ $p->email ?? '-' }}</div>
                                 </div>
                             </div>
                         </div>

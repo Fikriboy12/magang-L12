@@ -50,10 +50,6 @@ class DataLamaranController extends Controller
                 'users.email',
                 'users.name as nama_lengkap', 
                 'users.nim',
-                'users.tempat_lahir',
-                'users.tanggal_lahir',
-                'users.jenis_kelamin',
-                'users.alamat_lengkap',
                 'users.no_telp'
             )
             ->join('users', 'pendaftaran.id_users', '=', 'users.id')
@@ -106,10 +102,6 @@ class DataLamaranController extends Controller
                 'users.email',
                 'users.name as nama_lengkap',
                 'users.nim',
-                'users.tempat_lahir',
-                'users.tanggal_lahir',
-                'users.jenis_kelamin',
-                'users.alamat_lengkap',
                 'users.no_telp'
             )
             ->join('users', 'pendaftaran.id_users', '=', 'users.id')

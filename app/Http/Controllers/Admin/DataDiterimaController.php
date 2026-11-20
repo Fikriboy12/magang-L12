@@ -30,11 +30,7 @@ class DataDiterimaController extends Controller
                     'users.email', 
                     'users.name as nama_lengkap', 
                     'users.nim', 
-                    'users.tempat_lahir', 
-                    'users.tanggal_lahir', 
-                    'users.alamat_lengkap', 
                     'users.no_telp',
-                    'users.jenis_kelamin',
                     'users.pembimbing_id', // Ambil data guru pembimbing saat ini
                     'users.pembimbing_lapangan_id' // Ambil data pembimbing lapangan saat ini
                 )
@@ -55,11 +51,7 @@ class DataDiterimaController extends Controller
                     'users.email', 
                     'users.name as nama_lengkap', 
                     'users.nim', 
-                    'users.tempat_lahir', 
-                    'users.tanggal_lahir', 
-                    'users.alamat_lengkap', 
-                    'users.no_telp',
-                    'users.jenis_kelamin'
+                    'users.no_telp'
                 )
                 ->join('users', 'pendaftaran.id_users', '=', 'users.id')
                 ->where('pendaftaran.id_pendaftaran', $id_pendaftaran)

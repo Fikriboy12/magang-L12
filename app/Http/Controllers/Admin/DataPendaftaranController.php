@@ -53,17 +53,12 @@ class DataPendaftaranController extends Controller
             'tidak_diterima' => Pendaftaran::where('status_pendaftaran', 'tidak diterima')->count(),
         ];
 
-        // PERBAIKAN DI SINI: Menambahkan kembali kolom yang hilang
         $detail = Pendaftaran::select(
                 'pendaftaran.*', 
                 'users.email', 
                 'users.name as nama_lengkap', 
                 'users.nim',
-                'users.tempat_lahir', // Ditambahkan kembali
-                'users.tanggal_lahir', // Ditambahkan kembali
-                'users.jenis_kelamin', // Ditambahkan kembali
-                'users.alamat_lengkap', // Ditambahkan kembali
-                'users.no_telp'        // Ditambahkan kembali
+                'users.no_telp'
             )
             ->join('users', 'pendaftaran.id_users', '=', 'users.id')
             ->where('id_pendaftaran', $id_pendaftaran)

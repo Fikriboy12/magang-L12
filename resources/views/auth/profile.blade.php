@@ -235,39 +235,6 @@
                                            value="{{ old('nim', $data['profile']->nim) }}">
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-6 mb-4">
-                                        <div class="form-group">
-                                            <label class="form-label">Tempat Lahir</label>
-                                            <input type="text" name="tempat_lahir" class="form-control" required
-                                                   value="{{ old('tempat_lahir', $data['profile']->tempat_lahir) }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-4">
-                                        <div class="form-group">
-                                            <label class="form-label">Tanggal Lahir</label>
-                                            <input type="date" name="tanggal_lahir" class="form-control" required
-                                                   value="{{ old('tanggal_lahir', $data['profile']->tanggal_lahir) }}">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group mb-4">
-                                    <label class="form-label">Jenis Kelamin</label>
-                                    <select name="jenis_kelamin" class="form-control">
-                                        <option value="">-- Pilih Jenis Kelamin --</option>
-                                        <option value="Laki-laki" {{ (old('jenis_kelamin', $data['profile']->jenis_kelamin) == 'Laki-laki' || $data['profile']->jenis_kelamin == 'laki-laki') ? 'selected' : '' }}>Laki-laki</option>
-                                        <option value="Perempuan" {{ (old('jenis_kelamin', $data['profile']->jenis_kelamin) == 'Perempuan' || $data['profile']->jenis_kelamin == 'perempuan') ? 'selected' : '' }}>Perempuan</option>
-                                    </select>
-                                </div>
-
-                                {{-- BAGIAN AGAMA SUDAH DIHAPUS DARI SINI --}}
-
-                                <div class="form-group mb-4">
-                                    <label class="form-label">Alamat Lengkap</label>
-                                    <textarea name="alamat" class="form-control" rows="4" required>{{ old('alamat', $data['profile']->alamat ?? $data['profile']->alamat_lengkap) }}</textarea>
-                                </div>
-
                                 <hr class="my-4" style="border-top: 1px dashed #cbd5e1;">
 
                                 <div class="form-group mb-4">

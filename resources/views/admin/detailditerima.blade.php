@@ -215,25 +215,9 @@
                                 <label class="font-weight-bold">Email Siswa</label>
                                 <input type="text" class="form-control" value="{{ $p->email ?? '-' }}" readonly>
                             </div>
-                            <div class="col-md-6 form-group">
+                            <div class="col-md-6 form-group mb-0">
                                 <label class="font-weight-bold">No Telepon / WhatsApp Siswa</label>
                                 <input type="text" class="form-control" value="{{ $p->no_telp ?? '-' }}" readonly>
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label class="font-weight-bold">Jenis Kelamin</label>
-                                <input type="text" class="form-control" value="{{ $p->jenis_kelamin ?? '-' }}" readonly>
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label class="font-weight-bold">Tempat Lahir</label>
-                                <input type="text" class="form-control" value="{{ $p->tempat_lahir ?? '-' }}" readonly>
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label class="font-weight-bold">Tanggal Lahir</label>
-                                <input type="text" class="form-control" value="{{ $p->tanggal_lahir ? date('d F Y', strtotime($p->tanggal_lahir)) : '-' }}" readonly>
-                            </div>
-                            <div class="col-12 form-group mb-0">
-                                <label class="font-weight-bold">Alamat Lengkap</label>
-                                <textarea class="form-control" rows="3" readonly>{{ $p->alamat_lengkap ?? '-' }}</textarea>
                             </div>
                         </div>
                     </div>
