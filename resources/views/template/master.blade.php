@@ -324,7 +324,7 @@
                     @auth
                         @php $cek = \App\Models\Pendaftaran::where('id_users', Auth::id())->first(); $statusDiterima = ($cek && strtolower($cek->status_pendaftaran) == 'diterima'); @endphp
                         @if(!$statusDiterima) <li><a href="{{ route('pendaftaran.index') }}"><i class="fa-solid fa-file-signature"></i> Pendaftaran</a></li> @endif
-                        <li><a href="{{ route('pelamar.lamaran.index') }}"><i class="fa-solid fa-briefcase"></i> Lamaran</a></li>
+                        <li><a href="{{ route('pelamar.lamaran.index') }}"><i class="fa-solid fa-briefcase"></i> Status Magang</a></li>
                         @if($statusDiterima) 
                             <li><a href="{{ route('mahasiswa.laporan.index') }}"><i class="fa-solid fa-file-lines"></i> Data Laporan</a></li>
                             {{-- MENU ABSENSI (BARU) --}}
@@ -393,7 +393,7 @@
             <li><a href="{{ url('/') }}#blog" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-newspaper"></i> <span>Berita</span></a></li>
             @auth
                 @if(!$statusDiterima) <li><a href="{{ route('pendaftaran.index') }}" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-file-signature"></i> <span>Pendaftaran</span></a></li> @endif
-                <li><a href="{{ route('pelamar.lamaran.index') }}" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-briefcase"></i> <span>Lamaran</span></a></li>
+                <li><a href="{{ route('pelamar.lamaran.index') }}" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-briefcase"></i> <span>Status Magang</span></a></li>
                 @if($statusDiterima) 
                     <li><a href="{{ route('mahasiswa.laporan.index') }}" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-file-lines"></i> <span>Data Laporan</span></a></li>
                     {{-- MENU ABSENSI MOBILE (BARU) --}}

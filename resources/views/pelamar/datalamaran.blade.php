@@ -1,6 +1,6 @@
 @extends('template.master') 
 
-@section('title', 'Hasil Lamaran & Sertifikat')
+@section('title', 'Status Magang & Sertifikat')
 
 @section('contents')
 
@@ -112,7 +112,7 @@
                     <div class="hd-header">
                         <div>
                             <h4 class="m-0 font-weight-bold">
-                                <i class="fas fa-file-contract mr-2"></i> Hasil Lamaran
+                                <i class="fas fa-file-contract mr-2"></i> Status Magang
                             </h4>
                             <small style="opacity: 0.9;">Status pendaftaran magang Anda saat ini.</small>
                         </div>

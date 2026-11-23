@@ -54,7 +54,7 @@
                 @auth
                     @if(Auth::user()->role == 'pelamar')
                      <li class="{{ request()->is('pelamar/lamaran*') ? 'active' : '' }}"> 
-                        <a href="{{ route('pelamar.lamaran.index') }}">Lamaran</a>
+                        <a href="{{ route('pelamar.lamaran.index') }}">Status Magang</a>
                      </li>
                     @endif
                 
