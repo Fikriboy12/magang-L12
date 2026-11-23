@@ -302,10 +302,6 @@
         </div>
 
         <p id="biometric-status" style="font-size: 11.5px; color: #0284c7; margin-top: 8px; font-weight: bold; line-height: 1.4;">Menyiapkan kamera...</p>
-        
-        <button type="button" id="btn-force-verify" style="display: none; width: 100%; margin-top: 6px; padding: 6px; background: #f0fdf4; color: #16a34a; border: 1px dashed #22c55e; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">
-            <i class="fas fa-check-circle"></i> Kedipan sulit terdeteksi? Klik untuk Verifikasi Langsung
-        </button>
     </div>
 
     <form method="POST" action="{{ route('login.biometric') }}" id="form-login-biometric" style="display: none;">
@@ -441,31 +437,8 @@
 
                 const livenessBadge = document.getElementById('liveness-badge');
                 const earValueText  = document.getElementById('ear-value');
-                const btnForceVerify = document.getElementById('btn-force-verify');
 
                 let isLoopRunning = true;
-
-                // Tombol verifikasi langsung (fallback jika kondisi cahaya / webcam lambat mendeteksi kedip)
-                if (btnForceVerify) {
-                    setTimeout(() => {
-                        if (!isSubmitted && isLoopRunning) {
-                            btnForceVerify.style.display = 'block';
-                        }
-                    }, 2500);
-
-                    btnForceVerify.onclick = async () => {
-                        if (isSubmitted) return;
-                        isLoopRunning = false;
-                        statusText.innerText = "Memverifikasi wajah langsung...";
-                        statusText.style.color = "#16a34a";
-                        if (livenessBadge) {
-                            livenessBadge.innerHTML = '<i class="fas fa-check-circle"></i> Memproses Wajah...';
-                            livenessBadge.style.background = '#dcfce7';
-                            livenessBadge.style.color = '#15803d';
-                        }
-                        await submitBiometric();
-                    };
-                }
 
                 async function submitBiometric() {
                     if (isSubmitted) return;
