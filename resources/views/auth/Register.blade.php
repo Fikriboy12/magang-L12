@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrasi - PT. MEDIA BALAI NUSA</title>
+    <title>Register - PT. MEDIA BALAI NUSA</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="icon" href="{{ asset('gambar/AMS-logo.png') }}" type="image/png">
@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="{{ asset('assets_admin/modules/fontawesome/css/all.min.css') }}">
 
     <style>
-        /* Ambient Light Tech: Harmonis Presisi dengan Halaman Login */
+        /* BACKGROUND GRADIENT SEPERTI LOGIN */
         body {
             background: radial-gradient(circle at 12% 18%, rgba(62, 204, 233, 0.22) 0%, transparent 45%),
                         radial-gradient(circle at 88% 82%, rgba(2, 132, 199, 0.18) 0%, transparent 45%),
@@ -23,98 +23,53 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 25px 15px;
+            padding: 30px 15px;
             font-family: 'Roboto', sans-serif;
             box-sizing: border-box;
         }
 
-        /* CARD REGISTER: Single-Column Berdimensi & Kompak */
+        /* CARD REGISTER: UKURAN SEMULA 500PX & PADDING 40PX DENGAN AKSEN LOGIN */
         .card-register {
             background: #ffffff;
-            border: 1px solid rgba(226, 232, 240, 0.9);
-            border-top: 4px solid #3ECCE9; /* Garis aksen Cyan Logo */
-            border-radius: 16px; 
-            padding: 28px 28px;
-            max-width: 480px;
+            border-radius: 15px; 
+            padding: 40px;
+            max-width: 500px;
             width: 100%;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-top: 4px solid #3ECCE9; /* Aksen Cyan Logo */
             box-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.12), 0 0 25px rgba(62, 204, 233, 0.12);
-            position: relative;
         }
 
         /* HEADER */
-        .register-header {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .register-header img {
-            width: 72px;
-            height: auto;
-            margin-bottom: 6px;
-            filter: drop-shadow(0 4px 10px rgba(62, 204, 233, 0.25));
-        }
-        .company-name {
-            font-size: 13px;
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 3px;
-            letter-spacing: 0.3px;
-        }
-        .company-name span {
-            color: #0284c7;
-            font-weight: 600;
-        }
         .register-header h4 {
             color: #0f172a;
             font-weight: 800;
-            font-size: 19px;
-            letter-spacing: -0.3px;
-            margin-bottom: 3px;
-        }
-        .register-header p {
-            color: #64748b;
-            font-size: 12px;
-            margin-bottom: 0;
+            letter-spacing: 0.5px;
         }
 
-        /* SECTION TITLE */
-        .section-title {
-            color: #0284c7;
-            font-weight: 700;
-            font-size: 13px;
-            border-bottom: 2px solid #e0f2fe;
-            padding-bottom: 4px;
-            margin-bottom: 11px;
-            margin-top: 16px;
-        }
-
-        /* FORM INPUT STANDAR */
-        .form-group {
-            margin-bottom: 11px;
-        }
+        /* FORM INPUT STANDAR: UKURAN SEMULA TINGGI 48PX */
         .form-group label {
             font-weight: 600;
             color: #334155;
-            font-size: 11.5px;
-            margin-bottom: 3px;
-            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
         }
 
         .form-control {
             border-radius: 8px;
             border: 1px solid #cbd5e1;
-            padding: 8px 12px;
-            height: 40px; 
-            font-size: 12.5px;
+            padding: 12px 15px;
+            height: 48px; 
+            font-size: 0.95rem;
             background: #f8fafc;
             color: #1e293b;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
         }
 
         .form-control:focus {
             background: #ffffff;
             border-color: #0284c7;
-            box-shadow: 0 0 0 3px rgba(62, 204, 233, 0.28);
-            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(62, 204, 233, 0.28);
         }
 
         /* TOGGLE PASSWORD */
@@ -122,19 +77,19 @@
             position: relative;
         }
         .password-field-wrapper input {
-            padding-right: 36px !important;
+            padding-right: 40px !important;
         }
         .password-field-wrapper .btn-toggle-eye {
             position: absolute;
             top: 50%;
-            right: 10px;
+            right: 12px;
             transform: translateY(-50%);
             cursor: pointer;
             color: #8fa0b5;
             background: transparent;
             border: none;
             padding: 4px;
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1;
             z-index: 5;
             transition: color 0.2s;
@@ -143,35 +98,35 @@
             color: #0284c7;
         }
 
-        /* TOMBOL KIRIM OTP (GRADASI SEPERTI LOGIN) */
+        /* TOMBOL KIRIM OTP (WARNA LOGIN) */
         .btn-otp {
             background: linear-gradient(135deg, #3ECCE9 0%, #0284c7 100%); 
             color: white;
             font-weight: 700;
             border: none;
             border-radius: 0 8px 8px 0 !important; 
-            padding: 0 16px;
-            font-size: 12px;
-            transition: all 0.2s;
+            padding: 0 20px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
         }
         .btn-otp:hover {
             background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); 
             color: white;
         }
         .btn-otp:disabled {
-            background: #94a3b8;
+            background-color: #6c757d;
+            border-color: #6c757d;
         }
 
         /* INPUT KODE OTP (4 DIGIT STYLE) */
         .otp-input-style {
             text-align: center;
-            letter-spacing: 12px; 
-            font-weight: 800;
-            font-size: 1.25rem; 
+            letter-spacing: 15px; 
+            font-weight: bold;
+            font-size: 1.4rem; 
             color: #0284c7;
-            background: #f0f9ff; 
+            background-color: #f0f9ff; 
             border: 1.5px dashed #0284c7;
-            height: 41px;
         }
         
         .otp-input-style:focus {
@@ -179,53 +134,33 @@
             border-color: #0284c7;
         }
 
-        /* KAMERA BIOMETRIK */
-        .camera-container-style {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-            max-width: 360px;
-            background: #0f172a;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 2px solid #0284c7;
-            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.15);
-        }
-        #video-webcam {
-            width: 100%;
-            height: 185px;
-            object-fit: cover;
-            display: block;
-        }
-
-        /* TOMBOL DAFTAR (GRADASI LOGIN) */
+        /* TOMBOL DAFTAR (WARNA GRADASI LOGIN) */
         .btn-register {
             background: linear-gradient(135deg, #3ECCE9 0%, #0284c7 100%);
             border: none;
             color: white;
             font-weight: 700;
-            padding: 11px;
-            border-radius: 9px;
+            padding: 12px;
+            border-radius: 50px;
             width: 100%;
-            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
             transition: all 0.3s;
-            font-size: 13.5px;
-            letter-spacing: 0.3px;
-            margin-top: 14px;
-            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.95rem;
+            margin-top: 20px;
         }
         .btn-register:hover {
-            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
             transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4);
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            box-shadow: 0 8px 20px rgba(2, 132, 199, 0.4);
             color: white;
         }
 
         .login-footer {
             text-align: center;
-            margin-top: 14px;
-            font-size: 12px;
-            color: #64748b;
+            margin-top: 20px;
+            font-size: 0.9rem;
         }
         .login-footer a {
             color: #0284c7;
@@ -236,6 +171,20 @@
             color: #0369a1;
             text-decoration: underline;
         }
+        
+        textarea.form-control {
+            height: 100px !important;
+            resize: none;
+        }
+
+        .section-title {
+            color: #0284c7;
+            font-weight: bold;
+            border-bottom: 2px solid #3ECCE9;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            margin-top: 30px;
+        }
     </style>
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -245,29 +194,23 @@
 <body>
     
     <div class="card-register">
-        <div class="register-header">
-             <img src="{{ asset('gambar/ANMS-logo.png') }}" alt="logo">
-             <div class="company-name">PT. MEDIA BALAI NUSA <span>astro net</span></div>
-             <h4>Form Registrasi Akun Siswa</h4>
-             <p>Silakan lengkapi data diri Anda dan verifikasi wajah</p>
+        <div class="text-center mb-4 register-header">
+             <img src="{{ asset('gambar/ANMS-logo.png') }}" alt="logo" width="90">
+             <div class="company-name" style="font-size: 13.5px; font-weight: 700; color: #0f172a; margin-top: 6px; margin-bottom: 2px;">PT. MEDIA BALAI NUSA <span style="color: #0284c7; font-weight: 600;">astro net</span></div>
+             <h4 class="mt-2">Form Registrasi Akun Siswa</h4>
+             <p class="text-muted small">Silakan lengkapi data diri Anda dan verifikasi wajah</p>
         </div>
 
         @if(session('success'))
-            <div class="alert alert-success text-center py-3" style="border-radius: 8px; font-size: 13px;">
-                <i class="fas fa-check-circle mr-1"></i> <strong>Berhasil!</strong> {{ session('success') }} <br>
-                <a href="{{ route('login') }}" class="btn btn-sm btn-primary mt-2 font-weight-bold" style="background: #0284c7; border: none; padding: 6px 16px;">Login Sekarang</a>
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="alert alert-danger py-2" style="border-radius: 8px; font-size: 12px;">
-                <i class="fas fa-exclamation-circle mr-1"></i> {{ session('error') }}
+            <div class="alert alert-success text-center">
+                <strong>Berhasil!</strong> {{ session('success') }} <br>
+                <a href="{{ route('login') }}" class="btn btn-sm btn-primary mt-2" style="background: #0284c7; border: none;">Login Sekarang</a>
             </div>
         @endif
 
         @if ($errors->any())
-            <div class="alert alert-danger py-2" style="border-radius: 8px; font-size: 12px;">
-                <ul class="mb-0 pl-3">
+            <div class="alert alert-danger">
+                <ul class="mb-0 small pl-3">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -279,35 +222,35 @@
         <form method="POST" action="{{ route('register.store') }}" id="registerForm">
             @csrf
 
-            <h5 class="section-title"><i class="fas fa-id-card mr-1"></i> Data Akun</h5>
+            <h5 class="section-title">Data Akun</h5>
 
             <div class="form-group">
                 <label>Nama Lengkap</label>
-                <input type="text" name="nama_lengkap" class="form-control" placeholder="Nama Lengkap sesuai data sekolah" value="{{ old('nama_lengkap') }}" required>
+                <input type="text" name="nama_lengkap" class="form-control" placeholder="Nama Lengkap" value="{{ old('nama_lengkap') }}" required>
             </div>
 
             <div class="form-group">
                 <label>Email Siswa</label>
                 <div class="input-group">
-                    <input type="email" name="email" id="emailInput" class="form-control" placeholder="contoh@gmail.com" value="{{ old('email') }}" required style="border-radius: 8px 0 0 8px;">
+                    <input type="email" name="email" id="emailInput" class="form-control" placeholder="contoh@email.com" value="{{ old('email') }}" required style="border-radius: 8px 0 0 8px;">
                     <div class="input-group-append">
                         <button type="button" class="btn btn-otp" id="btnKirimOtp">
                             Kirim OTP
                         </button>
                     </div>
                 </div>
-                <small class="text-muted d-block mt-1" id="otpStatus" style="font-size: 11px; line-height: 1.3;">
-                    <i class="fas fa-info-circle text-info"></i> Klik <b>Kirim OTP</b> untuk menerima kode verifikasi di Gmail Anda.
+                <small class="text-muted d-block mt-1" id="otpStatus" style="font-size: 12px;">
+                    <i class="fas fa-info-circle text-info"></i> Klik <b>Kirim OTP</b> untuk menerima kode verifikasi di Gmail Anda (periksa juga folder Spam).
                 </small>
             </div>
 
             <div class="form-group">
                 <label>Kode Verifikasi (OTP)</label>
-                <input type="number" name="otp_input" class="form-control otp-input-style" placeholder="0 0 0 0" maxlength="4" required>
+                <input type="number" name="otp_input" class="form-control otp-input-style" placeholder="0000" maxlength="4" required>
             </div>
 
             <div class="row">
-                <div class="col-6 pr-1">
+                <div class="col-6">
                     <div class="form-group mb-1">
                         <label>Password</label>
                         <div class="password-field-wrapper">
@@ -318,20 +261,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6 pl-1">
+                <div class="col-6">
                     <div class="form-group mb-1">
                         <label>Konfirmasi Password</label>
                         <div class="password-field-wrapper">
                             <input type="password" name="password_confirmation" id="reg_password_confirmation" class="form-control" placeholder="Ulangi" required>
-                            <button type="button" class="btn-toggle-eye" onclick="toggleRegPassword('reg_password_confirmation', this)" title="Tampilkan Konfirmasi">
+                            <button type="button" class="btn-toggle-eye" onclick="toggleRegPassword('reg_password_confirmation', this)" title="Tampilkan Konfirmasi Password">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <small class="text-muted d-block mb-2" style="font-size: 10.5px;">
-                <i class="fas fa-shield-alt text-info"></i> Minimal 8 karakter, wajib kombinasi huruf dan angka.
+            <small class="text-muted d-block mb-3" style="font-size: 11px;">
+                <i class="fas fa-info-circle text-info"></i> Minimal 8 karakter, wajib kombinasi huruf dan angka.
             </small>
 
             <div class="form-group">
@@ -339,30 +282,31 @@
                 <input type="number" name="no_hp_siswa" class="form-control" placeholder="08xxxxxxxxxx" value="{{ old('no_hp_siswa') }}" required>
             </div>
 
-            <h5 class="section-title"><i class="fas fa-camera mr-1"></i> Verifikasi Biometrik</h5>
+            <h5 class="section-title">Verifikasi Biometrik</h5>
 
             <div class="form-group text-center">
-                <div class="camera-container-style">
-                    <video id="video-webcam" autoplay muted playsinline></video>
+                {{-- KAMERA UKURAN BESAR ASLI --}}
+                <div style="position: relative; display: inline-block; width: 100%; max-width: 380px; background: #e9ecef; border-radius: 8px; overflow: hidden; border: 2px solid #0284c7; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
+                    <video id="video-webcam" style="width: 100%; height: auto; display: block;" autoplay muted playsinline></video>
                     <canvas id="overlay-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none;"></canvas>
                 </div>
 
                 {{-- Status Bar 68 Landmark & Pose Menghadap Depan --}}
-                <div style="display: flex; justify-content: space-between; align-items: center; max-width: 360px; margin: 8px auto 0; padding: 5px 10px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 11px;">
-                    <span id="landmark-badge" style="background: #e2e8f0; color: #475569; padding: 2px 7px; border-radius: 10px; font-weight: 700;">
+                <div style="display: flex; justify-content: space-between; align-items: center; max-width: 380px; margin: 8px auto 0; padding: 6px 12px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 11.5px;">
+                    <span id="landmark-badge" style="background: #e2e8f0; color: #475569; padding: 3px 8px; border-radius: 12px; font-weight: 700;">
                         <i class="fas fa-dot-circle"></i> Landmark: <span id="landmark-count-text">--/68 Titik</span>
                     </span>
-                    <span id="pose-badge" style="background: #e2e8f0; color: #475569; padding: 2px 7px; border-radius: 10px; font-weight: 700;">
+                    <span id="pose-badge" style="background: #e2e8f0; color: #475569; padding: 3px 8px; border-radius: 12px; font-weight: 700;">
                         <i class="fas fa-user"></i> Pose: Menunggu...
                     </span>
                 </div>
                 
-                <p id="biometric-status" class="mt-2 text-danger font-weight-bold" style="font-size: 11.5px; line-height: 1.3;">
+                <p id="biometric-status" class="mt-2 text-danger font-weight-bold" style="font-size: 12px; line-height: 1.4;">
                     Posisikan wajah Anda tepat di depan kamera menghadap lurus...
                 </p>
 
-                <button type="button" class="btn btn-outline-info mt-1 font-weight-bold" id="btn-capture-face" style="border-radius: 8px; font-size: 12px; padding: 7px 16px; border: 1.5px solid #0284c7; color: #0284c7; background: #f0f9ff;">
-                    <i class="fas fa-camera mr-1"></i> Ambil Foto Wajah (Biometrik)
+                <button type="button" class="btn btn-outline-info mt-1 font-weight-bold" id="btn-capture-face" style="border-color: #0284c7; color: #0284c7;">
+                    <i class="fas fa-camera"></i> Ambil Foto Wajah (Biometrik)
                 </button>
 
                 <input type="hidden" name="face_descriptor" id="face_descriptor">
@@ -373,7 +317,7 @@
             </button>
 
             <div class="login-footer">
-                Sudah punya akun? <a href="{{ url('login') }}">Login di sini</a> | <a href="{{ url('/') }}">Beranda</a>
+                Sudah punya akun? <a href="{{ url('login') }}">Login Disini</a>
             </div>
 
         </form>
@@ -611,7 +555,7 @@
             if (detectionStarted) return;
             detectionStarted = true;
 
-            const displaySize = { width: video.videoWidth || 320, height: video.videoHeight || 185 };
+            const displaySize = { width: video.videoWidth || 320, height: video.videoHeight || 240 };
             faceapi.matchDimensions(canvas, displaySize);
 
             scanInterval = setInterval(async () => {
@@ -655,9 +599,10 @@
 
                         if (!faceDescriptorInput.value) {
                             statusText.innerHTML = '<span class="text-success font-weight-bold"><i class="fas fa-check-circle"></i> ' + pose.reason + '. Silakan klik <b>Ambil Foto Wajah</b>!</span>';
+                            captureBtn.className = "btn btn-info mt-1 font-weight-bold shadow-sm";
                             captureBtn.style.background = "#0284c7";
-                            captureBtn.style.color = "#ffffff";
                             captureBtn.style.borderColor = "#0284c7";
+                            captureBtn.style.color = "#ffffff";
                         }
                     } else {
                         poseBadge.style.background = '#fef3c7';
@@ -672,9 +617,10 @@
 
                         if (!faceDescriptorInput.value) {
                             statusText.innerHTML = '<span class="text-warning font-weight-bold"><i class="fas fa-exclamation-triangle"></i> ' + pose.reason + '</span>';
-                            captureBtn.style.background = "#f0f9ff";
-                            captureBtn.style.color = "#0284c7";
-                            captureBtn.style.borderColor = "#0284c7";
+                            captureBtn.className = "btn btn-outline-secondary mt-1 font-weight-bold";
+                            captureBtn.style.background = "transparent";
+                            captureBtn.style.borderColor = "#6c757d";
+                            captureBtn.style.color = "#6c757d";
                         }
                     }
                 } else {
@@ -691,9 +637,10 @@
                     }
                     if (!faceDescriptorInput.value) {
                         statusText.innerHTML = '<span class="text-danger font-weight-bold"><i class="fas fa-user-times"></i> Posisikan wajah Anda tepat di depan kamera menghadap lurus...</span>';
-                        captureBtn.style.background = "#f0f9ff";
-                        captureBtn.style.color = "#0284c7";
+                        captureBtn.className = "btn btn-outline-info mt-1 font-weight-bold";
+                        captureBtn.style.background = "transparent";
                         captureBtn.style.borderColor = "#0284c7";
+                        captureBtn.style.color = "#0284c7";
                     }
                 }
             }, 120);
@@ -710,10 +657,11 @@
                 isCaptured = false;
                 faceDescriptorInput.value = "";
                 statusText.innerHTML = '<span class="text-info font-weight-bold">Posisikan wajah Anda tepat di depan kamera menghadap lurus...</span>';
-                captureBtn.innerHTML = '<i class="fas fa-camera mr-1"></i> Ambil Foto Wajah (Biometrik)';
-                captureBtn.style.background = "#f0f9ff";
-                captureBtn.style.color = "#0284c7";
+                captureBtn.innerHTML = '<i class="fas fa-camera"></i> Ambil Foto Wajah (Biometrik)';
+                captureBtn.className = "btn btn-outline-info mt-1 font-weight-bold";
+                captureBtn.style.background = "transparent";
                 captureBtn.style.borderColor = "#0284c7";
+                captureBtn.style.color = "#0284c7";
                 return;
             }
 
@@ -729,7 +677,7 @@
             }
 
             captureBtn.disabled = true;
-            captureBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Mengekstrak 68 Landmark...';
+            captureBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengekstrak 68 Landmark...';
 
             try {
                 const fullDetection = await faceapi.detectSingleFace(video).withFaceLandmarks().withFaceDescriptor();
@@ -738,9 +686,9 @@
                     isCaptured = true;
                     faceDescriptorInput.value = JSON.stringify(Array.from(fullDetection.descriptor));
 
-                    statusText.innerHTML = '<span class="text-success font-weight-bold"><i class="fas fa-check-double mr-1"></i> Wajah Berhasil Diverifikasi (68 Titik Frontal)!</span>';
+                    statusText.innerHTML = '<span class="text-success font-weight-bold"><i class="fas fa-check-double"></i> Wajah Berhasil Diverifikasi & Disimpan (68 Titik Frontal)!</span>';
 
-                    const displaySize = { width: video.videoWidth || 320, height: video.videoHeight || 185 };
+                    const displaySize = { width: video.videoWidth || 320, height: video.videoHeight || 240 };
                     faceapi.matchDimensions(canvas, displaySize);
                     const resizedDetection = faceapi.resizeResults(fullDetection, displaySize);
                     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
@@ -753,19 +701,20 @@
                     faceapi.draw.drawFaceLandmarks(canvas, resizedDetection);
 
                     captureBtn.disabled = false;
-                    captureBtn.innerHTML = '<i class="fas fa-undo mr-1"></i> Ambil Ulang Foto Wajah';
+                    captureBtn.innerHTML = '<i class="fas fa-undo"></i> Ambil Ulang Foto Wajah';
+                    captureBtn.className = "btn btn-outline-warning mt-1 font-weight-bold";
                     captureBtn.style.background = "#fef3c7";
-                    captureBtn.style.color = "#b45309";
                     captureBtn.style.borderColor = "#f59e0b";
+                    captureBtn.style.color = "#b45309";
                 } else {
                     captureBtn.disabled = false;
-                    captureBtn.innerHTML = '<i class="fas fa-camera mr-1"></i> Ambil Foto Wajah (Biometrik)';
+                    captureBtn.innerHTML = '<i class="fas fa-camera"></i> Ambil Foto Wajah (Biometrik)';
                     alert("Gagal membaca deskriptor wajah. Silakan coba kembali menghadap kamera.");
                 }
             } catch (err) {
                 console.error("Gagal ekstrak descriptor:", err);
                 captureBtn.disabled = false;
-                captureBtn.innerHTML = '<i class="fas fa-camera mr-1"></i> Ambil Foto Wajah (Biometrik)';
+                captureBtn.innerHTML = '<i class="fas fa-camera"></i> Ambil Foto Wajah (Biometrik)';
                 alert("Terjadi kesalahan saat mengekstrak fitur wajah.");
             }
         });
