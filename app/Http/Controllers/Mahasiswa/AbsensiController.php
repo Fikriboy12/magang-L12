@@ -12,7 +12,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class AbsensiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $userId = Auth::id();
         
@@ -31,10 +31,28 @@ class AbsensiController extends Controller
                                 ->where('tgl_absen', $hariIni)
                                 ->first();
 
-        // 3. Ambil History Absen
-        $riwayat = Absensi::where('id_users', $userId)->orderBy('tgl_absen', 'desc')->get();
+        // 3. Query History Absen dengan Pencarian & Paginasi 10 Data
+        $search = trim($request->get('search', ''));
+        
+        $baseQuery = Absensi::where('id_users', $userId);
+        
+        // Total seluruh hari hadir (untuk badge info)
+        $totalHadir = (clone $baseQuery)->count();
 
-        return view('mahasiswa.absensi.index', compact('absenHariIni', 'riwayat'));
+        $query = (clone $baseQuery);
+        if ($search !== '') {
+            $query->where(function($q) use ($search) {
+                $q->where('tgl_absen', 'like', "%{$search}%")
+                  ->orWhere('jam_masuk', 'like', "%{$search}%")
+                  ->orWhere('jam_keluar', 'like', "%{$search}%")
+                  ->orWhere('keterangan', 'like', "%{$search}%")
+                  ->orWhere('status', 'like', "%{$search}%");
+            });
+        }
+
+        $riwayat = $query->orderBy('tgl_absen', 'desc')->paginate(10)->withQueryString();
+
+        return view('mahasiswa.absensi.index', compact('absenHariIni', 'riwayat', 'totalHadir', 'search'));
     }
 
     /**

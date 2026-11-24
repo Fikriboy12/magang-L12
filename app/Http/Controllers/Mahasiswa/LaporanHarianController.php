@@ -12,21 +12,42 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class LaporanHarianController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // 1. Ambil ID User yang sedang login
         $userId = Auth::id();
 
-        // 2. Ambil data laporan milik user tersebut
-        // PENTING: Menggunakan 'user_id' sesuai screenshot database Anda
-        $laporan = LaporanHarian::where('user_id', $userId)
-                    ->orderBy('tanggal', 'desc')
-                    ->get();
+        $search = trim($request->get('search', ''));
 
-        // DEBUG: Jika data tetap kosong, uncomment baris bawah ini untuk cek ID user
-        // dd("ID Login: " . $userId, "Data Laporan:", $laporan);
+        // 2. Hitung Metrik Statistik Keseluruhan Data User
+        $baseQuery = LaporanHarian::where('user_id', $userId);
+        
+        $totalLaporan = (clone $baseQuery)->count();
+        $approvedLaporan = (clone $baseQuery)->where('status', 'approved')->count();
+        $pendingLaporan = (clone $baseQuery)->where('status', 'pending')->count();
+        $rejectedLaporan = (clone $baseQuery)->where('status', 'rejected')->count();
 
-        return view('mahasiswa.laporan_harian.index', compact('laporan'));
+        // 3. Query Laporan dengan Pencarian & Paginasi 10 Data
+        $query = (clone $baseQuery);
+        if ($search !== '') {
+            $query->where(function($q) use ($search) {
+                $q->where('tanggal', 'like', "%{$search}%")
+                  ->orWhere('kegiatan', 'like', "%{$search}%")
+                  ->orWhere('catatan', 'like', "%{$search}%")
+                  ->orWhere('status', 'like', "%{$search}%");
+            });
+        }
+
+        $laporan = $query->orderBy('tanggal', 'desc')->paginate(10)->withQueryString();
+
+        return view('mahasiswa.laporan_harian.index', compact(
+            'laporan',
+            'totalLaporan',
+            'approvedLaporan',
+            'pendingLaporan',
+            'rejectedLaporan',
+            'search'
+        ));
     }
 
     public function create()

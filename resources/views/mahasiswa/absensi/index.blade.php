@@ -199,7 +199,7 @@
         font-family: 'Plus Jakarta Sans', monospace;
     }
 
-    /* 4. TABEL RIWAYAT */
+    /* 4. TABEL RIWAYAT DENGAN SEARCH & PAGINASI */
     .card-table-absensi {
         background: #ffffff;
         border: 1px solid rgba(226, 232, 240, 0.9);
@@ -209,14 +209,14 @@
         overflow: hidden;
     }
     .card-table-header {
-        padding: 22px 28px;
+        padding: 20px 26px;
         background: #ffffff;
         border-bottom: 1px solid #f1f5f9;
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 12px;
+        gap: 14px;
     }
     .card-table-header h5 {
         margin: 0;
@@ -227,17 +227,123 @@
         align-items: center;
         gap: 10px;
     }
+
+    /* FORM PENCARIAN MODERN */
+    .header-actions-wrapper {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .search-form-modern {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+    }
+    .search-input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+    .search-icon {
+        position: absolute;
+        left: 14px;
+        color: #0284c7;
+        font-size: 13px;
+        pointer-events: none;
+    }
+    .search-input-control {
+        background: #f8fafc;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 50px;
+        padding: 8px 36px 8px 38px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #1e293b;
+        width: 250px;
+        transition: all 0.25s ease;
+        outline: none;
+    }
+    .search-input-control:focus {
+        background: #ffffff;
+        border-color: #0284c7;
+        box-shadow: 0 0 0 3px rgba(62, 204, 233, 0.25);
+        width: 290px;
+    }
+    .search-clear-btn {
+        position: absolute;
+        right: 12px;
+        color: #94a3b8;
+        font-size: 14px;
+        text-decoration: none !important;
+        transition: color 0.2s;
+    }
+    .search-clear-btn:hover {
+        color: #ef4444;
+    }
+    .btn-search-submit {
+        background: linear-gradient(135deg, #3ECCE9 0%, #0284c7 100%);
+        color: #ffffff;
+        border: none;
+        border-radius: 50px;
+        padding: 8px 18px;
+        font-size: 13px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+        transition: all 0.25s;
+        cursor: pointer;
+    }
+    .btn-search-submit:hover {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 15px rgba(2, 132, 199, 0.35);
+    }
     .badge-data-pill {
         background: #f0f9ff;
         color: #0284c7;
         border: 1px solid #bae6fd;
-        padding: 6px 14px;
+        padding: 8px 16px;
         border-radius: 50px;
         font-size: 12px;
         font-weight: 700;
         display: inline-flex;
         align-items: center;
         gap: 6px;
+        white-space: nowrap;
+    }
+
+    /* BAR FILTER PENCARIAN AKTIF */
+    .search-active-bar {
+        background: #f0f9ff;
+        border-bottom: 1px solid #bae6fd;
+        padding: 10px 26px;
+        font-size: 13px;
+        color: #0369a1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .btn-reset-filter {
+        background: #ffffff;
+        color: #0284c7 !important;
+        border: 1px solid #bae6fd;
+        padding: 4px 14px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none !important;
+        transition: all 0.2s;
+    }
+    .btn-reset-filter:hover {
+        background: #ef4444;
+        color: #ffffff !important;
+        border-color: #ef4444;
     }
 
     .table-absensi {
@@ -296,6 +402,55 @@
         transform: scale(1.1);
         box-shadow: 0 6px 14px rgba(2, 132, 199, 0.25);
         border-color: #0284c7;
+    }
+
+    /* FOOTER TABEL: PAGINASI & INFO */
+    .card-table-footer {
+        padding: 16px 26px;
+        background: #ffffff;
+        border-top: 1px solid #f1f5f9;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+    .pagination-info {
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    /* STYLING MODERN UNTUK LARAVEL PAGINATION */
+    .pagination {
+        margin-bottom: 0;
+        gap: 5px;
+    }
+    .page-item .page-link {
+        border-radius: 8px !important;
+        border: 1.5px solid #e2e8f0;
+        color: #334155;
+        font-weight: 700;
+        font-size: 13px;
+        padding: 6px 13px;
+        transition: all 0.2s ease;
+        background: #ffffff;
+    }
+    .page-item .page-link:hover {
+        background: #e0f2fe;
+        color: #0284c7;
+        border-color: #bae6fd;
+        transform: translateY(-1px);
+    }
+    .page-item.active .page-link {
+        background: linear-gradient(135deg, #3ECCE9 0%, #0284c7 100%) !important;
+        border-color: #0284c7 !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+    .page-item.disabled .page-link {
+        background: #f8fafc;
+        color: #94a3b8;
+        border-color: #f1f5f9;
     }
 
     /* EMPTY STATE */
@@ -445,16 +600,48 @@
             </div>
         </div>
 
-        {{-- 4. TABEL RIWAYAT KEHADIRAN DENGAN BORDER-TOP CYAN --}}
+        {{-- 4. TABEL RIWAYAT KEHADIRAN DENGAN FITUR PENCARIAN & PAGINASI 10 DATA --}}
         <div class="card-table-absensi">
             <div class="card-table-header">
                 <h5>
                     <i class="fa-solid fa-list-check" style="color: #0284c7;"></i> Log Rekapitulasi Kehadiran
                 </h5>
-                <span class="badge-data-pill">
-                    Total: <strong>{{ $riwayat->count() }} Hari Hadir</strong>
-                </span>
+                
+                <div class="header-actions-wrapper">
+                    {{-- Form Pencarian Modern --}}
+                    <form method="GET" action="{{ route('mahasiswa.absensi.index') }}" class="search-form-modern">
+                        <div class="search-input-wrapper">
+                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                            <input type="text" name="search" value="{{ $search ?? '' }}" class="search-input-control" placeholder="Cari tanggal, status, jam...">
+                            @if(!empty($search))
+                                <a href="{{ route('mahasiswa.absensi.index') }}" class="search-clear-btn" title="Hapus pencarian">
+                                    <i class="fa-solid fa-circle-xmark"></i>
+                                </a>
+                            @endif
+                        </div>
+                        <button type="submit" class="btn-search-submit">
+                            <i class="fa-solid fa-magnifying-glass"></i> Cari
+                        </button>
+                    </form>
+
+                    <span class="badge-data-pill">
+                        Total: <strong>{{ $totalHadir ?? $riwayat->total() }} Hari Hadir</strong>
+                    </span>
+                </div>
             </div>
+
+            {{-- Bar Notifikasi Pencarian Aktif --}}
+            @if(!empty($search))
+                <div class="search-active-bar">
+                    <div>
+                        <i class="fa-solid fa-filter text-info mr-1"></i>
+                        Menampilkan hasil pencarian untuk: <strong>"{{ $search }}"</strong> &bull; Ditemukan: <strong>{{ $riwayat->total() }} data</strong>
+                    </div>
+                    <a href="{{ route('mahasiswa.absensi.index') }}" class="btn-reset-filter">
+                        <i class="fa-solid fa-rotate-left mr-1"></i> Tampilkan Semua
+                    </a>
+                </div>
+            @endif
 
             <div class="table-responsive">
                 <table class="table table-absensi mb-0">
@@ -474,7 +661,7 @@
                             <tr>
                                 <td class="text-center font-weight-bold text-muted">
                                     <span style="display: inline-block; width: 26px; height: 26px; line-height: 26px; background: #e0f2fe; color: #0284c7; border-radius: 50%; font-size: 12px; font-weight: 700;">
-                                        {{ $loop->iteration }}
+                                        {{ ($riwayat->currentPage() - 1) * $riwayat->perPage() + $loop->iteration }}
                                     </span>
                                 </td>
                                 
@@ -552,10 +739,22 @@
                                 <td colspan="7" class="p-0">
                                     <div class="empty-state-card">
                                         <div class="empty-state-icon-box">
-                                            <i class="fa-solid fa-calendar-xmark"></i>
+                                            @if(!empty($search))
+                                                <i class="fa-solid fa-magnifying-glass"></i>
+                                            @else
+                                                <i class="fa-solid fa-calendar-xmark"></i>
+                                            @endif
                                         </div>
-                                        <h5 class="font-weight-bold text-dark mb-2" style="font-size: 18px;">Belum Ada Riwayat Absensi</h5>
-                                        <p class="text-muted small mb-0" style="max-width: 480px; margin: 0 auto;">Lakukan absensi selfie masuk dan pulang setiap hari melalui <strong>Aplikasi Mobile Magang (APK)</strong> untuk mencatat riwayat kehadiran Anda.</p>
+                                        @if(!empty($search))
+                                            <h5 class="font-weight-bold text-dark mb-2" style="font-size: 18px;">Tidak Ada Data yang Cocok</h5>
+                                            <p class="text-muted small mb-3" style="max-width: 480px; margin: 0 auto;">Tidak ditemukan riwayat absensi yang cocok dengan kata kunci <strong>"{{ $search }}"</strong>.</p>
+                                            <a href="{{ route('mahasiswa.absensi.index') }}" class="btn btn-sm btn-outline-primary" style="border-radius: 50px; font-weight: 700; padding: 6px 18px;">
+                                                <i class="fa-solid fa-rotate-left mr-1"></i> Reset Pencarian
+                                            </a>
+                                        @else
+                                            <h5 class="font-weight-bold text-dark mb-2" style="font-size: 18px;">Belum Ada Riwayat Absensi</h5>
+                                            <p class="text-muted small mb-0" style="max-width: 480px; margin: 0 auto;">Lakukan absensi selfie masuk dan pulang setiap hari melalui <strong>Aplikasi Mobile Magang (APK)</strong> untuk mencatat riwayat kehadiran Anda.</p>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -563,6 +762,18 @@
                     </tbody>
                 </table>
             </div>
+
+            {{-- 5. FOOTER TABEL: PAGINASI 10 DATA & KETERANGAN --}}
+            @if($riwayat->total() > 0)
+                <div class="card-table-footer">
+                    <div class="pagination-info">
+                        Menampilkan <span class="font-weight-bold text-dark">{{ $riwayat->firstItem() }}</span> - <span class="font-weight-bold text-dark">{{ $riwayat->lastItem() }}</span> dari <span class="font-weight-bold text-dark">{{ $riwayat->total() }}</span> data (Maks. 10 per halaman)
+                    </div>
+                    <div>
+                        {{ $riwayat->links() }}
+                    </div>
+                </div>
+            @endif
         </div>
 
     </div>
