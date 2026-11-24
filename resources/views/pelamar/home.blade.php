@@ -69,39 +69,39 @@
 
     /* CARD SLIDER */
     .slider-glass-card {
-        background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); 
-        border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 30px;
-        width: 90%; max-width: 700px; min-height: 500px; padding: 60px 40px;
+        background: rgba(15, 23, 42, 0.22); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.28); border-radius: 26px;
+        width: 90%; max-width: 760px; min-height: auto; padding: 48px 36px;
         display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-        box-shadow: 0 30px 60px rgba(0,0,0,0.5); animation: cardZoom 0.8s ease-out;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.5); animation: cardZoom 0.8s ease-out;
     }
     @keyframes cardZoom { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     .title1-hero {
-        font-size: 16px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #00c6fb;
-        margin-bottom: 25px; display: inline-block; background: rgba(0, 198, 251, 0.15); padding: 10px 30px; border-radius: 50px; border: 1px solid rgba(0, 198, 251, 0.5);
+        font-size: 13px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #00c6fb;
+        margin-bottom: 20px; display: inline-block; background: rgba(0, 198, 251, 0.15); padding: 8px 24px; border-radius: 50px; border: 1px solid rgba(0, 198, 251, 0.45);
     }
     .title2-hero {
-        font-size: 48px; font-weight: 800; color: #ffffff; line-height: 1.22; margin-bottom: 35px; text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+        font-size: 40px; font-weight: 800; color: #ffffff; line-height: 1.3; margin-bottom: 30px; letter-spacing: -0.3px; text-shadow: 0 4px 18px rgba(0,0,0,0.6);
     }
     .btn-action-wrapper { 
-        display: flex; justify-content: center; align-items: center; gap: 14px; width: 100%; max-width: 480px; flex-wrap: wrap; margin-top: auto; 
+        display: flex; justify-content: center; align-items: center; gap: 16px; width: 100%; max-width: 450px; flex-wrap: wrap; margin-top: auto; 
     }
     .btn-world-class {
         background: linear-gradient(135deg, #005bea 0%, #00c6fb 100%); border: none; color: white !important; 
         padding: 12px 28px; border-radius: 50px; font-size: 13.5px;
         font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; text-decoration: none; 
         display: inline-flex; align-items: center; justify-content: center; min-width: 160px;
-        box-shadow: 0 8px 25px -4px rgba(0, 91, 234, 0.5); transition: all 0.3s ease;
+        box-shadow: 0 8px 25px -4px rgba(0, 91, 234, 0.45); transition: all 0.3s ease;
     }
-    .btn-world-class:hover { transform: translateY(-3px); box-shadow: 0 15px 30px -4px rgba(0, 91, 234, 0.7); }
+    .btn-world-class:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -4px rgba(0, 91, 234, 0.65); }
     .btn-glass-outline {
-        background: rgba(255, 255, 255, 0.12); border: 2px solid rgba(255, 255, 255, 0.85); color: #fff !important; 
-        padding: 10px 28px; border-radius: 50px; font-size: 13.5px;
+        background: rgba(255, 255, 255, 0.12); border: 1.5px solid rgba(255, 255, 255, 0.8); color: #fff !important; 
+        padding: 11px 28px; border-radius: 50px; font-size: 13.5px;
         font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; text-decoration: none; 
         display: inline-flex; align-items: center; justify-content: center; min-width: 160px;
         backdrop-filter: blur(8px); transition: all 0.3s ease;
     }
-    .btn-glass-outline:hover { background: #fff; color: #005bea !important; transform: translateY(-3px); }
+    .btn-glass-outline:hover { background: #fff; color: #005bea !important; transform: translateY(-2px); }
 
     /* 4. CONTENT STYLE (FIXED) */
     .glass-card {
@@ -172,32 +172,42 @@
     @media (max-width: 768px) {
         .slider-area, .nivoSlider img { height: 100vh !important; }
         .slider-glass-card { 
-            width: 90% !important; 
-            max-width: 380px !important;
-            padding: 35px 20px !important; 
+            width: 92% !important; 
+            max-width: 420px !important;
+            padding: 36px 20px !important; 
             min-height: auto !important; 
             height: auto !important; 
         }
         .title1-hero { 
-            font-size: 12px !important; 
-            padding: 7px 18px !important; 
-            margin-bottom: 15px !important; 
+            font-size: 11px !important; 
+            padding: 6px 18px !important; 
+            margin-bottom: 16px !important; 
+            letter-spacing: 1.5px !important;
         }
         .title2-hero { 
-            font-size: 33px !important; 
-            line-height: 1.25 !important; 
+            font-size: 26px !important; 
+            line-height: 1.3 !important; 
             font-weight: 800 !important;
-            margin-bottom: 0 !important; 
+            margin-bottom: 24px !important; 
         }
         .btn-action-wrapper { 
             width: 100% !important; 
-            margin-top: 25px !important; 
+            margin-top: 15px !important; 
+            gap: 10px !important;
+        }
+        .btn-world-class, .btn-glass-outline {
+            min-width: 130px !important;
+            font-size: 12px !important;
+            padding: 10px 18px !important;
         }
         .glass-card { padding: 25px; margin-bottom: 20px; }
     }
 
-    @media (max-width: 380px) {
-        .title2-hero { font-size: 27px !important; }
+    @media (max-width: 400px) {
+        .title2-hero { font-size: 22px !important; }
+        .btn-world-class, .btn-glass-outline {
+            width: 100% !important;
+        }
     }
 </style>
 
@@ -209,14 +219,19 @@
         <img src="{{ asset('assets') }}/img/slider/banner3.jpg" alt="" title="#slider-direction-3" />
       </div>
       <div class="slider-overlay"></div>
+      
+      {{-- SLIDE 1 --}}
       <div id="slider-direction-1" class="slider-direction slider-one">
         <div class="container">
           <div class="row">
             <div class="col-md-12">
-              <div class="slider-content">
+              <div class="slider-content text-center">
                 <div class="slider-glass-card">
                     <span class="title1-hero">PT Media Balai Nusa</span>
-                    <h1 class="title2-hero">Selamat Datang di <br> <span style="color: #00c6fb;">PT.MEDIA BALAI NUSA astro net</span></h1>
+                    <h1 class="title2-hero">
+                        Selamat Datang di <br> 
+                        <span style="color: #00c6fb;">PT. MEDIA BALAI NUSA <br> astro net</span>
+                    </h1>
                     <div class="btn-action-wrapper">
                       <a class="btn-world-class ready-btn right-btn page-scroll" href="{{ url('registrasi') }}">REGISTRASI</a>
                       <a class="btn-glass-outline ready-btn page-scroll" href="#contact">CONTACT US</a>
@@ -227,6 +242,8 @@
           </div>
         </div>
       </div>
+
+      {{-- SLIDE 2 --}}
       <div id="slider-direction-2" class="slider-direction slider-two">
         <div class="container">
           <div class="row">
@@ -234,7 +251,10 @@
               <div class="slider-content text-center">
                 <div class="slider-glass-card">
                     <span class="title1-hero">PENGALAMAN KERJA NYATA</span>
-                    <h1 class="title2-hero">Bangun Pengalaman Kerja <br> <span style="color: #00c6fb;">Wujudkan Masa Depan Gemilang</span></h1>
+                    <h1 class="title2-hero">
+                        Bangun Pengalaman Kerja <br> 
+                        <span style="color: #00c6fb;">Raih Masa Depan Gemilang</span>
+                    </h1>
                     <div class="btn-action-wrapper">
                       <a class="btn-world-class ready-btn right-btn page-scroll" href="{{ url('registrasi') }}">REGISTRASI</a>
                       <a class="btn-glass-outline ready-btn page-scroll" href="#contact">CONTACT US</a>
@@ -245,14 +265,19 @@
           </div>
         </div>
       </div>
+
+      {{-- SLIDE 3 --}}
       <div id="slider-direction-3" class="slider-direction slider-three">
         <div class="container">
           <div class="row">
             <div class="col-md-12">
-              <div class="slider-content">
+              <div class="slider-content text-center">
                 <div class="slider-glass-card">
                     <span class="title1-hero">KOLABORASI & TEKNOLOGI</span>
-                    <h1 class="title2-hero">Asah Keahlian Praktis <br> <span style="color: #00c6fb;">Bersama Mentor Profesional</span></h1>
+                    <h1 class="title2-hero">
+                        Asah Keahlian Praktis <br> 
+                        <span style="color: #00c6fb;">Bersama Mentor Profesional</span>
+                    </h1>
                     <div class="btn-action-wrapper">
                         <a class="btn-world-class ready-btn right-btn page-scroll" href="{{ url('registrasi') }}">REGISTRASI</a>
                         <a class="btn-glass-outline ready-btn page-scroll" href="#contact">CONTACT US</a>
