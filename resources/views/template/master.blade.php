@@ -102,19 +102,21 @@
             padding: 10px 0; position: fixed; top: 0; width: 100%; display: flex; align-items: center; 
         }
 
-        /* --- UKURAN LOGO HEADER (Desktop 45px) --- */
+        /* --- UKURAN LOGO HEADER (Sedang & Proporsional Sesuai Taskbar) --- */
         .logo-image {
-            max-height: 45px; 
+            max-height: 30px; 
             width: auto; 
             display: block;
+            object-fit: contain;
+            transition: all 0.3s ease;
         }
         
         .logo-box-custom {
-            width: 40px; height: 40px; background: #2563eb; color: #ffffff;
-            font-size: 22px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center;
-            border-radius: 8px; margin-right: 8px; flex-shrink: 0; line-height: 1;
+            width: 32px; height: 32px; background: #2563eb; color: #ffffff;
+            font-size: 18px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 6px; margin-right: 8px; flex-shrink: 0; line-height: 1;
         }
-        #header .logo-text-custom { font-size: 20px; font-weight: 800; color: #0f172a !important; text-transform: uppercase; letter-spacing: -0.5px; }
+        #header .logo-text-custom { font-size: 17px; font-weight: 800; color: #0f172a !important; text-transform: uppercase; letter-spacing: -0.5px; }
         #footer .logo-text-custom { font-size: 20px; font-weight: 800; color: #ffffff !important; text-transform: uppercase; letter-spacing: -0.5px; }
         
         .logo-container-custom { display: flex; align-items: center; text-decoration: none !important; }
@@ -249,8 +251,8 @@
         @media (max-width: 991px) {
             #header { height: 70px; padding: 10px 0; } 
             
-            /* --- LOGO HP DIBESARKAN JADI 45px --- */
-            .logo-image { max-height: 45px; } 
+            /* --- LOGO HP SEDANG & PROPORSIONAL --- */
+            .logo-image { max-height: 28px; } 
             /* ------------------------------------ */
 
             .nav-menu, .header-right-btn, .login-link-mobile { display: none !important; }
