@@ -81,19 +81,27 @@
         margin-bottom: 25px; display: inline-block; background: rgba(0, 198, 251, 0.15); padding: 10px 30px; border-radius: 50px; border: 1px solid rgba(0, 198, 251, 0.5);
     }
     .title2-hero {
-        font-size: 42px; font-weight: 800; color: #ffffff; line-height: 1.2; margin-bottom: 40px; text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        font-size: 48px; font-weight: 800; color: #ffffff; line-height: 1.22; margin-bottom: 35px; text-shadow: 0 4px 20px rgba(0,0,0,0.6);
     }
-    .btn-action-wrapper { display: flex; justify-content: center; gap: 15px; width: 100%; max-width: 400px; flex-wrap: wrap; margin-top: auto; }
+    .btn-action-wrapper { 
+        display: flex; justify-content: center; align-items: center; gap: 14px; width: 100%; max-width: 480px; flex-wrap: wrap; margin-top: auto; 
+    }
     .btn-world-class {
-        background: linear-gradient(135deg, #005bea 0%, #00c6fb 100%); border: none; color: white !important; padding: 16px 0; border-radius: 50px;
-        font-weight: 700; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; width: 100%; display: block; box-shadow: 0 10px 30px -5px rgba(0, 91, 234, 0.5);
+        background: linear-gradient(135deg, #005bea 0%, #00c6fb 100%); border: none; color: white !important; 
+        padding: 12px 28px; border-radius: 50px; font-size: 13.5px;
+        font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; text-decoration: none; 
+        display: inline-flex; align-items: center; justify-content: center; min-width: 160px;
+        box-shadow: 0 8px 25px -4px rgba(0, 91, 234, 0.5); transition: all 0.3s ease;
     }
-    .btn-world-class:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -5px rgba(0, 91, 234, 0.7); }
+    .btn-world-class:hover { transform: translateY(-3px); box-shadow: 0 15px 30px -4px rgba(0, 91, 234, 0.7); }
     .btn-glass-outline {
-        background: rgba(255, 255, 255, 0.1); border: 2px solid #fff; color: #fff !important; padding: 14px 0; border-radius: 50px;
-        font-weight: 600; text-transform: uppercase; text-decoration: none; width: 100%; display: block; backdrop-filter: blur(4px);
+        background: rgba(255, 255, 255, 0.12); border: 2px solid rgba(255, 255, 255, 0.85); color: #fff !important; 
+        padding: 10px 28px; border-radius: 50px; font-size: 13.5px;
+        font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; text-decoration: none; 
+        display: inline-flex; align-items: center; justify-content: center; min-width: 160px;
+        backdrop-filter: blur(8px); transition: all 0.3s ease;
     }
-    .btn-glass-outline:hover { background: #fff; color: #005bea !important; }
+    .btn-glass-outline:hover { background: #fff; color: #005bea !important; transform: translateY(-3px); }
 
     /* 4. CONTENT STYLE (FIXED) */
     .glass-card {
