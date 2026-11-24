@@ -225,8 +225,8 @@
             <div class="col-md-12">
               <div class="slider-content text-center">
                 <div class="slider-glass-card">
-                    <span class="title1-hero">ASTRONET.ID</span>
-                    <h1 class="title2-hero">Bangun Pengalaman <br> dan Wujudkan Masa Depan</h1>
+                    <span class="title1-hero">PENGALAMAN KERJA NYATA</span>
+                    <h1 class="title2-hero">Bangun Pengalaman Kerja <br> <span style="color: #00c6fb;">Wujudkan Masa Depan Gemilang</span></h1>
                     <div class="btn-action-wrapper">
                       <a class="btn-world-class ready-btn right-btn page-scroll" href="{{ url('registrasi') }}">REGISTRASI</a>
                       <a class="btn-glass-outline ready-btn page-scroll" href="#contact">CONTACT US</a>
@@ -243,8 +243,8 @@
             <div class="col-md-12">
               <div class="slider-content">
                 <div class="slider-glass-card">
-                    <span class="title1-hero">ASTRONET.ID</span>
-                    <h1 class="title2-hero">Lebih Cepat, Lebih Baik <br> Daftar Dari Rumah</h1>
+                    <span class="title1-hero">KOLABORASI & TEKNOLOGI</span>
+                    <h1 class="title2-hero">Asah Keahlian Praktis <br> <span style="color: #00c6fb;">Bersama Mentor Profesional</span></h1>
                     <div class="btn-action-wrapper">
                         <a class="btn-world-class ready-btn right-btn page-scroll" href="{{ url('registrasi') }}">REGISTRASI</a>
                         <a class="btn-glass-outline ready-btn page-scroll" href="#contact">CONTACT US</a>
