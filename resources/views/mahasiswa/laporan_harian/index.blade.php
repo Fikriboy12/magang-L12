@@ -8,50 +8,53 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-    /* ========================================================
-       HALAMAN LAPORAN HARIAN - MODERN TECH & PREMIUM CORPORATE
-       ======================================================== */
+    /* ==========================================================================
+       HALAMAN LAPORAN HARIAN - HARMONIS DENGAN TEMA AMBIENT LIGHT TECH LOGIN
+       Palet Warna Utama: Cyan (#3ECCE9) & Deep Tech Blue (#0284c7)
+       ========================================================================== */
     .laporan-page {
         font-family: 'Plus Jakarta Sans', sans-serif;
-        background: radial-gradient(circle at 10% 15%, rgba(62, 204, 233, 0.08) 0%, transparent 40%),
-                    radial-gradient(circle at 90% 85%, rgba(2, 132, 199, 0.06) 0%, transparent 40%),
-                    #f8fafc;
+        /* Background Ambient Light Tech persis Halaman Login */
+        background: radial-gradient(circle at 12% 18%, rgba(62, 204, 233, 0.22) 0%, transparent 45%),
+                    radial-gradient(circle at 88% 82%, rgba(2, 132, 199, 0.18) 0%, transparent 45%),
+                    radial-gradient(circle at 50% 50%, rgba(240, 249, 255, 0.5) 0%, transparent 70%),
+                    linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 45%, #e2e8f0 100%);
         min-height: 100vh;
         padding-top: 105px;
-        padding-bottom: 80px;
+        padding-bottom: 85px;
     }
 
-    /* 1. HERO HEADER BANNER */
+    /* 1. HERO HEADER BANNER (GRADASI WARNA TOMBOL LOGIN #3ECCE9 & #0284c7) */
     .laporan-header-card {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0369a1 100%);
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 40%, #0284c7 70%, #3ECCE9 100%);
         color: white;
-        padding: 32px 36px;
+        padding: 34px 38px;
         border-radius: 20px;
-        box-shadow: 0 15px 35px -10px rgba(15, 23, 42, 0.35), 0 0 25px rgba(2, 132, 199, 0.15);
+        box-shadow: 0 20px 40px -10px rgba(2, 132, 199, 0.4), 0 0 30px rgba(62, 204, 233, 0.3);
         margin-bottom: 24px;
         position: relative;
         overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
     }
     .laporan-header-card::before {
         content: '';
         position: absolute;
         top: -60px;
         right: -60px;
-        width: 220px;
-        height: 220px;
-        background: radial-gradient(circle, rgba(62, 204, 233, 0.25) 0%, transparent 70%);
+        width: 240px;
+        height: 240px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
         border-radius: 50%;
         pointer-events: none;
     }
     .laporan-header-card::after {
         content: '';
         position: absolute;
-        bottom: -40px;
-        left: 20%;
-        width: 180px;
-        height: 180px;
-        background: radial-gradient(circle, rgba(37, 99, 235, 0.18) 0%, transparent 70%);
+        bottom: -50px;
+        left: 30%;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(62, 204, 233, 0.4) 0%, transparent 70%);
         border-radius: 50%;
         pointer-events: none;
     }
@@ -59,76 +62,81 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background: rgba(255, 255, 255, 0.12);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #e0f2fe;
-        padding: 4px 12px;
+        background: rgba(255, 255, 255, 0.22);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        color: #ffffff;
+        padding: 5px 14px;
         border-radius: 50px;
         font-size: 11.5px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
+        font-weight: 800;
+        letter-spacing: 0.6px;
         text-transform: uppercase;
         margin-bottom: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
     .laporan-header-card h2 {
         color: #ffffff;
         font-weight: 800;
-        font-size: 25px;
+        font-size: 26px;
         letter-spacing: -0.3px;
         margin-bottom: 6px;
         display: flex;
         align-items: center;
         gap: 10px;
+        text-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
     }
     .laporan-header-card p {
-        color: #cbd5e1;
-        font-size: 13.5px;
+        color: #f0f9ff;
+        font-size: 14px;
         margin: 0;
         max-width: 650px;
         line-height: 1.5;
+        font-weight: 500;
+        opacity: 0.95;
     }
     .btn-download-pdf {
         background: #ffffff;
-        color: #0f172a !important;
-        font-weight: 700;
-        font-size: 13px;
-        padding: 10px 22px;
+        color: #0284c7 !important;
+        font-weight: 800;
+        font-size: 13.5px;
+        padding: 11px 24px;
         border-radius: 50px;
         border: none;
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
         transition: all 0.25s ease;
         text-decoration: none !important;
     }
     .btn-download-pdf:hover {
-        background: #f8fafc;
-        color: #0284c7 !important;
+        background: #ffffff;
+        color: #0369a1 !important;
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 10px 25px rgba(2, 132, 199, 0.35);
     }
 
-    /* 2. APK INFO CARD */
+    /* 2. APK INFO CARD (WARNA PUTIH BERSIH DENGAN AKSEN CYAN LOGIN) */
     .banner-apk-info {
         background: #ffffff;
-        border: 1px solid #e0f2fe;
-        border-left: 4px solid #0284c7;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        border-top: 3.5px solid #3ECCE9; /* Aksen Garis Cyan Logo Login */
         border-radius: 16px;
         padding: 18px 24px;
         margin-bottom: 24px;
-        box-shadow: 0 4px 18px rgba(2, 132, 199, 0.05);
+        box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.06), 0 0 20px rgba(62, 204, 233, 0.08);
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
         gap: 15px;
-        transition: all 0.2s ease;
+        transition: all 0.25s ease;
     }
     .banner-apk-info:hover {
-        box-shadow: 0 6px 24px rgba(2, 132, 199, 0.09);
+        transform: translateY(-2px);
+        box-shadow: 0 15px 35px -10px rgba(15, 23, 42, 0.09), 0 0 25px rgba(62, 204, 233, 0.14);
     }
     .apk-icon-circle {
         width: 48px;
@@ -174,14 +182,14 @@
     /* 3. METRIC STAT CARDS */
     .stat-card-laporan {
         background: #ffffff;
-        border: 1px solid #e2e8f0;
+        border: 1px solid rgba(226, 232, 240, 0.9);
         border-radius: 16px;
-        padding: 18px 20px;
+        padding: 20px 22px;
         display: flex;
         align-items: center;
         gap: 16px;
         margin-bottom: 24px;
-        box-shadow: 0 4px 15px rgba(15, 23, 42, 0.03);
+        box-shadow: 0 10px 25px -10px rgba(15, 23, 42, 0.06), 0 0 20px rgba(62, 204, 233, 0.08);
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
@@ -192,23 +200,21 @@
         top: 0;
         left: 0;
         right: 0;
-        height: 3px;
-        background: transparent;
-        transition: all 0.25s ease;
+        height: 3.5px;
     }
-    .stat-card-laporan.blue::after { background: linear-gradient(90deg, #38bdf8, #0284c7); }
+    .stat-card-laporan.blue::after { background: linear-gradient(90deg, #3ECCE9, #0284c7); }
     .stat-card-laporan.green::after { background: linear-gradient(90deg, #34d399, #059669); }
     .stat-card-laporan.yellow::after { background: linear-gradient(90deg, #fbbf24, #d97706); }
     .stat-card-laporan.red::after { background: linear-gradient(90deg, #f87171, #dc2626); }
 
     .stat-card-laporan:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 25px rgba(15, 23, 42, 0.08);
+        transform: translateY(-4px);
+        box-shadow: 0 18px 35px -10px rgba(15, 23, 42, 0.1), 0 0 25px rgba(62, 204, 233, 0.15);
     }
     .stat-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -228,16 +234,17 @@
         margin-top: 2px;
     }
 
-    /* 4. TABEL REKAPITULASI */
+    /* 4. TABEL REKAPITULASI DENGAN BORDER-TOP CYAN PERSIS CARD LOGIN */
     .card-table-laporan {
         background: #ffffff;
-        border: 1px solid #e2e8f0;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        border-top: 4px solid #3ECCE9; /* Aksen Cyan Logo */
         border-radius: 18px;
-        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+        box-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.08), 0 0 25px rgba(62, 204, 233, 0.1);
         overflow: hidden;
     }
     .card-table-header {
-        padding: 20px 26px;
+        padding: 22px 28px;
         background: #ffffff;
         border-bottom: 1px solid #f1f5f9;
         display: flex;
@@ -249,16 +256,16 @@
     .card-table-header h5 {
         margin: 0;
         font-weight: 800;
-        font-size: 17px;
+        font-size: 17.5px;
         color: #0f172a;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
     }
     .badge-data-pill {
-        background: #f8fafc;
-        color: #475569;
-        border: 1px solid #e2e8f0;
+        background: #f0f9ff;
+        color: #0284c7;
+        border: 1px solid #bae6fd;
         padding: 6px 14px;
         border-radius: 50px;
         font-size: 12px;
@@ -273,18 +280,18 @@
     }
     .table-laporan thead th {
         background: #f8fafc;
-        color: #475569;
+        color: #334155;
         font-weight: 700;
         font-size: 12px;
         text-transform: uppercase;
         letter-spacing: 0.6px;
         border-top: none;
-        border-bottom: 1px solid #e2e8f0;
-        padding: 15px 20px;
+        border-bottom: 1.5px solid #e2e8f0;
+        padding: 16px 22px;
         vertical-align: middle;
     }
     .table-laporan tbody td {
-        padding: 18px 20px;
+        padding: 18px 22px;
         vertical-align: middle;
         color: #334155;
         border-bottom: 1px solid #f1f5f9;
@@ -294,7 +301,7 @@
         transition: background-color 0.15s ease;
     }
     .table-laporan tbody tr:hover {
-        background-color: #f8fafc;
+        background-color: #f0f9ff;
     }
 
     /* BADGE STATUS VALIDASI */
@@ -329,12 +336,12 @@
         display: inline-block;
         border-radius: 10px;
         overflow: hidden;
-        border: 1px solid #cbd5e1;
+        border: 1.5px solid #bae6fd;
         transition: all 0.25s ease;
     }
     .img-thumb-container:hover {
-        transform: scale(1.05);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        transform: scale(1.06);
+        box-shadow: 0 6px 16px rgba(2, 132, 199, 0.25);
         border-color: #0284c7;
     }
     .img-thumb-laporan {
@@ -349,7 +356,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(15, 23, 42, 0.45);
+        background: rgba(2, 132, 199, 0.65);
         color: #ffffff;
         display: flex;
         align-items: center;
@@ -369,11 +376,11 @@
         gap: 10px;
     }
     .date-icon-circle {
-        width: 36px;
-        height: 36px;
+        width: 38px;
+        height: 38px;
         background: #f0f9ff;
         color: #0284c7;
-        border: 1px solid #bae6fd;
+        border: 1.5px solid #bae6fd;
         border-radius: 10px;
         display: flex;
         align-items: center;
@@ -382,24 +389,25 @@
         flex-shrink: 0;
     }
 
-    /* EMPTY STATE MODERN */
+    /* EMPTY STATE DENGAN AKSEN CYAN */
     .empty-state-card {
-        padding: 55px 20px;
+        padding: 60px 20px;
         text-align: center;
+        background: #ffffff;
     }
     .empty-state-icon-box {
-        width: 84px;
-        height: 84px;
-        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-        border: 2px dashed #7dd3fc;
+        width: 86px;
+        height: 86px;
+        background: radial-gradient(circle, #e0f2fe 0%, #f0f9ff 100%);
+        border: 2px dashed #3ECCE9;
         border-radius: 24px;
         color: #0284c7;
-        font-size: 34px;
+        font-size: 36px;
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 auto 20px;
-        box-shadow: 0 8px 20px rgba(2, 132, 199, 0.1);
+        box-shadow: 0 10px 25px rgba(62, 204, 233, 0.2);
     }
     .empty-state-title {
         font-weight: 800;
@@ -436,21 +444,21 @@
     .empty-step-num {
         width: 18px;
         height: 18px;
-        background: #0284c7;
+        background: linear-gradient(135deg, #3ECCE9, #0284c7);
         color: #ffffff;
         border-radius: 50%;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         font-size: 10px;
-        font-weight: 700;
+        font-weight: 800;
     }
 </style>
 
 <div class="laporan-page">
     <div class="container">
         
-        {{-- 1. HEADER BANNER MODERN --}}
+        {{-- 1. HEADER BANNER DENGAN GRADASI CYAN & BLUE LOGIN --}}
         <div class="laporan-header-card">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <div style="z-index: 2;">
@@ -458,7 +466,7 @@
                         <i class="fa-solid fa-graduation-cap"></i> Portal Siswa Magang
                     </div>
                     <h2>
-                        <i class="fa-solid fa-file-lines text-info"></i> Data Laporan Harian
+                        <i class="fa-solid fa-file-lines"></i> Data Laporan Harian
                     </h2>
                     <p>
                         Rekapitulasi riwayat aktivitas, dokumentasi, dan validasi kegiatan harian Anda yang disinkronkan langsung dari Aplikasi Mobile Magang.
@@ -474,7 +482,7 @@
             </div>
         </div>
 
-        {{-- 2. INFORMASI SINKRONISASI APK MOBILE --}}
+        {{-- 2. INFORMASI SINKRONISASI APK MOBILE DENGAN AKSEN CYAN LOGIN --}}
         <div class="banner-apk-info">
             <div class="d-flex align-items-center">
                 <div class="apk-icon-circle mr-3">
@@ -513,7 +521,7 @@
                     <div>
                         <div class="text-muted font-weight-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.5px;">Total Laporan</div>
                         <div class="stat-number text-dark">{{ $totalLaporan }}</div>
-                        <small class="text-muted" style="font-size: 11.5px;">Keseluruhan aktivitas</small>
+                        <small class="text-muted font-weight-bold" style="font-size: 11.5px;">Keseluruhan aktivitas</small>
                     </div>
                 </div>
             </div>
@@ -555,11 +563,11 @@
             </div>
         </div>
 
-        {{-- 4. TABEL REKAPITULASI LAPORAN HARIAN --}}
+        {{-- 4. TABEL REKAPITULASI DENGAN CARD AKSEN CYAN PERSIS CARD LOGIN --}}
         <div class="card-table-laporan">
             <div class="card-table-header">
                 <h5>
-                    <i class="fa-solid fa-table-list text-primary"></i> Rekapitulasi Data Laporan Harian
+                    <i class="fa-solid fa-table-list" style="color: #0284c7;"></i> Rekapitulasi Data Laporan Harian
                 </h5>
                 <span class="badge-data-pill">
                     <i class="fa-solid fa-rotate text-info"></i> Data Real-Time APK
@@ -581,7 +589,7 @@
                         @forelse ($laporan as $item)
                             <tr>
                                 <td class="text-center font-weight-bold text-muted">
-                                    <span style="display: inline-block; width: 26px; height: 26px; line-height: 26px; background: #f1f5f9; border-radius: 50%; font-size: 12px;">
+                                    <span style="display: inline-block; width: 26px; height: 26px; line-height: 26px; background: #e0f2fe; color: #0284c7; border-radius: 50%; font-size: 12px; font-weight: 700;">
                                         {{ $loop->iteration }}
                                     </span>
                                 </td>
