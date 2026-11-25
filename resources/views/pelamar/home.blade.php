@@ -173,41 +173,85 @@
         .slider-area, .nivoSlider img { height: 100vh !important; }
         .slider-glass-card { 
             width: 92% !important; 
-            max-width: 420px !important;
-            padding: 36px 20px !important; 
+            max-width: 440px !important;
+            padding: 34px 18px !important; 
             min-height: auto !important; 
             height: auto !important; 
+            border-radius: 24px !important;
+            background: rgba(15, 23, 42, 0.38) !important;
+            backdrop-filter: blur(14px) !important;
+            -webkit-backdrop-filter: blur(14px) !important;
+            border: 1.5px solid rgba(255, 255, 255, 0.28) !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55) !important;
         }
         .title1-hero { 
-            font-size: 11px !important; 
+            font-size: 12px !important; 
+            font-weight: 800 !important;
             padding: 6px 18px !important; 
             margin-bottom: 16px !important; 
-            letter-spacing: 1.5px !important;
+            letter-spacing: 1.2px !important;
+            color: #38bdf8 !important;
+            background: rgba(14, 165, 233, 0.22) !important;
+            border: 1.5px solid rgba(56, 189, 248, 0.55) !important;
+            box-shadow: 0 4px 14px rgba(0, 198, 251, 0.2) !important;
         }
         .title2-hero { 
-            font-size: 26px !important; 
-            line-height: 1.3 !important; 
+            font-size: 28px !important; 
+            line-height: 1.34 !important; 
             font-weight: 800 !important;
-            margin-bottom: 24px !important; 
+            margin-bottom: 22px !important; 
+            text-shadow: 0 4px 18px rgba(0,0,0,0.85) !important;
+            letter-spacing: -0.2px !important;
         }
         .btn-action-wrapper { 
             width: 100% !important; 
-            margin-top: 15px !important; 
-            gap: 10px !important;
+            margin-top: 10px !important; 
+            gap: 12px !important;
+            display: flex !important;
+            flex-direction: row !important;
+            justify-content: center !important;
         }
         .btn-world-class, .btn-glass-outline {
-            min-width: 130px !important;
+            flex: 1 1 0 !important;
+            max-width: 165px !important;
+            min-width: 125px !important;
             font-size: 12px !important;
-            padding: 10px 18px !important;
+            font-weight: 800 !important;
+            padding: 11px 14px !important;
+            border-radius: 50px !important;
+            letter-spacing: 0.6px !important;
         }
         .glass-card { padding: 25px; margin-bottom: 20px; }
     }
 
-    @media (max-width: 400px) {
-        .title2-hero { font-size: 22px !important; }
-        .btn-world-class, .btn-glass-outline {
-            width: 100% !important;
+    @media (max-width: 480px) {
+        .slider-glass-card { 
+            width: 93% !important; 
+            padding: 30px 15px !important; 
         }
+        .title1-hero {
+            font-size: 11.5px !important;
+            padding: 6px 16px !important;
+            margin-bottom: 14px !important;
+        }
+        .title2-hero { 
+            font-size: 26px !important; 
+            line-height: 1.32 !important; 
+        }
+        .btn-action-wrapper {
+            gap: 10px !important;
+        }
+        .btn-world-class, .btn-glass-outline {
+            min-width: 115px !important;
+            font-size: 11.5px !important;
+            padding: 10px 10px !important;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .title2-hero { font-size: 23px !important; }
+        .btn-action-wrapper { flex-direction: column !important; }
+        .btn-world-class, .btn-glass-outline { width: 100% !important; max-width: 100% !important; }
     }
 </style>
 
@@ -275,8 +319,8 @@
                 <div class="slider-glass-card">
                     <span class="title1-hero">SIAP KERJA & KOMPETEN</span>
                     <h1 class="title2-hero">
-                        Tingkatkan Kompetensi Digital <br> 
-                        <span style="color: #00c6fb;">Siap Bersaing di Dunia Kerja</span>
+                        Tingkatkan Skill Digital <br> 
+                        <span style="color: #00c6fb;">Siap Hadapi Dunia Kerja</span>
                     </h1>
                     <div class="btn-action-wrapper">
                         <a class="btn-world-class ready-btn right-btn page-scroll" href="{{ url('registrasi') }}">REGISTRASI</a>
