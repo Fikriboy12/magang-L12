@@ -117,7 +117,7 @@
             border-radius: 6px; margin-right: 8px; flex-shrink: 0; line-height: 1;
         }
         #header .logo-text-custom { font-size: 17px; font-weight: 800; color: #0f172a !important; text-transform: uppercase; letter-spacing: -0.5px; }
-        #footer .logo-text-custom { font-size: 20px; font-weight: 800; color: #ffffff !important; text-transform: uppercase; letter-spacing: -0.5px; }
+        #footer .logo-text-custom { font-size: 20px; font-weight: 800; color: #0f172a !important; text-transform: uppercase; letter-spacing: -0.5px; }
         
         .logo-container-custom { display: flex; align-items: center; text-decoration: none !important; }
         .nav-menu { margin-left: 40px; }
@@ -137,12 +137,13 @@
         .dropdown-item-custom { display: flex; align-items: center; gap: 8px; padding: 8px 15px; color: #64748b; font-size: 13px; font-weight: 500; text-decoration: none; }
         .dropdown-item-custom:hover { background: #f8fafc; color: #0284c7; }
 
-        /* FOOTER & LAINNYA - Tema Deep Corporate Navy & Aksen Cyan Logo */
+        /* FOOTER - Tema Modern Clean Ambient Tech */
         #footer { 
-            background: linear-gradient(180deg, #0f172a 0%, #090d16 100%) !important; 
+            background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%) !important; 
             border-top: 3px solid #3ECCE9; 
+            box-shadow: 0 -10px 30px rgba(2, 132, 199, 0.05);
             padding: 60px 0 0 0; 
-            color: #ffffff; 
+            color: #334155; 
             position: relative; 
             z-index: 10; 
             width: 100%; 
@@ -152,31 +153,31 @@
         
         /* LOGO FOOTER */
         .footer-logo-image { 
-            max-height: 44px; 
+            max-height: 40px; 
             width: auto; 
             display: inline-block; 
             margin-bottom: 20px; 
-            background: #ffffff; 
-            padding: 7px 14px;        
-            border-radius: 8px;  
-            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+            background: transparent; 
+            padding: 0;        
+            border-radius: 0;  
+            box-shadow: none;
         }
         
         .footer-title { 
             font-size: 14px; 
             font-weight: 700; 
             text-transform: uppercase; 
-            letter-spacing: 1px; 
-            color: #38bdf8; 
-            margin-bottom: 25px; 
+            letter-spacing: 0.5px; 
+            color: #0369a1; 
+            margin-bottom: 22px; 
             display: block; 
-            border-bottom: 2px solid rgba(56, 189, 248, 0.3); 
+            border-bottom: 2px solid #3ECCE9; 
             padding-bottom: 8px; 
             width: fit-content; 
         }
         .footer-desc { 
             font-size: 14px; 
-            color: #94a3b8; 
+            color: #64748b; 
             line-height: 1.7; 
             margin-bottom: 20px; 
             text-align: justify; 
@@ -193,55 +194,80 @@
             font-weight: 700; 
             text-decoration: none !important; 
             transition: all 0.3s ease; 
-            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35); 
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25); 
         }
         .btn-admin-footer:hover { 
             background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); 
             transform: translateY(-2px); 
-            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.5); 
+            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.35); 
             color: #ffffff !important; 
         }
         .footer-links { list-style: none; padding: 0; margin: 0; }
-        .footer-links li { margin-bottom: 15px; }
+        .footer-links li { margin-bottom: 14px; }
         .footer-links a { 
-            color: #94a3b8; 
+            color: #475569; 
             font-size: 14px; 
             text-decoration: none; 
             display: flex; 
             align-items: flex-start; 
             gap: 12px; 
-            transition: color 0.2s ease;
+            transition: all 0.2s ease;
         }
         .footer-links a:hover { 
-            color: #38bdf8; 
+            color: #0284c7; 
+            transform: translateX(3px);
         }
         .footer-links i { 
-            color: #38bdf8; 
+            color: #0284c7; 
             font-size: 13px; 
             margin-top: 2px; 
-            background: rgba(56, 189, 248, 0.12); 
-            border: 1px solid rgba(56, 189, 248, 0.25); 
+            background: #e0f2fe; 
+            border: 1px solid #bae6fd; 
             padding: 6px; 
             border-radius: 50%; 
-            width: 28px; 
-            height: 28px; 
+            width: 30px; 
+            height: 30px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             flex-shrink: 0; 
+            transition: all 0.2s ease;
         }
+        .footer-links a:hover i {
+            background: linear-gradient(135deg, #3ECCE9 0%, #0284c7 100%);
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.25);
+        }
+        .footer-nav-list { list-style: none; padding: 0; margin: 0; }
+        .footer-nav-list li { margin-bottom: 12px; }
+        .footer-nav-list a { 
+            color: #64748b; 
+            font-size: 14px; 
+            font-weight: 500; 
+            text-decoration: none; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 9px; 
+            transition: all 0.2s ease; 
+        }
+        .footer-nav-list a i { font-size: 11px; color: #3ECCE9; transition: transform 0.2s; }
+        .footer-nav-list a:hover { color: #0284c7; transform: translateX(4px); }
+        .footer-nav-list a:hover i { transform: translateX(2px); color: #0284c7; }
+        
         .footer-bottom { 
-            background: #080d1a; 
-            padding: 20px 0; 
-            margin-top: 20px; 
+            background: #f8fafc; 
+            padding: 22px 0; 
+            margin-top: 30px; 
             text-align: center; 
             font-size: 13px; 
             color: #64748b; 
-            border-top: 1px solid rgba(255, 255, 255, 0.06); 
+            border-top: 1px solid #e2e8f0; 
             width: 100%; 
         }
         .footer-bottom strong { 
-            color: #38bdf8; 
+            color: #0284c7; 
+            font-weight: 700;
         }
 
         #about .col-md-6 img { max-width: 150px !important; display: block; margin: 0 auto 20px auto; }
@@ -367,22 +393,39 @@
                 <div class="col-lg-5 col-md-5 col-sm-12 footer-col">
                     <div class="footer-logo-text">
                         <a href="{{ url('/') }}" class="logo-container-custom">
-                            {{-- LOGO FOOTER JUGA DITAMBAH VERSI BIAR UPDATE & FALLBACK --}}
+                            {{-- LOGO FOOTER DENGAN FORMAT TRANSPARAN AMBIENT LIGHT --}}
                             <img src="{{ asset('gambar/logohome.png') }}?v={{ time() }}" alt="Logo Astronet" class="footer-logo-image" onerror="this.style.display='none'; document.getElementById('footer-logo-fallback').style.display='inline-flex';">
                             <div id="footer-logo-fallback" style="display: none; align-items: center; margin-bottom: 20px;">
-                                <div class="logo-box-custom" style="background: #ffffff; color: #0284c7;">A</div>
-                                <span class="logo-text-custom" style="color: #ffffff;">STRONET.ID</span>
+                                <div class="logo-box-custom" style="background: #0284c7; color: #ffffff;">A</div>
+                                <span class="logo-text-custom" style="color: #0f172a;">STRONET.ID</span>
                             </div>
                         </a>
                     </div>
                     <p class="footer-desc">PT MEDIA BALAI NUSA (ASTRONET.ID) merupakan perusahaan penyedia layanan internet (ISP) berbasis fiber optik yang resmi dan terpercaya.</p>
                     <a href="{{ route('admin.login') }}" class="btn-admin-footer"><i class="fa-solid fa-user-shield"></i> Login Admin</a>
                 </div>
-                <div class="col-lg-4 col-md-4 col-sm-12 footer-col"><span class="footer-title">INFORMASI</span><p class="footer-desc">Kelola data magang dengan mudah dan efisien.</p></div>
-                <div class="col-lg-3 col-md-3 col-sm-12 footer-col"><span class="footer-title">KONTAK KAMI</span><ul class="footer-links"><li><a href="#"><i class="fa-solid fa-location-dot"></i><span>Jl. Letjend. Kec. Teluk Nibung, Kota Tanjung Balai.</span></a></li><li><a href="#"><i class="fa-solid fa-clock"></i><span>08.00 - 17.00 WIB</span></a></li><li><a href="#"><i class="fa-solid fa-phone"></i><span>+62 851-5712-7721</span></a></li></ul></div>
+                <div class="col-lg-4 col-md-4 col-sm-12 footer-col">
+                    <span class="footer-title">INFORMASI MAGANG</span>
+                    <ul class="footer-nav-list">
+                        <li><a href="{{ url('/') }}#home"><i class="fa-solid fa-chevron-right"></i> Beranda Utama</a></li>
+                        <li><a href="{{ url('/') }}#about"><i class="fa-solid fa-chevron-right"></i> Tentang Perusahaan</a></li>
+                        <li><a href="{{ url('/') }}#services"><i class="fa-solid fa-chevron-right"></i> Alur Pendaftaran Magang</a></li>
+                        <li><a href="{{ route('pelamar.lamaran.index') }}"><i class="fa-solid fa-chevron-right"></i> Cek Status Magang</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-12 footer-col">
+                    <span class="footer-title">KONTAK KAMI</span>
+                    <ul class="footer-links">
+                        <li><a href="https://maps.google.com" target="_blank"><i class="fa-solid fa-location-dot"></i><span>Jl. Letjend. Kec. Teluk Nibung, Kota Tanjung Balai.</span></a></li>
+                        <li><a href="#"><i class="fa-solid fa-clock"></i><span>08.00 - 17.00 WIB</span></a></li>
+                        <li><a href="https://wa.me/6285157127721" target="_blank"><i class="fa-solid fa-phone"></i><span>+62 851-5712-7721</span></a></li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="footer-bottom"><div class="container">&copy; 2025 <strong>astronet.id</strong>. All Rights Reserved.</div></div>
+        <div class="footer-bottom">
+            <div class="container">&copy; {{ date('Y') }} <strong>astronet.id</strong>. All Rights Reserved.</div>
+        </div>
     </footer>
 
     <div id="menuBackdrop" class="menu-backdrop" onclick="toggleMobileMenu()"></div>
