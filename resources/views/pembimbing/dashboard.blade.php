@@ -18,7 +18,7 @@
 
     /* 1. HERO HEADER BANNER */
     .pembimbing-hero-card {
-        background: linear-gradient(135deg, #1e3c72 0%, #2563eb 50%, #38bdf8 100%);
+        background: linear-gradient(135deg, #1e3c72 0%, #0077b6 50%, #3CB9E0 100%);
         border-radius: 20px;
         padding: 30px 32px;
         color: #ffffff;
@@ -315,11 +315,8 @@
     }
 </style>
 
-<div class="content-wrapper">
-    <section class="content pt-3 pb-5">
-      <div class="container-fluid">
-        
-        {{-- 1. HERO BANNER GURU PEMBIMBING (AMBIENT TECH GRADIENT) --}}
+<section class="section">
+    {{-- 1. HERO BANNER GURU PEMBIMBING (AMBIENT TECH GRADIENT) --}}
         <div class="pembimbing-hero-card d-flex flex-wrap justify-content-between align-items-center">
             <div class="d-flex align-items-center mb-3 mb-lg-0">
                 <div>
@@ -549,9 +546,8 @@
             </div>
         </div>
 
-      </div>
-    </section>
-</div>
+    </div>
+</section>
 
 @endsection
 

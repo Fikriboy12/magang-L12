@@ -18,7 +18,7 @@
 
     /* 1. HERO BANNER */
     .hero-banner-absensi {
-        background: linear-gradient(135deg, #1e3c72 0%, #2563eb 50%, #38bdf8 100%);
+        background: linear-gradient(135deg, #1e3c72 0%, #0077b6 50%, #3CB9E0 100%);
         border-radius: 20px;
         padding: 28px 32px;
         color: #ffffff;

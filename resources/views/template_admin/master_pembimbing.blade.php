@@ -9,8 +9,9 @@
     <link rel="shortcut icon" href="{{ asset('gambar/AMS-logo.png') }}" type="image/png">
     <title>PT.MEDIA BALAI NUSA</title>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" xintegrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" xintegrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ asset('assets_admin/modules/fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <link rel="stylesheet" href="{{ asset('assets_admin/css/style.css')}}">
     <link rel="stylesheet" href="{{ asset('assets_admin/css/components.css')}}">
@@ -70,10 +71,30 @@
             padding-top: 75px !important;
         }
 
-        .main-content {
-            padding-top: 25px;
-            padding-left: 25px;
-            padding-right: 25px;
+        /* PERBAIKAN: Padding Left Responsif agar Konten Tidak Tertimpa Sidebar */
+        @media (min-width: 1025px) {
+            .main-content {
+                padding-top: 25px !important;
+                padding-left: 280px !important;
+                padding-right: 30px !important;
+                width: 100% !important;
+                position: relative;
+            }
+            .main-navbar {
+                left: 250px !important;
+                width: calc(100% - 250px) !important;
+            }
+        }
+        @media (max-width: 1024px) {
+            .main-content {
+                padding-top: 25px !important;
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+            .main-navbar {
+                left: 0 !important;
+                width: 100% !important;
+            }
         }
 
         /* Styling Dasar Tabel DataTables */

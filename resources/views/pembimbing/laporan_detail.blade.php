@@ -15,7 +15,7 @@
 
     /* 1. STUDENT LOGBOOK HEADER BANNER */
     .logbook-header-banner {
-        background: linear-gradient(135deg, #1e3c72 0%, #2563eb 50%, #38bdf8 100%);
+        background: linear-gradient(135deg, #1e3c72 0%, #0077b6 50%, #3CB9E0 100%);
         border-radius: 20px;
         padding: 26px 30px;
         color: #ffffff;
@@ -212,11 +212,8 @@
     }
 </style>
 
-<div class="content-wrapper">
-    <section class="content pt-3 pb-5">
-      <div class="container-fluid">
-        
-        {{-- NOTIFIKASI SUKSES / ERROR --}}
+<section class="section">
+    {{-- NOTIFIKASI SUKSES / ERROR --}}
         @if(session('success'))
             <div class="alert alert-success alert-dismissible show fade shadow-sm mb-3" role="alert" style="border-radius: 12px; background: #dcfce7; border: 1px solid #86efac; color: #15803d;">
                 <div class="d-flex align-items-center justify-content-between">
@@ -440,8 +437,7 @@
             </div>
         </div>
 
-      </div>
-    </section>
-</div>
+    </div>
+</section>
 
 @endsection
