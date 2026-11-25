@@ -273,10 +273,10 @@
             <div class="col-md-12">
               <div class="slider-content text-center">
                 <div class="slider-glass-card">
-                    <span class="title1-hero">KOLABORASI & TEKNOLOGI</span>
+                    <span class="title1-hero">SIAP KERJA & KOMPETEN</span>
                     <h1 class="title2-hero">
-                        Asah Keahlian Praktis <br> 
-                        <span style="color: #00c6fb;">Bersama Mentor Profesional</span>
+                        Tingkatkan Kompetensi Digital <br> 
+                        <span style="color: #00c6fb;">Siap Bersaing di Dunia Kerja</span>
                     </h1>
                     <div class="btn-action-wrapper">
                         <a class="btn-world-class ready-btn right-btn page-scroll" href="{{ url('registrasi') }}">REGISTRASI</a>
