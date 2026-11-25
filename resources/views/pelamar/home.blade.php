@@ -171,107 +171,43 @@
 
     @media (max-width: 768px) {
         .slider-area, .nivoSlider img { height: 100vh !important; }
-        
-        .nivo-caption .container,
-        .slider-direction,
-        .slider-direction .row,
-        .slider-direction .col-md-12,
-        .slider-content {
-            width: 100% !important;
-            max-width: 100% !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            display: flex !important;
-            justify-content: center !important;
-            align-items: center !important;
-        }
-
         .slider-glass-card { 
-            width: 94% !important; 
-            max-width: 480px !important;
-            margin: 0 auto !important;
-            padding: 38px 20px !important; 
+            width: 92% !important; 
+            max-width: 420px !important;
+            padding: 36px 20px !important; 
             min-height: auto !important; 
             height: auto !important; 
-            border-radius: 26px !important;
-            background: rgba(15, 23, 42, 0.42) !important;
-            backdrop-filter: blur(16px) !important;
-            -webkit-backdrop-filter: blur(16px) !important;
-            border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6) !important;
         }
-        
         .title1-hero { 
-            font-size: 13px !important; 
-            font-weight: 800 !important;
-            padding: 7px 22px !important; 
-            margin-bottom: 20px !important; 
+            font-size: 11px !important; 
+            padding: 6px 18px !important; 
+            margin-bottom: 16px !important; 
             letter-spacing: 1.5px !important;
-            color: #38bdf8 !important;
-            background: rgba(14, 165, 233, 0.25) !important;
-            border: 1.5px solid rgba(56, 189, 248, 0.6) !important;
-            box-shadow: 0 4px 15px rgba(0, 198, 251, 0.25) !important;
         }
-        
         .title2-hero { 
-            font-size: 32px !important; 
-            line-height: 1.28 !important; 
+            font-size: 26px !important; 
+            line-height: 1.3 !important; 
             font-weight: 800 !important;
-            margin-bottom: 25px !important; 
-            text-shadow: 0 4px 18px rgba(0,0,0,0.9) !important;
-            letter-spacing: -0.5px !important;
-            white-space: normal !important;
+            margin-bottom: 24px !important; 
         }
-        
         .btn-action-wrapper { 
             width: 100% !important; 
-            max-width: 380px !important;
-            margin: 10px auto 0 !important; 
-            gap: 12px !important;
-            display: flex !important;
-            flex-direction: row !important;
-            justify-content: center !important;
-            align-items: center !important;
+            margin-top: 15px !important; 
+            gap: 10px !important;
         }
-        
         .btn-world-class, .btn-glass-outline {
-            flex: 1 1 0 !important;
-            max-width: 170px !important;
             min-width: 130px !important;
-            font-size: 13px !important;
-            font-weight: 800 !important;
-            padding: 12px 18px !important;
-            border-radius: 50px !important;
-            letter-spacing: 0.6px !important;
+            font-size: 12px !important;
+            padding: 10px 18px !important;
         }
         .glass-card { padding: 25px; margin-bottom: 20px; }
     }
 
-    @media (max-width: 420px) {
-        .slider-glass-card { 
-            width: 95% !important; 
-            padding: 34px 16px !important; 
-        }
-        .title1-hero {
-            font-size: 12px !important;
-            padding: 6px 18px !important;
-            margin-bottom: 16px !important;
-        }
-        .title2-hero { 
-            font-size: 29px !important; 
-            line-height: 1.26 !important; 
-        }
+    @media (max-width: 400px) {
+        .title2-hero { font-size: 22px !important; }
         .btn-world-class, .btn-glass-outline {
-            min-width: 120px !important;
-            font-size: 12px !important;
-            padding: 11px 12px !important;
+            width: 100% !important;
         }
-    }
-
-    @media (max-width: 350px) {
-        .title2-hero { font-size: 25px !important; }
-        .btn-action-wrapper { flex-direction: column !important; }
-        .btn-world-class, .btn-glass-outline { width: 100% !important; max-width: 100% !important; }
     }
 </style>
 
@@ -316,8 +252,8 @@
                 <div class="slider-glass-card">
                     <span class="title1-hero">PENGALAMAN KERJA NYATA</span>
                     <h1 class="title2-hero">
-                        Bangun Pengalaman <br> 
-                        <span style="color: #00c6fb;">Raih Masa Depan</span>
+                        Bangun Pengalaman Kerja <br> 
+                        <span style="color: #00c6fb;">Raih Masa Depan Gemilang</span>
                     </h1>
                     <div class="btn-action-wrapper">
                       <a class="btn-world-class ready-btn right-btn page-scroll" href="{{ url('registrasi') }}">REGISTRASI</a>
@@ -339,8 +275,8 @@
                 <div class="slider-glass-card">
                     <span class="title1-hero">SIAP KERJA & KOMPETEN</span>
                     <h1 class="title2-hero">
-                        Asah Skill Digital <br> 
-                        <span style="color: #00c6fb;">Siap di Dunia Kerja</span>
+                        Tingkatkan Kompetensi Digital <br> 
+                        <span style="color: #00c6fb;">Siap Bersaing di Dunia Kerja</span>
                     </h1>
                     <div class="btn-action-wrapper">
                         <a class="btn-world-class ready-btn right-btn page-scroll" href="{{ url('registrasi') }}">REGISTRASI</a>
