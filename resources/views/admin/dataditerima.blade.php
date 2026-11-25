@@ -353,7 +353,7 @@
                         <div>
                             <span class="stat-label">ASAL SEKOLAH / MITRA</span>
                             <h3 class="stat-value text-info mb-0">{{ $data['data_pendaftaran']->pluck('universitas')->unique()->count() }}</h3>
-                            <small class="text-muted"><i class="fas fa-school text-info mr-1"></i>Institusi SMK/Kampus</small>
+                            <small class="text-muted"><i class="fas fa-school text-info mr-1"></i>Sekolah Mitra SMK</small>
                         </div>
                         <div class="stat-icon-wrapper bg-soft-info">
                             <i class="fas fa-building text-info"></i>
