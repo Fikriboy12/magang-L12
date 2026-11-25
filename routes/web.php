@@ -42,6 +42,7 @@ use App\Http\Controllers\Mahasiswa\AbsensiController as MahasiswaAbsensiControll
 
 // --- Controller Orang Tua ---
 use App\Http\Controllers\OrangTua\OrangTuaDashboardController;
+use App\Http\Controllers\MobileLaunchController;
 
 
 /*
@@ -97,6 +98,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // 📖 DETAIL INFORMASI 
 Route::get('/detail-informasi/{id}', [HomeController::class, 'detail_informasi'])->name('pelamar.informasi.detail');
+
+// 📱 DEEP LINK LAUNCHER: Web ke Mobile 1-Klik tanpa login lagi
+Route::get('/open-app', [MobileLaunchController::class, 'launch'])->middleware('auth')->name('mobile.launch');
 
 
 // ----------------------------------------------------

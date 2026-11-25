@@ -169,6 +169,11 @@
                             </div>
                             <h2>Update Profile</h2>
                             <p class="mb-0">Perbarui informasi data diri Anda dengan benar</p>
+                            <div class="mt-3">
+                                <a href="{{ route('mobile.launch') }}" class="btn btn-sm text-white px-3 py-2 shadow-sm" style="background: linear-gradient(135deg, #1e3c72 0%, #0284c7 100%); border-radius: 20px; font-weight: 700; font-size: 12.5px;">
+                                    <i class="fas fa-mobile-alt mr-1"></i> Buka Akun di Aplikasi Mobile (APK)
+                                </a>
+                            </div>
                         </div>
 
                         <div class="card-body p-4 p-md-5">

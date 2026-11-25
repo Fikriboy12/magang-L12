@@ -75,6 +75,7 @@
                         <a href="#">{{ Auth::user()->name }}</a>
                         <ul>
                             <li><a href="{{ route('profile.view') }}">Profile</a></li>
+                            <li><a href="{{ route('mobile.launch') }}" style="color: #0284c7; font-weight: 700;"><i class="fas fa-mobile-alt mr-1"></i> Buka di Aplikasi HP</a></li>
                             <li>
                                 <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     Keluar
