@@ -68,6 +68,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // --- TAMBAHAN BARU: ROUTE LOGIN BIOMETRIK WAJAH ---
 Route::post('/login-biometrik', [LoginController::class, 'loginBiometric'])->name('login.biometric');
+Route::post('/get-face-descriptor', [LoginController::class, 'getFaceDescriptor'])->name('login.get_descriptor');
 
 
 // 3. REGISTRASI & OTP

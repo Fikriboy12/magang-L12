@@ -94,7 +94,48 @@ class LoginController extends Controller
     }
 
     // =========================================================
-    // 📷 FUNGSI BARU UNTUK LOGIN WAJAH (BIOMETRIK)
+    // 📷 AMBIL DESCRIPTOR WAJAH USER UNTUK EUCLIDEAN DISTANCE
+    // =========================================================
+    public function getFaceDescriptor(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Email tidak terdaftar di sistem.'
+            ], 404);
+        }
+
+        if (!$user->face_descriptor) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Akun ' . $user->name . ' belum mendaftarkan biometrik wajah. Silakan login dengan password.'
+            ], 400);
+        }
+
+        $descriptor = json_decode($user->face_descriptor, true);
+
+        if (!is_array($descriptor) || count($descriptor) !== 128) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data biometrik tersimpan tidak valid.'
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'name' => $user->name,
+            'descriptor' => $descriptor
+        ]);
+    }
+
+    // =========================================================
+    // 📷 FUNGSI UNTUK LOGIN WAJAH (BIOMETRIK)
     // =========================================================
     public function loginBiometric(Request $request)
     {

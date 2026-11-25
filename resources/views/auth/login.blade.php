@@ -293,12 +293,12 @@
             <canvas id="overlay-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
         </div>
 
-        {{-- Panel Indikator Liveness & Nilai EAR --}}
-        <div id="liveness-indicator" style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px; padding: 5px 8px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 11px;">
-            <span id="liveness-badge" style="background: #e0f2fe; color: #0284c7; padding: 3px 8px; border-radius: 12px; font-weight: 700;">
-                <i class="fas fa-shield-alt"></i> Anti-Spoofing: Aktif (EAR 0.20)
+        {{-- Panel Indikator Euclidean Distance & Liveness EAR --}}
+        <div id="liveness-indicator" style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px; padding: 6px 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 11px;">
+            <span id="liveness-badge" style="background: #e0f2fe; color: #0284c7; padding: 4px 10px; border-radius: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">
+                <i class="fas fa-calculator"></i> Tahap 1: Euclidean Distance
             </span>
-            <span id="ear-value" style="color: #64748b; font-weight: 700; font-family: monospace;">EAR: --</span>
+            <span id="metric-value" style="color: #64748b; font-weight: 700; font-family: monospace;">Jarak: --</span>
         </div>
 
         <p id="biometric-status" style="font-size: 11.5px; color: #0284c7; margin-top: 8px; font-weight: bold; line-height: 1.4;">Menyiapkan kamera...</p>
@@ -354,6 +354,8 @@
     const video = document.getElementById('video-webcam');
     const canvas = document.getElementById('overlay-canvas');
     const statusText = document.getElementById('biometric-status');
+    const livenessBadge = document.getElementById('liveness-badge');
+    const metricValueText = document.getElementById('metric-value');
     
     const emailInput = document.getElementById('email');
     const passwordGroup = document.getElementById('password-group');
@@ -364,7 +366,7 @@
 
     btnShowCamera.addEventListener('click', async () => {
         // 1. Validasi email tidak boleh kosong
-        if (!emailInput.value) {
+        if (!emailInput.value.trim()) {
             alert("Harap masukkan Email Anda terlebih dahulu sebelum login dengan wajah!");
             emailInput.focus();
             return;
@@ -377,35 +379,71 @@
         cameraSection.style.display = 'block';
         emailInput.readOnly = true; 
 
-        statusText.innerText = "Memuat Sistem AI...";
+        statusText.innerText = "Mengambil data biometrik akun Anda...";
+        statusText.style.color = "#0284c7";
+
+        // 3. Ambil Stored Descriptor dari database via endpoint aman
+        let storedDescriptor = null;
+        let userName = '';
+        try {
+            const csrfToken = document.querySelector('input[name="_token"]').value;
+            const res = await fetch("{{ route('login.get_descriptor') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ email: emailInput.value.trim() })
+            });
+
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+                alert(data.message || "Gagal memverifikasi akun.");
+                // Kembalikan form jika akun tidak valid/belum daftar
+                passwordGroup.style.display = '';
+                btnLoginNormal.style.display = '';
+                btnShowCamera.style.display = '';
+                cameraSection.style.display = 'none';
+                emailInput.readOnly = false;
+                return;
+            }
+
+            storedDescriptor = new Float32Array(data.descriptor);
+            userName = data.name;
+        } catch (err) {
+            console.error("Gagal ambil descriptor:", err);
+            alert("Terjadi kendala koneksi saat mengambil data biometrik.");
+            passwordGroup.style.display = '';
+            btnLoginNormal.style.display = '';
+            btnShowCamera.style.display = '';
+            cameraSection.style.display = 'none';
+            emailInput.readOnly = false;
+            return;
+        }
+
+        statusText.innerText = `Memuat Sistem AI untuk ${userName}...`;
 
         try {
-            // 3. Muat Model (SSD Mobilenet, 68 Landmarks, Face Recognition)
+            // 4. Muat Model (SSD Mobilenet, 68 Landmarks, Face Recognition)
             await Promise.all([
                 faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
                 faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
                 faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
             ]);
 
-            // 4. Nyalakan Kamera
+            // 5. Nyalakan Kamera
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
             video.srcObject = stream;
-            statusText.innerText = "Arahkan wajah ke kamera...";
+            statusText.innerText = "Arahkan wajah ke kamera untuk verifikasi Euclidean Distance...";
 
             // Fungsi Pembantu: Jarak Euclidean 2D antar titik koordinat
             function euclideanDist2D(p1, p2) {
                 return Math.hypot(p1.x - p2.x, p1.y - p2.y);
             }
 
-            // Fungsi Pembantu: Hitung Eye Aspect Ratio (EAR) dari 6 titik landmark mata
-            // Sesuai Jurnal Penelitian Subbab 2.2.9:
-            // Rumus Eye Aspect Ratio (EAR):
-            // EAR = ((P2 - P6) + (P3 - P5)) / (2 * (P1 - P4))
-            // Keterangan:
-            // - P1 dan P4 = titik landmark horizontal mata (eye[0] dan eye[3])
-            // - P2 dan P6 = titik landmark vertikal pertama (eye[1] dan eye[5])
-            // - P3 dan P5 = titik landmark vertikal kedua (eye[2] dan eye[4])
-            // - EAR       = nilai rasio aspek mata
+            // Fungsi Pembantu: Hitung Eye Aspect Ratio (EAR) dari 6 titik landmark mata (Subbab 2.2.9)
+            // Rumus: EAR = ((P2 - P6) + (P3 - P5)) / (2 * (P1 - P4))
             function calculateEyeEAR(eye) {
                 const v1 = euclideanDist2D(eye[1], eye[5]); // |P2 - P6|
                 const v2 = euclideanDist2D(eye[2], eye[4]); // |P3 - P5|
@@ -414,238 +452,316 @@
                 return (v1 + v2) / (2.0 * h);
             }
 
-            // 5. Mulai pemindaian saat video berjalan
-            function startLivenessScanner() {
+            // Fungsi Pembantu: Rumus Euclidean Distance 128 Dimensi (Tabel 2.3 Skripsi)
+            // d = sqrt( sum( (p_i - q_i)^2 ) )
+            function calculateEuclideanDistance(desc1, desc2) {
+                let sum = 0;
+                for (let i = 0; i < 128; i++) {
+                    const diff = desc1[i] - desc2[i];
+                    sum += diff * diff;
+                }
+                return Math.sqrt(sum);
+            }
+
+            // Fungsi Pembantu: Gambar titik HANYA pada mata (NO titik wajah / rahang / hidung)
+            function drawEyeLandmarks(ctx, eyePoints, color = '#38bdf8') {
+                ctx.save();
+                for (let i = 0; i < eyePoints.length; i++) {
+                    const pt = eyePoints[i];
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, 2.5, 0, 2 * Math.PI);
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+                // Hubungkan garis kelopak mata halus
+                ctx.beginPath();
+                ctx.moveTo(eyePoints[0].x, eyePoints[0].y);
+                for (let i = 1; i < eyePoints.length; i++) {
+                    ctx.lineTo(eyePoints[i].x, eyePoints[i].y);
+                }
+                ctx.closePath();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // 6. Mulai pemindaian saat video berjalan
+            function startScanner() {
                 const displaySize = { width: video.videoWidth || 320, height: video.videoHeight || 240 };
                 faceapi.matchDimensions(canvas, displaySize);
 
                 let isSubmitted = false;
-                let isProcessingBlink = false;
-                let faceAlignedFrames = 0;
-                const REQUIRED_ALIGNED_FRAMES = 3; // 3 frame stabil di awal
+                let isLoopRunning = true;
+
+                // =========================================================================
+                // THRESHOLD PENELITIAN SKRIPSI:
+                // - Euclidean Distance: Threshold <= 0.60 (Tabel 2.3)
+                // - Eye Aspect Ratio (EAR): Threshold <= 0.20 (Tabel 2.4)
+                // =========================================================================
+                const EUCLIDEAN_THRESHOLD = 0.60;
+                const EAR_THRESHOLD = 0.20;
+
+                // Status Alur: 'EUCLIDEAN' (Tahap 1) -> 'LIVENESS' (Tahap 2)
+                let currentPhase = 'EUCLIDEAN';
+                let matchedFrames = 0;
+                const REQUIRED_MATCH_FRAMES = 3; // 3 frame stabil di bawah threshold 0.60
+                let validatedDescriptor = null;
+
                 let eyeWasClosed = false;
                 let closedTimestamp = 0;
                 let baselineEAR = null;
                 let consecutiveLostFrames = 0;
 
-                // =========================================================================
-                // THRESHOLD EAR LIVENESS DETECTION (SESUAI JURNAL TABEL 2.4 & SUBBAB 2.2.9)
-                // - Rumus: EAR = ((P2 - P6) + (P3 - P5)) / (2 * (P1 - P4))
-                // - Tabel 2.4: EAR > 0.20 (Mata terbuka), EAR <= 0.20 (Mata tertutup / kedip)
-                // =========================================================================
-                const EAR_THRESHOLD = 0.20;
-
-                const livenessBadge = document.getElementById('liveness-badge');
-                const earValueText  = document.getElementById('ear-value');
-
-                let isLoopRunning = true;
-
-                async function submitBiometric() {
-                    if (isSubmitted) return;
-                    isSubmitted = true;
-                    statusText.innerText = "Verifikasi selesai! Mengalihkan ke sistem...";
-                    statusText.style.color = "#16a34a";
-
-                    let fullDetection = null;
-                    for (let r = 0; r < 5; r++) {
-                        fullDetection = await faceapi.detectSingleFace(video)
-                            .withFaceLandmarks()
-                            .withFaceDescriptor();
-                        if (fullDetection) break;
-                        await new Promise(res => setTimeout(res, 80));
-                    }
-
-                    if (fullDetection) {
-                        document.getElementById('bio_email').value = emailInput.value;
-                        document.getElementById('bio_face_descriptor').value = JSON.stringify(Array.from(fullDetection.descriptor));
-                        document.getElementById('bio_liveness_status').value = "1";
-
-                        setTimeout(() => {
-                            formBiometric.submit();
-                        }, 300);
-                    } else {
-                        isSubmitted = false;
-                        isLoopRunning = true;
-                        isProcessingBlink = false;
-                        eyeWasClosed = false;
-                        statusText.innerText = "Posisikan wajah menghadap kamera dan silakan kedip lagi...";
-                        statusText.style.color = "#cc0000";
-                    }
-                }
-
                 async function loop() {
                     if (!isLoopRunning || isSubmitted) return;
 
                     try {
-                        // KUNCI PERFORMA: Hanya deteksi landmarks saat loop pelacakan (15-25+ FPS lancar)
-                        // TIDAK memanggil withFaceDescriptor() di sini agar tidak membebani CPU!
-                        const detection = await faceapi.detectSingleFace(video).withFaceLandmarks();
+                        const ctx = canvas.getContext('2d');
 
-                        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+                        if (currentPhase === 'EUCLIDEAN') {
+                            // ========================================================
+                            // TAHAP 1: METODE EUCLIDEAN DISTANCE (PENCOCOKAN WAJAH)
+                            // HANYA KOTAK SEGI 4 DI MUKA + NILAI THRESHOLD BERUBAH-UBAH
+                            // ========================================================
+                            const detection = await faceapi.detectSingleFace(video)
+                                .withFaceLandmarks()
+                                .withFaceDescriptor();
 
-                        if (detection) {
-                            consecutiveLostFrames = 0;
-                            const resizedDetection = faceapi.resizeResults(detection, displaySize);
-                            const landmarks = resizedDetection.landmarks;
-                            const leftEye  = landmarks.getLeftEye();
-                            const rightEye = landmarks.getRightEye();
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                            // 1. Hitung Nilai EAR untuk Kedua Belah Mata (Subbab 2.2.9)
-                            const leftEAR  = calculateEyeEAR(leftEye);
-                            const rightEAR = calculateEyeEAR(rightEye);
-                            const avgEAR   = (leftEAR + rightEAR) / 2.0;
+                            if (detection) {
+                                consecutiveLostFrames = 0;
+                                const resizedDetection = faceapi.resizeResults(detection, displaySize);
+                                const liveDescriptor = detection.descriptor;
 
-                            if (earValueText) {
-                                earValueText.innerText = `EAR: ${avgEAR.toFixed(2)}`;
-                            }
+                                // Hitung Jarak Euclidean 128 Dimensi secara real-time
+                                const distance = calculateEuclideanDistance(storedDescriptor, liveDescriptor);
 
-                            // 2. Gambar 68 Titik Karakteristik Wajah (Landmarks)
-                            faceapi.draw.drawFaceLandmarks(canvas, resizedDetection);
+                                if (metricValueText) {
+                                    metricValueText.innerText = `Jarak: ${distance.toFixed(4)} | Th: ≤ 0.60`;
+                                }
 
-                            if (!isProcessingBlink) {
-                                // FASE A: Penyelarasan Posisi Wajah Awal & Kalibrasi Baseline EAR
-                                if (faceAlignedFrames < REQUIRED_ALIGNED_FRAMES) {
-                                    faceAlignedFrames++;
-                                    if (baselineEAR === null) {
-                                        baselineEAR = avgEAR;
-                                    } else {
-                                        baselineEAR = (baselineEAR + avgEAR) / 2.0;
-                                    }
+                                // HANYA KOTAK SEGI 4 (TANPA TITIK-TITIK SAMA SEKALI)
+                                if (distance <= EUCLIDEAN_THRESHOLD) {
+                                    // DI BAWAH THRESHOLD (<= 0.60) -> BERHASIL
+                                    matchedFrames++;
+                                    const boxColor = '#16a34a'; // Hijau
+                                    const labelText = `Euclidean: ${distance.toFixed(4)} (≤ 0.60 Berhasil)`;
 
-                                    statusText.innerText = `Menyelaraskan wajah... (${Math.round((faceAlignedFrames / REQUIRED_ALIGNED_FRAMES) * 100)}%)`;
-                                    statusText.style.color = "#0284c7";
-
-                                    const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
-                                        label: 'Wajah Terdeteksi', 
-                                        boxColor: '#0284c7' 
+                                    const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, {
+                                        label: labelText,
+                                        boxColor: boxColor,
+                                        lineWidth: 2
                                     });
                                     drawBox.draw(canvas);
-                                } else {
-                                    // FASE B: Uji Liveness Kedipan Mata Sesuai Tabel 2.4 Jurnal:
-                                    // - Standar Jurnal: EAR > 0.20 (terbuka), EAR <= 0.20 (tertutup / kedip)
-                                    // - Dengan kompensasi sensor webcam: deteksi responsif saat EAR turun atau salah satu mata menutup
-                                    const effectiveBaseline = baselineEAR || 0.30;
-                                    const dynamicClosedThreshold = Math.min(0.245, effectiveBaseline * 0.82);
 
-                                    const isEyesClosed = (avgEAR <= EAR_THRESHOLD) || 
-                                                         (avgEAR <= dynamicClosedThreshold) || 
-                                                         (leftEAR <= 0.235 || rightEAR <= 0.235);
+                                    statusText.innerText = `Wajah Cocok! Skor: ${distance.toFixed(4)} ≤ 0.60 (Validasi: ${matchedFrames}/${REQUIRED_MATCH_FRAMES})`;
+                                    statusText.style.color = '#16a34a';
 
-                                    if (isEyesClosed) {
-                                        if (!eyeWasClosed) {
-                                            eyeWasClosed = true;
-                                            closedTimestamp = Date.now();
-                                        }
+                                    if (livenessBadge) {
+                                        livenessBadge.innerHTML = `<i class="fas fa-check-circle"></i> Wajah Cocok (≤ 0.60)`;
+                                        livenessBadge.style.background = '#dcfce7';
+                                        livenessBadge.style.color = '#15803d';
+                                    }
 
-                                        statusText.innerText = "Kedip terdeteksi! Silakan buka kembali mata Anda...";
-                                        statusText.style.color = "#f59e0b"; // Oranye
+                                    // Jika stabil di bawah 0.60: TAHAP 1 SELESAI, LANJUT KE TAHAP 2
+                                    if (matchedFrames >= REQUIRED_MATCH_FRAMES) {
+                                        validatedDescriptor = Array.from(liveDescriptor);
+                                        currentPhase = 'LIVENESS';
+
+                                        statusText.innerText = "Tahap 1 Euclidean Lolos! Sekarang Uji Anti-Spoofing: Silakan KEDIPKAN MATA...";
+                                        statusText.style.color = "#0284c7";
 
                                         if (livenessBadge) {
-                                            livenessBadge.innerHTML = '<i class="fas fa-eye-slash"></i> Mata Menutup (Kedip Terdeteksi)';
-                                            livenessBadge.style.background = '#fef3c7';
-                                            livenessBadge.style.color = '#b45309';
-                                        }
-
-                                        const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
-                                            label: `Mata Menutup (EAR: ${avgEAR.toFixed(2)} ≤ 0.20)`, 
-                                            boxColor: '#f59e0b' 
-                                        });
-                                        drawBox.draw(canvas);
-
-                                    } else if (eyeWasClosed && (avgEAR > EAR_THRESHOLD || avgEAR >= (effectiveBaseline * 0.86))) {
-                                        // SIKLUS KEDIP LENGKAP SESUAI JURNAL:
-                                        // Mata Terbuka (>0.20) -> Mata Menutup (<=0.20) -> Mata Terbuka Kembali (>0.20)
-                                        const blinkDuration = Date.now() - closedTimestamp;
-                                        
-                                        // Rentang durasi kedip manusia normal (30ms - 3000ms)
-                                        if (blinkDuration >= 30 && blinkDuration <= 3000) {
-                                            isProcessingBlink = true;
-                                            isLoopRunning = false;
-
-                                            statusText.innerText = "Liveness Valid (Manusia Hidup)! Mengekstrak biometrik wajah...";
-                                            statusText.style.color = "#16a34a"; // Hijau
-
-                                            if (livenessBadge) {
-                                                livenessBadge.innerHTML = '<i class="fas fa-check-circle"></i> Kedip Valid! Memverifikasi...';
-                                                livenessBadge.style.background = '#dcfce7';
-                                                livenessBadge.style.color = '#15803d';
-                                            }
-
-                                            const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
-                                                label: 'Liveness: TERVERIFIKASI (Asli)', 
-                                                boxColor: '#22c55e' 
-                                            });
-                                            drawBox.draw(canvas);
-
-                                            await submitBiometric();
-                                            return;
-                                        } else if (blinkDuration > 3000) {
-                                            // Terlalu lama tutup mata (>3 detik), reset agar bisa kedip ulang secara alami
-                                            eyeWasClosed = false;
-                                        }
-
-                                    } else {
-                                        // Update baseline perlahan jika mata tetap terbuka stabil
-                                        if (!eyeWasClosed && avgEAR >= 0.25) {
-                                            baselineEAR = (baselineEAR * 0.9) + (avgEAR * 0.1);
-                                        }
-
-                                        statusText.innerText = "UJI LIVENESS: Silakan KEDIPKAN MATA Anda sekali...";
-                                        statusText.style.color = "#0284c7"; // Biru
-
-                                        if (livenessBadge) {
-                                            livenessBadge.innerHTML = '<i class="fas fa-eye"></i> Menunggu Kedipan (EAR > 0.20)';
+                                            livenessBadge.innerHTML = `<i class="fas fa-eye"></i> Tahap 2: Anti-Spoofing (Kedip Mata)`;
                                             livenessBadge.style.background = '#e0f2fe';
                                             livenessBadge.style.color = '#0284c7';
                                         }
+                                    }
+                                } else {
+                                    // DI ATAS THRESHOLD (> 0.60) -> TIDAK BERHASIL / TIDAK COCOK
+                                    matchedFrames = 0;
+                                    const boxColor = '#ef4444'; // Merah
+                                    const labelText = `Euclidean: ${distance.toFixed(4)} (> 0.60 Tidak Cocok)`;
 
-                                        const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
-                                            label: `Uji Liveness: Kedipkan Mata (EAR: ${avgEAR.toFixed(2)})`, 
-                                            boxColor: '#0284c7' 
-                                        });
-                                        drawBox.draw(canvas);
+                                    const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, {
+                                        label: labelText,
+                                        boxColor: boxColor,
+                                        lineWidth: 2
+                                    });
+                                    drawBox.draw(canvas);
+
+                                    statusText.innerText = `Wajah Tidak Cocok! Skor: ${distance.toFixed(4)} (Melebihi ambang batas skripsi 0.60)`;
+                                    statusText.style.color = '#dc2626';
+
+                                    if (livenessBadge) {
+                                        livenessBadge.innerHTML = `<i class="fas fa-times-circle"></i> Jarak > 0.60 (Tidak Cocok)`;
+                                        livenessBadge.style.background = '#fee2e2';
+                                        livenessBadge.style.color = '#b91c1c';
                                     }
                                 }
+                            } else {
+                                matchedFrames = 0;
+                                statusText.innerText = "Posisikan wajah Anda tepat di depan kamera...";
+                                statusText.style.color = "#64748b";
+                                if (metricValueText) metricValueText.innerText = "Jarak: --";
                             }
-                        } else {
-                            // Toleransi kehilangan deteksi singkat (misal saat kelopak mata menutup cepat)
-                            consecutiveLostFrames++;
-                            if (consecutiveLostFrames > 8) {
-                                faceAlignedFrames = 0;
-                                eyeWasClosed = false;
-                                baselineEAR = null;
-                                statusText.innerText = "Posisikan wajah Anda di tengah kamera...";
-                                statusText.style.color = "#cc0000"; // Merah
-                                if (earValueText) earValueText.innerText = "EAR: --";
-                                if (livenessBadge) {
-                                    livenessBadge.innerHTML = '<i class="fas fa-user-times"></i> Wajah Belum Terdeteksi';
-                                    livenessBadge.style.background = '#fee2e2';
-                                    livenessBadge.style.color = '#b91c1c';
+
+                            if (isLoopRunning && !isSubmitted) {
+                                setTimeout(loop, 60); // Interval ~16 FPS
+                            }
+
+                        } else if (currentPhase === 'LIVENESS') {
+                            // ========================================================
+                            // TAHAP 2: METODE ANTI-SPOOFING (UJI KEDIP MATA / EAR)
+                            // (BARU MUNCUL SETELAH TAHAP 1 EUCLIDEAN DISTANCE SELESAI)
+                            // ========================================================
+                            const detection = await faceapi.detectSingleFace(video).withFaceLandmarks();
+
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                            if (detection) {
+                                consecutiveLostFrames = 0;
+                                const resizedDetection = faceapi.resizeResults(detection, displaySize);
+                                const landmarks = resizedDetection.landmarks;
+                                const leftEye  = landmarks.getLeftEye();
+                                const rightEye = landmarks.getRightEye();
+
+                                const leftEAR  = calculateEyeEAR(leftEye);
+                                const rightEAR = calculateEyeEAR(rightEye);
+                                const avgEAR   = (leftEAR + rightEAR) / 2.0;
+
+                                if (metricValueText) {
+                                    metricValueText.innerText = `EAR: ${avgEAR.toFixed(2)} | Th: ≤ 0.20`;
                                 }
+
+                                if (baselineEAR === null) {
+                                    baselineEAR = avgEAR;
+                                } else if (!eyeWasClosed && avgEAR >= 0.24) {
+                                    baselineEAR = (baselineEAR * 0.9) + (avgEAR * 0.1);
+                                }
+
+                                const effectiveBaseline = baselineEAR || 0.30;
+                                const dynamicClosedThreshold = Math.min(0.245, effectiveBaseline * 0.82);
+
+                                const isEyesClosed = (avgEAR <= EAR_THRESHOLD) || 
+                                                     (avgEAR <= dynamicClosedThreshold) || 
+                                                     (leftEAR <= 0.235 || rightEAR <= 0.235);
+
+                                // TITIK-TITIK HANYA MUNCUL DI MATA (BUKAN SELURUH WAJAH!)
+                                drawEyeLandmarks(ctx, leftEye, isEyesClosed ? '#f59e0b' : '#38bdf8');
+                                drawEyeLandmarks(ctx, rightEye, isEyesClosed ? '#f59e0b' : '#38bdf8');
+
+                                if (isEyesClosed) {
+                                    if (!eyeWasClosed) {
+                                        eyeWasClosed = true;
+                                        closedTimestamp = Date.now();
+                                    }
+
+                                    statusText.innerText = `Kedip terdeteksi (EAR: ${avgEAR.toFixed(2)} ≤ 0.20)! Silakan buka kembali mata Anda...`;
+                                    statusText.style.color = "#f59e0b"; // Oranye
+
+                                    if (livenessBadge) {
+                                        livenessBadge.innerHTML = '<i class="fas fa-eye-slash"></i> Mata Menutup (Kedip Terdeteksi)';
+                                        livenessBadge.style.background = '#fef3c7';
+                                        livenessBadge.style.color = '#b45309';
+                                    }
+
+                                    const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
+                                        label: `Mata Menutup (EAR: ${avgEAR.toFixed(2)} ≤ 0.20)`, 
+                                        boxColor: '#f59e0b',
+                                        lineWidth: 2
+                                    });
+                                    drawBox.draw(canvas);
+
+                                } else if (eyeWasClosed && (avgEAR > EAR_THRESHOLD || avgEAR >= (effectiveBaseline * 0.86))) {
+                                    // SIKLUS KEDIP LENGKAP: Terbuka (>0.20) -> Tertutup (<=0.20) -> Terbuka (>0.20)
+                                    const blinkDuration = Date.now() - closedTimestamp;
+
+                                    if (blinkDuration >= 30 && blinkDuration <= 3000) {
+                                        isLoopRunning = false;
+                                        isSubmitted = true;
+
+                                        statusText.innerText = "Liveness Valid (Manusia Asli)! Wajah dan kedipan terverifikasi...";
+                                        statusText.style.color = "#16a34a"; // Hijau
+
+                                        if (livenessBadge) {
+                                            livenessBadge.innerHTML = '<i class="fas fa-shield-alt"></i> Anti-Spoofing: Terverifikasi (Asli)';
+                                            livenessBadge.style.background = '#dcfce7';
+                                            livenessBadge.style.color = '#15803d';
+                                        }
+
+                                        const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
+                                            label: 'Anti-Spoofing: TERVERIFIKASI (Asli)', 
+                                            boxColor: '#22c55e',
+                                            lineWidth: 2
+                                        });
+                                        drawBox.draw(canvas);
+
+                                        // Submit form login biometrik
+                                        document.getElementById('bio_email').value = emailInput.value.trim();
+                                        document.getElementById('bio_face_descriptor').value = JSON.stringify(validatedDescriptor || Array.from(detection.descriptor));
+                                        document.getElementById('bio_liveness_status').value = "1";
+
+                                        setTimeout(() => {
+                                            formBiometric.submit();
+                                        }, 400);
+                                        return;
+
+                                    } else if (blinkDuration > 3000) {
+                                        eyeWasClosed = false;
+                                    }
+
+                                } else {
+                                    statusText.innerText = "UJI ANTI-SPOOFING: Silakan KEDIPKAN MATA Anda sekali...";
+                                    statusText.style.color = "#0284c7";
+
+                                    if (livenessBadge) {
+                                        livenessBadge.innerHTML = '<i class="fas fa-eye"></i> Uji Liveness: Menunggu Kedipan (EAR > 0.20)';
+                                        livenessBadge.style.background = '#e0f2fe';
+                                        livenessBadge.style.color = '#0284c7';
+                                    }
+
+                                    const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
+                                        label: `Anti-Spoofing: Kedipkan Mata (EAR: ${avgEAR.toFixed(2)})`, 
+                                        boxColor: '#0284c7',
+                                        lineWidth: 2
+                                    });
+                                    drawBox.draw(canvas);
+                                }
+                            } else {
+                                consecutiveLostFrames++;
+                                if (consecutiveLostFrames > 8) {
+                                    statusText.innerText = "Posisikan wajah Anda tetap di kamera...";
+                                    statusText.style.color = "#cc0000";
+                                }
+                            }
+
+                            if (isLoopRunning && !isSubmitted) {
+                                setTimeout(loop, 40); // 40ms = ~25 FPS responsif untuk liveness
                             }
                         }
                     } catch (e) {
-                        console.error("Kesalahan loop liveness:", e);
-                    }
-
-                    if (isLoopRunning && !isSubmitted) {
-                        setTimeout(loop, 40); // 40ms interval = ~25 FPS sangat responsif
+                        console.error("Kesalahan pemindaian:", e);
                     }
                 }
 
                 loop();
             }
 
-            video.addEventListener('play', startLivenessScanner);
-            // Cadangan jika video sudah berjalan saat event didaftarkan
+            video.addEventListener('play', startScanner);
             if (!video.paused && video.readyState >= 2) {
-                startLivenessScanner();
+                startScanner();
             }
 
         } catch (err) {
             console.error("Error Kamera:", err);
             statusText.innerText = "Kamera gagal dimuat. Refresh halaman.";
-            statusText.style.color = "#cc0000"; // Warna merah
+            statusText.style.color = "#cc0000";
         }
     });
 </script>
