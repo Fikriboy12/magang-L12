@@ -5,281 +5,546 @@
 @section('contents')
 
 <!-- Font Poppins -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-    /* GLOBAL */
+    /* ========================================================
+       MODERN DASHBOARD GURU PEMBIMBING (AMBIENT TECH THEME)
+       ======================================================== */
     body, .content-wrapper {
         font-family: 'Poppins', sans-serif !important;
-        background-color: #f3f4f6; /* Background abu-abu muda bersih */
+        background-color: #f8fafc;
     }
 
-    /* --- 1. BANNER ADMIN STYLE (Biru Terang Solid) --- */
-    .admin-banner {
-        background-color: #3b82f6; /* Warna Biru Terang (Royal Blue) */
-        color: white;
-        padding: 40px 30px;
-        border-radius: 15px;
-        text-align: center;
-        box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
-        margin-bottom: 30px;
+    /* 1. HERO HEADER BANNER */
+    .pembimbing-hero-card {
+        background: linear-gradient(135deg, #1e3c72 0%, #2563eb 50%, #38bdf8 100%);
+        border-radius: 20px;
+        padding: 30px 32px;
+        color: #ffffff;
+        box-shadow: 0 12px 30px rgba(37, 99, 235, 0.22);
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 25px;
     }
-
-    .banner-title {
-        font-size: 2.2rem;
+    .pembimbing-hero-card::before {
+        content: '';
+        position: absolute;
+        top: -40px; right: -40px;
+        width: 170px; height: 170px;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .pembimbing-hero-card::after {
+        content: '';
+        position: absolute;
+        bottom: -30px; left: 35%;
+        width: 110px; height: 110px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .badge-role-pill {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(8px);
+        color: #ffffff;
         font-weight: 700;
-        margin-bottom: 10px;
-    }
-
-    .banner-subtitle {
-        font-size: 1.1rem;
-        font-weight: 400;
-        opacity: 0.9;
-    }
-
-    /* --- 2. STAT CARDS (Gaya Kotak Ikon di Kiri) --- */
-    .admin-stat-card {
-        background: #fff;
-        border-radius: 12px;
-        padding: 20px;
-        display: flex; /* Menyusun Ikon dan Teks bersebelahan */
+        font-size: 11.5px;
+        letter-spacing: 0.6px;
+        padding: 6px 14px;
+        border-radius: 30px;
+        display: inline-flex;
         align-items: center;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        border: none;
+        border: 1px solid rgba(255, 255, 255, 0.28);
+    }
+    .badge-date-pill {
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(8px);
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 12px;
+        padding: 8px 16px;
+        border-radius: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        display: inline-flex; align-items: center;
+    }
+    .badge-active-students {
+        background: #ffffff;
+        color: #1e3c72;
+        font-weight: 800;
+        font-size: 12px;
+        padding: 8px 16px;
+        border-radius: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        display: inline-flex; align-items: center;
+    }
+
+    /* 2. STATISTIC METRIC CARDS */
+    .stat-metric-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 22px 24px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+        transition: all 0.3s ease;
         height: 100%;
-        transition: transform 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
-
-    .admin-stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    .stat-metric-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 25px rgba(37, 99, 235, 0.1);
+        border-color: #38bdf8;
     }
-
-    /* Kotak Ikon Berwarna */
-    .icon-square {
-        width: 70px; height: 70px;
-        border-radius: 10px;
+    .stat-label {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        color: #64748b;
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 5px;
+    }
+    .stat-value {
+        font-size: 28px;
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -0.5px;
+        margin-bottom: 4px;
+    }
+    .stat-icon-wrapper {
+        width: 52px; height: 52px;
+        border-radius: 14px;
         display: flex; align-items: center; justify-content: center;
-        font-size: 32px;
-        color: white;
-        margin-right: 20px; /* Jarak antara ikon dan teks */
+        font-size: 22px;
         flex-shrink: 0;
     }
+    .bg-soft-primary { background: #e0f2fe; color: #0284c7; }
+    .bg-soft-info { background: #e0f7fa; color: #0891b2; }
+    .bg-soft-warning { background: #fef3c7; color: #d97706; }
 
-    /* Warna-warna Ikon sesuai referensi */
-    .bg-indigo { background-color: #6366f1; } /* Warna Ungu Kebiruan */
-    .bg-cyan   { background-color: #06b6d4; } /* Warna Biru Langit */
-    .bg-red    { background-color: #ef4444; } /* Warna Merah */
-
-    .stat-content h6 {
-        color: #9ca3af; /* Abu-abu label */
-        font-size: 0.9rem;
-        font-weight: 600;
-        margin-bottom: 5px;
-        text-transform: uppercase;
-    }
-
-    .stat-content h2 {
-        color: #374151; /* Abu-abu gelap angka */
-        font-size: 2rem;
-        font-weight: 700;
-        margin: 0;
-        line-height: 1;
-    }
-
-    /* --- 3. TABEL STYLE --- */
-    .card-table {
-        background: white;
-        border-radius: 12px;
-        border: none;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-        margin-top: 20px;
+    /* 3. MODERN TABLE CARD */
+    .modern-table-card {
+        background: #ffffff;
+        border-radius: 18px !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.03) !important;
         overflow: hidden;
     }
-
-    .table-header {
-        padding: 20px 25px;
-        border-bottom: 1px solid #f3f4f6;
-        display: flex; align-items: center;
+    .table-header-indicator {
+        width: 4px; height: 20px;
+        background: linear-gradient(180deg, #38bdf8 0%, #1e3c72 100%);
+        border-radius: 4px;
+    }
+    .search-input-wrapper {
+        position: relative;
+        min-width: 280px;
+    }
+    .search-input-wrapper .search-icon {
+        position: absolute;
+        top: 50%; left: 14px;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 13px;
+    }
+    .modern-search-input {
+        padding-left: 36px !important;
+        border-radius: 20px !important;
+        border: 1.5px solid #e2e8f0 !important;
+        background: #f8fafc !important;
+        font-size: 12.5px !important;
+        height: 38px !important;
+        transition: all 0.2s ease;
+    }
+    .modern-search-input:focus {
+        background: #ffffff !important;
+        border-color: #38bdf8 !important;
+        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15) !important;
     }
 
-    .custom-table th {
-        background-color: #f9fafb;
-        color: #6b7280;
-        font-weight: 600;
-        border: none;
-        padding: 15px 25px;
-        font-size: 0.85rem;
-        text-transform: uppercase;
+    /* 4. TABLE STYLING */
+    .modern-table {
+        margin-bottom: 0 !important;
+    }
+    .modern-table thead th {
+        background: #f8fafc !important;
+        color: #475569 !important;
+        font-size: 11.5px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.6px !important;
+        padding: 15px 18px !important;
+        border-top: none !important;
+        border-bottom: 2px solid #e2e8f0 !important;
+        vertical-align: middle !important;
+        white-space: nowrap;
+    }
+    .modern-table tbody td {
+        padding: 16px 18px !important;
+        vertical-align: middle !important;
+        border-top: 1px solid #f1f5f9 !important;
+        color: #334155;
+        font-size: 13px;
+    }
+    .modern-table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+    .modern-table tbody tr:hover {
+        background-color: #f0f9ff !important;
     }
 
-    .custom-table td {
-        padding: 15px 25px;
-        vertical-align: middle;
-        border-bottom: 1px solid #f3f4f6;
-        color: #4b5563;
-        font-size: 0.95rem;
-    }
-
-    /* Avatar Kotak Biru Muda */
-    .avatar-box {
-        width: 40px; height: 40px;
-        background-color: #eff6ff;
-        color: #3b82f6;
-        border-radius: 8px;
-        display: flex; align-items: center; justify-content: center;
+    /* 5. ITEM ELEMENTS */
+    .number-badge {
+        width: 28px; height: 28px;
+        border-radius: 50%;
+        background: #f1f5f9;
+        color: #475569;
         font-weight: 700;
-        font-size: 1.1rem;
-        margin-right: 15px;
+        font-size: 12px;
+        display: inline-flex; align-items: center; justify-content: center;
+    }
+    .student-avatar-img {
+        width: 44px; height: 44px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #ffffff;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+    }
+    .student-avatar-fallback {
+        width: 44px; height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+        color: #ffffff;
+        font-weight: 800;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 15px;
+        box-shadow: 0 3px 8px rgba(2, 132, 199, 0.25);
+    }
+    .badge-nisn-pill {
+        background: #f1f5f9;
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 7px;
+        border-radius: 6px;
+        display: inline-block;
+    }
+    .badge-jurusan-pill {
+        background: #e0f2fe;
+        color: #0369a1;
+        border: 1px solid #bae6fd;
+        font-weight: 700;
+        border-radius: 20px;
+        padding: 3px 9px;
+        font-size: 10.5px;
+        text-transform: uppercase;
+        display: inline-block;
     }
 
-    .btn-detail {
-        background-color: #eff6ff;
-        color: #3b82f6;
-        padding: 6px 18px;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 0.85rem;
-        border: 1px solid transparent;
-        transition: 0.2s;
+    /* BADGES LAPORAN */
+    .badge-pending-laporan {
+        background: #fef3c7;
+        color: #b45309;
+        border: 1px solid #fde68a;
+        border-radius: 20px;
+        font-weight: 700;
+        padding: 5px 12px;
+        font-size: 11.5px;
+        display: inline-flex; align-items: center;
     }
-    .btn-detail:hover {
-        background-color: #3b82f6;
-        color: white;
-        text-decoration: none;
+    .badge-approved-laporan {
+        background: #dcfce7;
+        color: #15803d;
+        border: 1px solid #86efac;
+        border-radius: 20px;
+        font-weight: 700;
+        padding: 5px 12px;
+        font-size: 11.5px;
+        display: inline-flex; align-items: center;
+    }
+    .badge-empty-laporan {
+        background: #f1f5f9;
+        color: #64748b;
+        border-radius: 20px;
+        font-weight: 600;
+        padding: 5px 12px;
+        font-size: 11.5px;
+        display: inline-flex; align-items: center;
+    }
+
+    /* ACTION BUTTONS */
+    .btn-detail-action {
+        background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-weight: 700 !important;
+        font-size: 12px !important;
+        padding: 7px 14px !important;
+        box-shadow: 0 3px 8px rgba(2, 132, 199, 0.25) !important;
+        transition: all 0.2s ease !important;
+        display: inline-flex; align-items: center;
+        text-decoration: none !important;
+        white-space: nowrap;
+    }
+    .btn-detail-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(2, 132, 199, 0.35) !important;
+        color: #ffffff !important;
+    }
+    .btn-absensi-quick {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        font-size: 11.5px !important;
+        padding: 6px 12px !important;
+        transition: all 0.2s ease !important;
+        display: inline-flex; align-items: center;
+        text-decoration: none !important;
+        white-space: nowrap;
+    }
+    .btn-absensi-quick:hover {
+        border-color: #0284c7 !important;
+        color: #0284c7 !important;
+        background: #f0f9ff !important;
+        transform: translateY(-1px);
     }
 </style>
 
 <div class="content-wrapper">
-    <section class="content pt-4 pb-5">
+    <section class="content pt-3 pb-5">
       <div class="container-fluid">
         
-        {{-- 1. BANNER SEPERTI ADMIN (Biru Terang Solid) --}}
-        <div class="row">
-            <div class="col-12">
-                <div class="admin-banner">
-                    <h1 class="banner-title">Selamat Datang, Guru Pembimbing!</h1>
-                    <p class="banner-subtitle">
-                        Sistem Informasi Magang - PT. MEDIA BALAI NUSA astro net
+        {{-- 1. HERO BANNER GURU PEMBIMBING (AMBIENT TECH GRADIENT) --}}
+        <div class="pembimbing-hero-card d-flex flex-wrap justify-content-between align-items-center">
+            <div class="d-flex align-items-center mb-3 mb-lg-0">
+                <div>
+                    <div class="badge-role-pill mb-2">
+                        <i class="fas fa-chalkboard-teacher mr-2"></i> Portal Guru Pembimbing SMK
+                    </div>
+                    <h2 class="font-weight-bold mb-1 text-white" style="letter-spacing: -0.5px;">
+                        Selamat Datang, {{ Auth::user()->name }}!
+                    </h2>
+                    <p class="mb-0 text-white-50" style="font-size: 13.5px; max-width: 600px;">
+                        Sistem Informasi Magang - PT. Media Balai Nusa (Astronet). Pantau aktivitas siswa bimbingan, verifikasi laporan harian, dan monitoring absensi secara berkala.
                     </p>
                 </div>
             </div>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <span class="badge-date-pill mr-2 mb-2 mb-sm-0">
+                    <i class="fas fa-calendar-alt mr-2 text-info"></i> {{ date('d F Y') }}
+                </span>
+                <span class="badge-active-students">
+                    <i class="fas fa-user-graduate text-primary mr-2"></i> {{ $mahasiswaList->count() }} Siswa Bimbingan
+                </span>
+            </div>
         </div>
 
-        {{-- 2. KARTU STATISTIK (Style Kotak Ikon di Kiri) --}}
+        {{-- 2. STATISTIC METRIC CARDS --}}
         <div class="row mb-4">
             
-            {{-- Card 1: Mahasiswa (Warna Indigo/Ungu - Ikon User) --}}
-            <div class="col-lg-4 col-md-6 col-12 mb-3">
-                <div class="admin-stat-card">
-                    <div class="icon-square bg-indigo">
-                        <i class="far fa-user"></i>
+            {{-- Card 1: Data Siswa Bimbingan --}}
+            <div class="col-lg-4 col-md-6 col-12 mb-3 mb-lg-0">
+                <div class="stat-metric-card">
+                    <div>
+                        <span class="stat-label">DATA SISWA BIMBINGAN</span>
+                        <h3 class="stat-value text-primary">{{ $mahasiswaList->count() }}</h3>
+                        <small class="text-muted"><i class="fas fa-check-circle text-success mr-1"></i>Siswa SMK Aktif</small>
                     </div>
-                    <div class="stat-content">
-                        <h6>Data Siswa Bimbingan</h6>
-                        <h2>{{ $mahasiswaList->count() }}</h2>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Card 2: Total Laporan (Warna Cyan/Biru Langit - Ikon Ceklis) --}}
-            <div class="col-lg-4 col-md-6 col-12 mb-3">
-                <div class="admin-stat-card">
-                    <div class="icon-square bg-cyan">
-                        <i class="far fa-check-circle"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h6>Total Laporan</h6>
-                        <h2>{{ $mahasiswaList->flatMap->laporanHarian->count() }}</h2>
+                    <div class="stat-icon-wrapper bg-soft-primary">
+                        <i class="fas fa-user-graduate"></i>
                     </div>
                 </div>
             </div>
 
-            {{-- Card 3: Menunggu ACC (Warna Merah - Ikon Silang/Jam) --}}
-            <div class="col-lg-4 col-md-6 col-12 mb-3">
-                <div class="admin-stat-card">
-                    <div class="icon-square bg-red">
-                        <i class="far fa-clock"></i> 
+            {{-- Card 2: Total Laporan Harian --}}
+            <div class="col-lg-4 col-md-6 col-12 mb-3 mb-lg-0">
+                <div class="stat-metric-card">
+                    <div>
+                        <span class="stat-label">TOTAL LAPORAN HARIAN</span>
+                        <h3 class="stat-value text-info">{{ $mahasiswaList->flatMap->laporanHarian->count() }}</h3>
+                        <small class="text-muted"><i class="fas fa-layer-group text-info mr-1"></i>Logbook Terkumpul</small>
                     </div>
-                    <div class="stat-content">
-                        <h6>Menunggu Acc</h6>
-                        <h2>{{ $mahasiswaList->flatMap->laporanHarian->where('status', 'pending')->count() }}</h2>
+                    <div class="stat-icon-wrapper bg-soft-info">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Card 3: Menunggu ACC --}}
+            <div class="col-lg-4 col-md-6 col-12 mb-3 mb-lg-0">
+                <div class="stat-metric-card">
+                    <div>
+                        <span class="stat-label">MENUNGGU ACC / REVIEW</span>
+                        <h3 class="stat-value text-warning">{{ $mahasiswaList->flatMap->laporanHarian->where('status', 'pending')->count() }}</h3>
+                        <small class="text-muted"><i class="fas fa-hourglass-half text-warning mr-1"></i>Perlu Persetujuan Guru</small>
+                    </div>
+                    <div class="stat-icon-wrapper bg-soft-warning">
+                        <i class="fas fa-clock"></i>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        {{-- 3. DAFTAR MAHASISWA --}}
-        <div class="row">
-            <div class="col-12">
-                <div class="card-table">
-                    <div class="table-header">
-                        <h5 class="m-0 font-weight-bold" style="color: #374151; font-size: 1.1rem;">
-                            <i class="fas fa-list text-primary mr-2"></i> Daftar Siswa Bimbingan
-                        </h5>
+        {{-- 3. MODERN TABLE CARD: DAFTAR SISWA BIMBINGAN --}}
+        <div class="card modern-table-card">
+            <div class="card-header bg-white py-3 d-flex flex-wrap align-items-center justify-content-between border-bottom">
+                <div class="d-flex align-items-center mb-2 mb-md-0">
+                    <div class="table-header-indicator mr-2"></div>
+                    <h5 class="font-weight-bold text-dark mb-0" style="font-size: 15.5px;">
+                        Daftar Siswa Bimbingan Magang
+                    </h5>
+                    <span class="badge badge-light border text-primary ml-2 px-2 py-1 font-weight-bold" style="border-radius: 20px;">
+                        {{ $mahasiswaList->count() }} Siswa
+                    </span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="search-input-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="customSearchInput" class="form-control form-control-sm modern-search-input" placeholder="Cari nama siswa, NISN, email...">
                     </div>
-                    
-                    <div class="table-responsive">
-                        <table class="custom-table mb-0">
-                            <thead>
+                </div>
+            </div>
+            
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table id="table" class="table modern-table" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th class="text-center" width="4%">No</th>
+                                <th>Nama & Identitas Siswa</th>
+                                <th>Asal Sekolah & Jurusan</th>
+                                <th>Kontak Siswa</th>
+                                <th class="text-center">Status Laporan</th>
+                                <th class="text-center" width="12%">Monitoring</th>
+                                <th class="text-center" width="12%">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($mahasiswaList as $mhs)
                                 <tr>
-                                    <th class="text-center" width="5%">No</th>
-                                    <th width="35%">Nama Siswa</th>
-                                    <th width="30%">Email</th>
-                                    <th class="text-center">Status Laporan</th>
-                                    <th class="text-center" width="15%">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($mahasiswaList as $mhs)
-                                <tr>
-                                    <td class="text-center font-weight-bold text-muted">{{ $loop->iteration }}</td>
+                                    {{-- No Urut --}}
+                                    <td class="text-center">
+                                        <span class="number-badge">{{ $loop->iteration }}</span>
+                                    </td>
+
+                                    {{-- Nama & Foto --}}
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            {{-- Avatar Inisial Kotak --}}
-                                            <div class="avatar-box">
-                                                {{ substr($mhs->name, 0, 1) }}
-                                            </div>
+                                            @php
+                                                $fotoSiswa = $mhs->pendaftaran->gambar ?? $mhs->gambar ?? null;
+                                            @endphp
+
+                                            @if($fotoSiswa && file_exists(public_path('gambar/' . $fotoSiswa)))
+                                                <img src="{{ asset('gambar/' . $fotoSiswa) }}" alt="{{ $mhs->name }}" class="student-avatar-img mr-3">
+                                            @else
+                                                <div class="student-avatar-fallback mr-3">
+                                                    {{ strtoupper(substr($mhs->name ?? 'S', 0, 1)) }}
+                                                </div>
+                                            @endif
+
                                             <div>
-                                                <span style="font-weight: 600; display: block; color: #1f2937;">{{ $mhs->name }}</span>
-                                                <span style="font-size: 0.8rem; color: #9ca3af;">NIS/NISN: {{ $mhs->nim ?? '-' }}</span>
+                                                <span class="font-weight-bold text-dark" style="font-size: 13.5px; display: block;">
+                                                    {{ $mhs->name }}
+                                                </span>
+                                                @if($mhs->nim)
+                                                    <span class="badge-nisn-pill mt-1">
+                                                        <i class="fas fa-id-card mr-1"></i> NIS/NISN: {{ $mhs->nim }}
+                                                    </span>
+                                                @endif
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="text-muted">{{ $mhs->email }}</td>
-                                    
+
+                                    {{-- Asal Sekolah & Jurusan --}}
+                                    <td>
+                                        <div class="font-weight-600 text-dark" style="font-size: 13px;">
+                                            <i class="fas fa-school text-primary mr-1"></i>
+                                            {{ $mhs->pendaftaran->universitas ?? 'SMK Mitra' }}
+                                        </div>
+                                        @if(isset($mhs->pendaftaran->jurusan) && $mhs->pendaftaran->jurusan)
+                                            <div class="mt-1">
+                                                <span class="badge-jurusan-pill">
+                                                    {{ strtoupper($mhs->pendaftaran->jurusan) }}
+                                                </span>
+                                            </div>
+                                        @endif
+                                    </td>
+
+                                    {{-- Kontak --}}
+                                    <td>
+                                        <div class="text-nowrap" style="font-size: 12.5px;">
+                                            <i class="fas fa-envelope text-muted mr-1"></i>
+                                            <a href="mailto:{{ $mhs->email }}" class="text-secondary font-weight-500">
+                                                {{ $mhs->email }}
+                                            </a>
+                                        </div>
+                                        @if($mhs->no_telp)
+                                            <div class="text-nowrap mt-1" style="font-size: 12px;">
+                                                <i class="fab fa-whatsapp text-success mr-1"></i>
+                                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $mhs->no_telp) }}" target="_blank" class="text-dark font-weight-500">
+                                                    {{ $mhs->no_telp }}
+                                                </a>
+                                            </div>
+                                        @endif
+                                    </td>
+
+                                    {{-- Status Laporan Harian --}}
                                     <td class="text-center">
                                         @php
+                                            $totalLaporan = $mhs->laporanHarian->count();
                                             $pendingCount = $mhs->laporanHarian->where('status', 'pending')->count();
                                         @endphp
                                         
                                         @if($pendingCount > 0)
-                                            <span class="badge badge-warning text-white px-3 py-1" style="border-radius: 20px;">
-                                                {{ $pendingCount }} Pending
+                                            <span class="badge-pending-laporan">
+                                                <i class="fas fa-exclamation-circle mr-1"></i> {{ $pendingCount }} Menunggu ACC
+                                            </span>
+                                        @elseif($totalLaporan > 0)
+                                            <span class="badge-approved-laporan">
+                                                <i class="fas fa-check-circle mr-1"></i> {{ $totalLaporan }} Disetujui
                                             </span>
                                         @else
-                                            <i class="fas fa-check-circle text-success" style="font-size: 1.3rem;"></i>
+                                            <span class="badge-empty-laporan">
+                                                <i class="far fa-circle mr-1"></i> Belum Ada Laporan
+                                            </span>
                                         @endif
                                     </td>
-                                    
+
+                                    {{-- Monitoring Absensi --}}
                                     <td class="text-center">
-                                        <a href="{{ route('pembimbing.laporan.mahasiswa', $mhs->id) }}" class="btn-detail">
-                                            Detail
+                                        <a href="{{ route('pembimbing.absensi.detail', $mhs->id) }}" class="btn-absensi-quick" title="Lihat Rekap Absensi Siswa">
+                                            <i class="fas fa-user-clock mr-1 text-primary"></i> Absensi
+                                        </a>
+                                    </td>
+
+                                    {{-- Aksi Detail Laporan --}}
+                                    <td class="text-center">
+                                        <a href="{{ route('pembimbing.laporan.mahasiswa', $mhs->id) }}" class="btn-detail-action" title="Buka Detail Logbook Laporan">
+                                            <i class="fas fa-book-open mr-1"></i> Detail Laporan
                                         </a>
                                     </td>
                                 </tr>
-                                @empty
+                            @empty
                                 <tr>
-                                    <td colspan="5" class="text-center py-5 text-muted">
-                                        <i class="fas fa-folder-open fa-3x mb-3" style="opacity: 0.3;"></i>
-                                        <p>Belum ada siswa yang dibimbing.</p>
+                                    <td colspan="7" class="text-center py-5 text-muted">
+                                        <div style="font-size: 40px; color: #cbd5e1; margin-bottom: 12px;">
+                                            <i class="fas fa-user-friends"></i>
+                                        </div>
+                                        <h6 class="font-weight-bold text-dark mb-1">Belum Ada Siswa Bimbingan</h6>
+                                        <p class="text-muted mb-0" style="font-size: 13px;">
+                                            Siswa magang SMK yang di-plotting oleh Admin kepada Anda akan muncul di sini.
+                                        </p>
                                     </td>
                                 </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -287,4 +552,20 @@
       </div>
     </section>
 </div>
+
+@endsection
+
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        // Fitur Live Search Cepat & Responsif
+        $("#customSearchInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#table tbody tr").filter(function() {
+                var rowText = $(this).text().toLowerCase();
+                $(this).toggle(rowText.indexOf(value) > -1);
+            });
+        });
+    });
+</script>
 @endsection
