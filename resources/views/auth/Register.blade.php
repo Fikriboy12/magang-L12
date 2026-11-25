@@ -521,41 +521,78 @@
             };
         }
 
-        // 2. Muat Model AI (SSD Mobilenet, 68 Landmarks, Face Recognition)
-        Promise.all([
-            faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
-            faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-            faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
-        ]).then(startVideo).catch(err => {
-            console.error("Gagal load model face-api:", err);
-            statusText.innerText = "Error memuat sistem AI biometrik. Pastikan folder public/models tersedia.";
-        });
+        // 2. Muat Model AI (SSD Mobilenet, 68 Landmarks, Face Recognition) & Nyalakan Kamera
+        async function initBiometricCamera() {
+            if (!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                statusText.innerText = "Kamera diblokir browser karena tidak memakai HTTPS. Gunakan https:// atau localhost.";
+                return;
+            }
 
-        function startVideo() {
+            try {
+                await Promise.all([
+                    faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+                    faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+                    faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+                ]);
+            } catch (err) {
+                console.error("Gagal load model face-api:", err);
+                statusText.innerText = "Error memuat sistem AI biometrik. Pastikan folder public/models tersedia.";
+                return;
+            }
+
+            await startVideo();
+        }
+
+        async function startVideo() {
+            video.addEventListener('loadedmetadata', startDetection);
             video.addEventListener('play', startDetection);
             video.addEventListener('playing', startDetection);
 
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    video.srcObject = stream;
-                    setTimeout(() => {
-                        if (video.srcObject && !video.paused) {
-                            startDetection();
-                        }
-                    }, 500);
-                })
-                .catch(err => {
-                    console.error("Gagal akses kamera:", err);
-                    statusText.innerText = "Kamera tidak diizinkan atau tidak ditemukan.";
-                });
+            try {
+                let stream;
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: { ideal: 'user' } },
+                        audio: false
+                    });
+                } catch (constraintErr) {
+                    if (constraintErr.name === 'OverconstrainedError' || constraintErr.name === 'ConstraintNotSatisfiedError') {
+                        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                    } else {
+                        throw constraintErr;
+                    }
+                }
+
+                video.srcObject = stream;
+                await video.play().catch(() => {});
+
+                setTimeout(() => {
+                    if (video.srcObject && !video.paused && video.videoWidth > 0) {
+                        startDetection();
+                    }
+                }, 500);
+            } catch (err) {
+                console.error("Gagal akses kamera:", err);
+                let errorMessage = "Kamera gagal dimuat. Refresh halaman.";
+                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                    errorMessage = "Izin kamera ditolak. Izinkan akses kamera di pengaturan browser lalu refresh.";
+                } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                    errorMessage = "Kamera tidak ditemukan pada perangkat ini.";
+                } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+                    errorMessage = "Kamera sedang digunakan aplikasi lain. Tutup aplikasi lain lalu refresh.";
+                }
+                statusText.innerText = errorMessage;
+            }
         }
+
+        initBiometricCamera();
 
         // 3. Pelacakan Real-Time (68 Landmark & Pose Menghadap Depan)
         function startDetection() {
-            if (detectionStarted) return;
+            if (detectionStarted || !video.videoWidth || !video.videoHeight) return;
             detectionStarted = true;
 
-            const displaySize = { width: video.videoWidth || 320, height: video.videoHeight || 240 };
+            const displaySize = { width: video.videoWidth, height: video.videoHeight };
             faceapi.matchDimensions(canvas, displaySize);
 
             scanInterval = setInterval(async () => {

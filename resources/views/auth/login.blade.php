@@ -289,7 +289,7 @@
 
     <div id="camera-section" style="display: none; margin-top: 15px;">
         <div style="position: relative; display: inline-block; width: 100%; border-radius: 10px; overflow: hidden; border: 2px solid #0284c7; background: #eee;">
-            <video id="video-webcam" style="width: 100%; height: auto;" autoplay muted></video>
+            <video id="video-webcam" style="width: 100%; height: auto; display: block;" autoplay muted playsinline></video>
             <canvas id="overlay-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
         </div>
 
@@ -425,16 +425,37 @@
         statusText.innerText = `Memuat Sistem AI untuk ${userName}...`;
 
         try {
-            // 4. Muat Model (SSD Mobilenet, 68 Landmarks, Face Recognition)
+            // 4. Pastikan konteks aman (HTTPS / localhost) agar API kamera tersedia di mobile
+            if (!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                const err = new Error("Akses kamera membutuhkan koneksi HTTPS (Secure Context).");
+                err.name = "InsecureContextError";
+                throw err;
+            }
+
+            // 5. Muat Model (SSD Mobilenet, 68 Landmarks, Face Recognition)
             await Promise.all([
                 faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
                 faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
                 faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
             ]);
 
-            // 5. Nyalakan Kamera
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            // 6. Nyalakan Kamera (prioritaskan kamera depan pada HP, fallback ke default jika tidak didukung)
+            let stream;
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: { ideal: 'user' } },
+                    audio: false
+                });
+            } catch (constraintErr) {
+                if (constraintErr.name === 'OverconstrainedError' || constraintErr.name === 'ConstraintNotSatisfiedError') {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                } else {
+                    throw constraintErr;
+                }
+            }
+
             video.srcObject = stream;
+            await video.play().catch(() => {});
             statusText.innerText = "Arahkan wajah ke kamera untuk verifikasi Euclidean Distance...";
 
             // Fungsi Pembantu: Jarak Euclidean 2D antar titik koordinat
@@ -489,9 +510,12 @@
                 ctx.restore();
             }
 
-            // 6. Mulai pemindaian saat video berjalan
+            // 7. Mulai pemindaian saat metadata & video siap berjalan
+            let scannerStarted = false;
             function startScanner() {
-                const displaySize = { width: video.videoWidth || 320, height: video.videoHeight || 240 };
+                if (scannerStarted || !video.videoWidth || !video.videoHeight) return;
+                scannerStarted = true;
+                const displaySize = { width: video.videoWidth, height: video.videoHeight };
                 faceapi.matchDimensions(canvas, displaySize);
 
                 let isSubmitted = false;
@@ -753,14 +777,26 @@
                 loop();
             }
 
+            video.addEventListener('loadedmetadata', startScanner);
+            video.addEventListener('playing', startScanner);
             video.addEventListener('play', startScanner);
-            if (!video.paused && video.readyState >= 2) {
+            if (!video.paused && video.readyState >= 2 && video.videoWidth > 0) {
                 startScanner();
             }
 
         } catch (err) {
             console.error("Error Kamera:", err);
-            statusText.innerText = "Kamera gagal dimuat. Refresh halaman.";
+            let errorMessage = "Kamera gagal dimuat. Refresh halaman.";
+            if (err.name === 'InsecureContextError') {
+                errorMessage = "Kamera diblokir browser karena tidak memakai HTTPS. Gunakan https:// atau localhost.";
+            } else if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                errorMessage = "Izin kamera ditolak. Izinkan akses kamera di pengaturan browser lalu refresh.";
+            } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                errorMessage = "Kamera tidak ditemukan pada perangkat ini.";
+            } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+                errorMessage = "Kamera sedang digunakan aplikasi lain. Tutup aplikasi lain lalu refresh.";
+            }
+            statusText.innerText = errorMessage;
             statusText.style.color = "#cc0000";
         }
     });

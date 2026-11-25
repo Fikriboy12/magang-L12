@@ -23,8 +23,8 @@ class MobileLaunchController extends Controller
         // 1. Buat token Sanctum mobile untuk user yang sedang aktif
         $token = $user->createToken('deep_link_auth_token')->plainTextToken;
 
-        // 2. Susun Deep Link URL khusus (Custom URI Scheme: magangapp://auth-callback)
-        $deepLinkUrl = "magangapp://auth-callback?" . http_build_query([
+        // 2. Susun Deep Link URL khusus (Custom URI Scheme & Chrome Intent)
+        $query = http_build_query([
             'token'    => $token,
             'user_id'  => $user->id,
             'name'     => $user->name,
@@ -32,7 +32,10 @@ class MobileLaunchController extends Controller
             'role'     => $user->role,
         ]);
 
+        $deepLinkUrl = "magangapp://auth-callback?" . $query;
+        $intentUrl   = "intent://auth-callback?" . $query . "#Intent;scheme=magangapp;package=com.example.e_magang;end";
+
         // 3. Tampilkan halaman launcher modern yang otomatis meluncurkan APK
-        return view('auth.mobile_launcher', compact('deepLinkUrl', 'user', 'token'));
+        return view('auth.mobile_launcher', compact('deepLinkUrl', 'intentUrl', 'user', 'token'));
     }
 }

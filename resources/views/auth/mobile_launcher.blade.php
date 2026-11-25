@@ -150,7 +150,7 @@
     </p>
 
     {{-- Tombol Buka Manual jika auto-redirect tidak terpicu --}}
-    <a href="{{ $deepLinkUrl }}" id="btnLaunch" class="btn-launch-app">
+    <a href="{{ $intentUrl ?? $deepLinkUrl }}" id="btnLaunch" class="btn-launch-app">
         <i class="fas fa-external-link-alt mr-2" style="margin-right: 8px;"></i> Buka di Aplikasi Mobile
     </a>
 
@@ -164,12 +164,18 @@
 </div>
 
 <script>
-    // 1. Coba luncurkan Deep Link secara otomatis dalam 600ms
     document.addEventListener("DOMContentLoaded", function() {
+        const intentUrl = "{{ $intentUrl ?? $deepLinkUrl }}";
         const deepLink = "{{ $deepLinkUrl }}";
+
+        // Coba luncurkan otomatis
+        setTimeout(function() {
+            window.location.href = intentUrl;
+        }, 300);
+
         setTimeout(function() {
             window.location.href = deepLink;
-        }, 600);
+        }, 1200);
     });
 </script>
 
