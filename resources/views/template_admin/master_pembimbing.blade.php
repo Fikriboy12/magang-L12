@@ -32,6 +32,50 @@
         gtag('config', 'UA-94034622-3');
     </script>
     <style>
+        :root {
+            --primary-color: #3CB9E0;
+            --primary-soft: rgba(60, 185, 224, 0.15);
+            --bg-body: #f8fafc;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            background-color: var(--bg-body);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* 1. NAVBAR MODERN (AMBIENT BLUE GRADIENT MATCHING ADMIN) */
+        .navbar-bg {
+            content: ' ';
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            height: 75px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #3CB9E0 100%) !important;
+            backdrop-filter: blur(10px);
+            z-index: 800;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 4px 20px rgba(30, 60, 114, 0.25);
+        }
+
+        .main-navbar {
+            position: fixed;
+            top: 0; right: 0; left: 0;
+            height: 75px;
+            z-index: 900;
+            background: transparent !important;
+            padding: 0 30px;
+        }
+
+        .main-wrapper {
+            padding-top: 75px !important;
+        }
+
+        .main-content {
+            padding-top: 25px;
+            padding-left: 25px;
+            padding-right: 25px;
+        }
+
         /* Styling Dasar Tabel DataTables */
         .table.dataTable {
             border-collapse: collapse !important; /* Pastikan border tidak dobel */
