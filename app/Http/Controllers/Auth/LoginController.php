@@ -171,7 +171,7 @@ class LoginController extends Controller
         $distance = sqrt($distance);
 
         // Log data untuk membantu debugging & audit keamanan biometrik
-        $isLive = ($request->input('liveness_status') == '1');
+        $isLive = ((string) $request->input('liveness_status') === '1');
         \Illuminate\Support\Facades\Log::info("Biometrik Login Attempt", [
             'email' => $request->email,
             'calculated_distance' => $distance,
@@ -180,7 +180,12 @@ class LoginController extends Controller
             'live_desc_sample' => array_slice($liveDescriptor, 0, 5),
         ]);
 
-        // 4. Validasi Threshold (SESUAI TABEL INTERPRETASI: THRESHOLD <= 0.60)
+        // 4. Wajib lolos verifikasi Liveness Detection (kedipan mata)
+        if (!$isLive) {
+            return back()->with('error', 'Verifikasi Liveness (kedipan mata) gagal atau belum dilakukan. Silakan ulangi login biometrik.');
+        }
+
+        // 5. Validasi Threshold (SESUAI TABEL INTERPRETASI: THRESHOLD <= 0.60)
         if ($distance <= 0.60) {
             
             // Terapkan Blokir Admin juga di Login Biometrik

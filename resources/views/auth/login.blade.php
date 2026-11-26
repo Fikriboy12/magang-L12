@@ -432,9 +432,10 @@
                 throw err;
             }
 
-            // 5. Muat Model (SSD Mobilenet, 68 Landmarks, Face Recognition)
+            // 5. Muat Model (SSD Mobilenet, Tiny Face Detector untuk FPS tinggi saat liveness, 68 Landmarks, Face Recognition)
             await Promise.all([
                 faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+                faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
                 faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
                 faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
             ]);
@@ -540,6 +541,12 @@
                 let baselineEAR = null;
                 let consecutiveLostFrames = 0;
 
+                // Detector ringan untuk fase Liveness agar FPS tinggi dan kedipan cepat tidak terlewat di laptop maupun HP
+                const livenessDetectorOptions = new faceapi.TinyFaceDetectorOptions({
+                    inputSize: 224,
+                    scoreThreshold: 0.4
+                });
+
                 async function loop() {
                     if (!isLoopRunning || isSubmitted) return;
 
@@ -561,6 +568,16 @@
                                 consecutiveLostFrames = 0;
                                 const resizedDetection = faceapi.resizeResults(detection, displaySize);
                                 const liveDescriptor = detection.descriptor;
+
+                                // Kalibrasi awal baseline EAR mata terbuka sejak Tahap 1
+                                const initLeftEAR = calculateEyeEAR(resizedDetection.landmarks.getLeftEye());
+                                const initRightEAR = calculateEyeEAR(resizedDetection.landmarks.getRightEye());
+                                const initAvgEAR = (initLeftEAR + initRightEAR) / 2.0;
+                                if (initAvgEAR >= 0.24) {
+                                    baselineEAR = baselineEAR === null
+                                        ? initAvgEAR
+                                        : (baselineEAR * 0.7) + (initAvgEAR * 0.3);
+                                }
 
                                 // Hitung Jarak Euclidean 128 Dimensi secara real-time
                                 const distance = calculateEuclideanDistance(storedDescriptor, liveDescriptor);
@@ -635,16 +652,12 @@
                                 if (metricValueText) metricValueText.innerText = "Jarak: --";
                             }
 
-                            if (isLoopRunning && !isSubmitted) {
-                                setTimeout(loop, 60); // Interval ~16 FPS
-                            }
-
                         } else if (currentPhase === 'LIVENESS') {
                             // ========================================================
                             // TAHAP 2: METODE ANTI-SPOOFING (UJI KEDIP MATA / EAR)
                             // (BARU MUNCUL SETELAH TAHAP 1 EUCLIDEAN DISTANCE SELESAI)
                             // ========================================================
-                            const detection = await faceapi.detectSingleFace(video).withFaceLandmarks();
+                            const detection = await faceapi.detectSingleFace(video, livenessDetectorOptions).withFaceLandmarks();
 
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -659,22 +672,25 @@
                                 const rightEAR = calculateEyeEAR(rightEye);
                                 const avgEAR   = (leftEAR + rightEAR) / 2.0;
 
+                                const effectiveBaseline = baselineEAR || 0.30;
+                                const dynamicClosedThreshold = Math.min(0.275, effectiveBaseline * 0.80);
+                                const activeThreshold = Math.max(EAR_THRESHOLD, dynamicClosedThreshold);
+                                const reopenThreshold = Math.max(EAR_THRESHOLD + 0.02, effectiveBaseline * 0.88);
+
                                 if (metricValueText) {
-                                    metricValueText.innerText = `EAR: ${avgEAR.toFixed(2)} | Th: ≤ 0.20`;
+                                    metricValueText.innerText = `EAR: ${avgEAR.toFixed(2)} | Target: ≤ ${activeThreshold.toFixed(2)}`;
                                 }
 
-                                if (baselineEAR === null) {
+                                // Perbarui baseline hanya saat mata terbuka normal (hindari ikut turun saat mulai berkedip)
+                                if (baselineEAR === null && avgEAR >= 0.24) {
                                     baselineEAR = avgEAR;
-                                } else if (!eyeWasClosed && avgEAR >= 0.24) {
+                                } else if (!eyeWasClosed && avgEAR >= 0.24 && avgEAR >= effectiveBaseline * 0.90) {
                                     baselineEAR = (baselineEAR * 0.9) + (avgEAR * 0.1);
                                 }
 
-                                const effectiveBaseline = baselineEAR || 0.30;
-                                const dynamicClosedThreshold = Math.min(0.245, effectiveBaseline * 0.82);
-
-                                const isEyesClosed = (avgEAR <= EAR_THRESHOLD) || 
-                                                     (avgEAR <= dynamicClosedThreshold) || 
-                                                     (leftEAR <= 0.235 || rightEAR <= 0.235);
+                                const isEyesClosed = (avgEAR <= EAR_THRESHOLD) ||
+                                                     (avgEAR <= dynamicClosedThreshold) ||
+                                                     (Math.min(leftEAR, rightEAR) <= Math.min(0.26, effectiveBaseline * 0.78));
 
                                 // TITIK-TITIK HANYA MUNCUL DI MATA (BUKAN SELURUH WAJAH!)
                                 drawEyeLandmarks(ctx, leftEye, isEyesClosed ? '#f59e0b' : '#38bdf8');
@@ -686,7 +702,7 @@
                                         closedTimestamp = Date.now();
                                     }
 
-                                    statusText.innerText = `Kedip terdeteksi (EAR: ${avgEAR.toFixed(2)} ≤ 0.20)! Silakan buka kembali mata Anda...`;
+                                    statusText.innerText = `Kedip terdeteksi (EAR: ${avgEAR.toFixed(2)} ≤ ${activeThreshold.toFixed(2)})! Silakan buka kembali mata Anda...`;
                                     statusText.style.color = "#f59e0b"; // Oranye
 
                                     if (livenessBadge) {
@@ -696,17 +712,17 @@
                                     }
 
                                     const drawBox = new faceapi.draw.DrawBox(resizedDetection.detection.box, { 
-                                        label: `Mata Menutup (EAR: ${avgEAR.toFixed(2)} ≤ 0.20)`, 
+                                        label: `Mata Menutup (EAR: ${avgEAR.toFixed(2)})`, 
                                         boxColor: '#f59e0b',
                                         lineWidth: 2
                                     });
                                     drawBox.draw(canvas);
 
-                                } else if (eyeWasClosed && (avgEAR > EAR_THRESHOLD || avgEAR >= (effectiveBaseline * 0.86))) {
-                                    // SIKLUS KEDIP LENGKAP: Terbuka (>0.20) -> Tertutup (<=0.20) -> Terbuka (>0.20)
+                                } else if (eyeWasClosed && avgEAR >= reopenThreshold) {
+                                    // SIKLUS KEDIP LENGKAP: Terbuka -> Tertutup -> Terbuka kembali (minimal >= reopenThreshold)
                                     const blinkDuration = Date.now() - closedTimestamp;
 
-                                    if (blinkDuration >= 30 && blinkDuration <= 3000) {
+                                    if (blinkDuration >= 80 && blinkDuration <= 3000) {
                                         isLoopRunning = false;
                                         isSubmitted = true;
 
@@ -728,7 +744,7 @@
 
                                         // Submit form login biometrik
                                         document.getElementById('bio_email').value = emailInput.value.trim();
-                                        document.getElementById('bio_face_descriptor').value = JSON.stringify(validatedDescriptor || Array.from(detection.descriptor));
+                                        document.getElementById('bio_face_descriptor').value = JSON.stringify(validatedDescriptor || []);
                                         document.getElementById('bio_liveness_status').value = "1";
 
                                         setTimeout(() => {
@@ -736,7 +752,8 @@
                                         }, 400);
                                         return;
 
-                                    } else if (blinkDuration > 3000) {
+                                    } else {
+                                        // Terlalu singkat (< 80ms noise) atau terlalu lama (> 3000ms): reset status kedipan
                                         eyeWasClosed = false;
                                     }
 
@@ -745,7 +762,7 @@
                                     statusText.style.color = "#0284c7";
 
                                     if (livenessBadge) {
-                                        livenessBadge.innerHTML = '<i class="fas fa-eye"></i> Uji Liveness: Menunggu Kedipan (EAR > 0.20)';
+                                        livenessBadge.innerHTML = `<i class="fas fa-eye"></i> Uji Liveness: Menunggu Kedipan (EAR > ${activeThreshold.toFixed(2)})`;
                                         livenessBadge.style.background = '#e0f2fe';
                                         livenessBadge.style.color = '#0284c7';
                                     }
@@ -759,18 +776,22 @@
                                 }
                             } else {
                                 consecutiveLostFrames++;
-                                if (consecutiveLostFrames > 8) {
+                                if (consecutiveLostFrames > 12) {
                                     statusText.innerText = "Posisikan wajah Anda tetap di kamera...";
                                     statusText.style.color = "#cc0000";
                                 }
                             }
-
-                            if (isLoopRunning && !isSubmitted) {
-                                setTimeout(loop, 40); // 40ms = ~25 FPS responsif untuk liveness
-                            }
                         }
                     } catch (e) {
                         console.error("Kesalahan pemindaian:", e);
+                    } finally {
+                        if (isLoopRunning && !isSubmitted) {
+                            if (currentPhase === 'LIVENESS') {
+                                requestAnimationFrame(loop);
+                            } else {
+                                setTimeout(loop, 60);
+                            }
+                        }
                     }
                 }
 
