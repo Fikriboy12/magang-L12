@@ -45,11 +45,6 @@ class OtpPasswordResetController extends Controller
         // Generate 4 digit OTP
         $otp = rand(1000, 9999);
 
-        // Simpan ke Session
-        Session::put('reset_password_otp', $otp);
-        Session::put('reset_password_email', $user->email);
-        Session::put('reset_password_expired', now()->addMinutes(10));
-
         $details = [
             'nama'    => $user->name,
             'otp'     => $otp,
@@ -60,6 +55,12 @@ class OtpPasswordResetController extends Controller
 
         try {
             Mail::to($user->email)->send(new SendOtpMail($details));
+
+            // Simpan ke Session hanya setelah email OTP berhasil terkirim
+            Session::put('reset_password_otp', $otp);
+            Session::put('reset_password_email', $user->email);
+            Session::put('reset_password_expired', now()->addMinutes(10));
+
             \Illuminate\Support\Facades\Log::info("OTP Reset Kata Sandi terkirim ke {$user->email}: {$otp}");
             return redirect()->route('password.reset.form')
                 ->with('success', 'Kode OTP verifikasi telah dikirimkan ke email Anda (' . $user->email . '). Silakan cek kotak masuk atau folder spam.');
@@ -67,7 +68,7 @@ class OtpPasswordResetController extends Controller
             \Illuminate\Support\Facades\Log::error("Gagal kirim OTP reset password ke {$user->email}: " . $e->getMessage());
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Gagal mengirim email OTP: ' . $e->getMessage() . '. Pastikan koneksi internet stabil.');
+                ->with('error', 'Gagal mengirim email OTP (koneksi ke server email timeout/terputus). Pastikan koneksi internet stabil lalu coba lagi.');
         }
     }
 

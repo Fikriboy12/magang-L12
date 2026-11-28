@@ -14,7 +14,10 @@
 <style>
     body {
         font-family: 'Roboto', sans-serif;
-        background: linear-gradient(135deg, #4AC1E0, #3CB9E0);
+        background: radial-gradient(circle at 12% 18%, rgba(62, 204, 233, 0.22) 0%, transparent 45%),
+                    radial-gradient(circle at 88% 82%, rgba(2, 132, 199, 0.18) 0%, transparent 45%),
+                    radial-gradient(circle at 50% 50%, rgba(240, 249, 255, 0.5) 0%, transparent 70%),
+                    linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 45%, #e2e8f0 100%);
         min-height: 100vh;
         margin: 0;
         display: flex;
@@ -25,45 +28,63 @@
     }
 
     .auth-card {
-        background: #fff;
-        border-radius: 12px;
-        padding: 25px 22px;
+        background: #ffffff;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        border-top: 4px solid #3ECCE9;
+        border-radius: 16px;
+        padding: 34px 26px;
         width: 100%;        
         max-width: 350px;   
-        box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        box-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.12), 0 0 25px rgba(62, 204, 233, 0.12);
         text-align: center;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        position: relative;
     }
 
     .auth-card img {
-        width: 80px;
+        width: 82px;
         height: auto;
         margin-bottom: 12px;
+        filter: drop-shadow(0 4px 10px rgba(62, 204, 233, 0.25));
     }
 
     .company-name {
-        font-size: 13px;
-        font-weight: 500;
-        color: #3CB9E0;
-        margin-bottom: 10px;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 4px;
+        letter-spacing: 0.3px;
+    }
+
+    .company-name span {
+        color: #0284c7;
+        font-weight: 600;
     }
 
     .auth-card h2 {
+        margin-top: 8px;
         margin-bottom: 8px;
-        color: #3CB9E0;
-        font-weight: 700;
-        font-size: 20px;
+        color: #0f172a;
+        font-weight: 800;
+        font-size: 21px;
+        letter-spacing: -0.3px;
     }
 
     .subtitle {
         font-size: 12px;
         color: #64748b;
-        margin-bottom: 15px;
+        margin-bottom: 18px;
         line-height: 1.5;
+    }
+
+    .otp-group {
+        text-align: left;
+        margin-bottom: 13px;
     }
 
     .input-group {
         position: relative;
-        margin-bottom: 12px;
+        margin-bottom: 13px;
         text-align: left;
     }
 
@@ -71,21 +92,24 @@
     .input-group > i:first-child {
         position: absolute;
         top: 50%;
-        left: 12px;
+        left: 13px;
         transform: translateY(-50%);
-        color: #3CB9E0;
-        font-size: 13px;
+        color: #0284c7;
+        font-size: 13.5px;
         pointer-events: none;
     }
 
     .input-group input {
         width: 100%;
-        padding: 10px 12px 10px 35px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
+        padding: 10px 12px 10px 38px;
+        border-radius: 9px;
+        border: 1px solid #cbd5e1;
         outline: none;
         font-size: 13px;
         box-sizing: border-box;
+        transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+        background: #f8fafc;
+        color: #1e293b;
     }
 
     .input-group input[type="password"],
@@ -93,9 +117,11 @@
         padding-right: 38px;
     }
 
-    .input-group input:focus {
-        border-color: #3CB9E0;
-        box-shadow: 0 0 6px rgba(74, 193, 224, 0.4);
+    .input-group input:focus,
+    .otp-input:focus {
+        background: #ffffff;
+        border-color: #0284c7 !important;
+        box-shadow: 0 0 0 3px rgba(62, 204, 233, 0.28);
     }
 
     /* Toggle Show/Hide Password */
@@ -112,7 +138,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: color 0.2s ease;
+        transition: color 0.2s ease, transform 0.1s ease;
         z-index: 5;
         background: transparent;
         border: none;
@@ -121,7 +147,11 @@
     }
 
     .toggle-password-btn:hover {
-        color: #3CB9E0;
+        color: #0284c7;
+    }
+
+    .toggle-password-btn:active {
+        transform: translateY(-50%) scale(0.92);
     }
 
     .toggle-password-btn i {
@@ -137,28 +167,41 @@
         font-size: 20px !important;
         font-weight: 700 !important;
         letter-spacing: 8px !important;
-        padding-left: 12px !important;
-        background-color: #f8fafc;
-        border: 2px dashed #3CB9E0 !important;
+        padding: 0 12px !important;
+        background-color: #f0f9ff;
+        color: #0f172a;
+        border: 1.5px solid #0284c7 !important;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+        -moz-appearance: textfield;
+    }
+
+    .otp-input::-webkit-outer-spin-button,
+    .otp-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
     }
 
     .auth-card button.btn-submit {
         width: 100%;
         padding: 11px;
         border: none;
-        border-radius: 8px;
-        background: linear-gradient(135deg, #4AC1E0, #3CB9E0);
-        color: #fff;
-        font-weight: bold;
+        border-radius: 9px;
+        background: linear-gradient(135deg, #3ECCE9 0%, #0284c7 100%);
+        color: #ffffff;
+        font-weight: 700;
         cursor: pointer;
-        margin-top: 10px;
-        font-size: 13px;
-        transition: 0.3s;
+        margin-top: 8px;
+        font-size: 13.5px;
+        letter-spacing: 0.3px;
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+        transition: all 0.3s ease;
     }
 
     .auth-card button.btn-submit:hover {
-        background: linear-gradient(135deg, #3CB9E0, #4AC1E0);
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
         transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4);
     }
 
     .btn-resend {
@@ -166,11 +209,13 @@
         border: none;
         color: #0284c7;
         font-size: 12px;
+        font-weight: 600;
         cursor: pointer;
         text-decoration: underline;
         padding: 0;
-        margin-top: 8px;
+        margin-top: 10px;
         display: inline-block;
+        transition: color 0.2s;
     }
     .btn-resend:hover {
         color: #0369a1;
@@ -178,32 +223,41 @@
 
     .auth-card .links {
         margin-top: 18px;
-        font-size: 12px;
+        font-size: 12.5px;
     }
 
     .auth-card .links a {
-        color: #3CB9E0;
+        color: #0284c7;
         text-decoration: none;
-        font-weight: 500;
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+
+    .auth-card .links a:hover {
+        color: #0369a1;
+        text-decoration: underline;
     }
 
     .alert {
         padding: 9px 12px;
-        margin-bottom: 15px;
-        border-radius: 6px;
-        font-size: 12px;
+        margin-bottom: 14px;
+        border-radius: 8px;
+        font-size: 11.5px;
         text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 8px;
         line-height: 1.4;
     }
     .alert-danger {
-        background: #ffe6e6;
-        color: #cc0000;
-        border: 1px solid #ffcccc;
+        background: #fef2f2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
     }
     .alert-success {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
+        background: #ecfdf5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
     }
 
     .password-hint {
@@ -215,17 +269,21 @@
         display: block;
         line-height: 1.4;
     }
+
+    .password-hint i {
+        color: #0284c7;
+    }
 </style>
 </head>
 <body>
 
 <div class="auth-card">
     <img src="{{ asset('gambar/ANMS-logo.png') }}" alt="Logo ANMS">
-    <div class="company-name">PT.MEDIA BALAI NUSA astro net</div>
+    <div class="company-name">PT. MEDIA BALAI NUSA <span>astro net</span></div>
     <h2>Atur Ulang Kata Sandi</h2>
     <p class="subtitle">
         Kode verifikasi telah dikirim ke: <br>
-        <b style="color: #0369a1;">{{ $email }}</b>
+        <b style="color: #0284c7;">{{ $email }}</b>
     </p>
 
     @if (session('success'))
@@ -253,14 +311,14 @@
     <form method="POST" action="{{ route('password.update.otp') }}">
         @csrf
         
-        <div class="form-group mb-2" style="text-align: left;">
-            <label style="font-size: 12px; font-weight: 600; color: #475569; display: block; margin-bottom: 5px;">
+        <div class="otp-group">
+            <label style="font-size: 12px; font-weight: 600; color: #334155; display: block; margin-bottom: 6px;">
                 Masukkan 4 Digit Kode OTP:
             </label>
-            <input type="number" name="otp" id="otp" class="otp-input" placeholder="0000" maxlength="4" required autofocus value="{{ old('otp') }}" style="width: 100%; border-radius: 8px; box-sizing: border-box; height: 42px;">
+            <input type="number" name="otp" id="otp" class="otp-input" placeholder="0000" maxlength="4" inputmode="numeric" required autofocus value="{{ old('otp') }}" style="width: 100%; border-radius: 9px; box-sizing: border-box; height: 44px;">
         </div>
 
-        <div class="input-group mt-3">
+        <div class="input-group">
             <i class="fas fa-lock input-icon-left"></i>
             <input type="password" name="password" id="reset_password" class="has-toggle" placeholder="Kata Sandi Baru" required minlength="8" autocomplete="new-password">
             <span class="toggle-password-btn" onclick="togglePasswordVisibility('reset_password', this)" role="button" tabindex="0" title="Tampilkan Kata Sandi">
@@ -308,7 +366,7 @@
             input.type = 'text';
             icon.classList.remove('fa-eye');
             icon.classList.add('fa-eye-slash');
-            btn.style.color = '#3CB9E0';
+            btn.style.color = '#0284c7';
             btn.setAttribute('title', 'Sembunyikan Kata Sandi');
         } else {
             input.type = 'password';
