@@ -535,13 +535,14 @@ class MobileController extends Controller
                 ], 400);
             }
 
-            // Cegah scan beruntun yang tidak sengaja dalam 2 menit
+            // Cegah scan beruntun yang tidak sengaja dalam 1 menit (60 detik)
             $jamMasukCarbon = Carbon::parse($hariIni . ' ' . $absenHariIni->jam_masuk, 'Asia/Jakarta');
-            if ($waktuSekarang->diffInMinutes($jamMasukCarbon) < 2) {
+            $selisihDetik = abs($waktuSekarang->diffInSeconds($jamMasukCarbon));
+            if ($selisihDetik < 60) {
                 return response()->json([
                     'status' => 'warning',
                     'code' => 'ALREADY_ATTENDED',
-                    'message' => 'Absensi Ditolak karena kehadiran sudah Tercatat. Absen pulang dapat dilakukan minimal 2 menit setelah absen masuk.'
+                    'message' => 'Absensi Ditolak karena kehadiran sudah Tercatat. Absen pulang dapat dilakukan minimal 1 menit setelah absen masuk.'
                 ], 400);
             }
 
