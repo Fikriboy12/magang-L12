@@ -64,23 +64,42 @@
             position: fixed; top: 80px; left: 0; width: 100%; 
             max-height: calc(100vh - 80px); background: #ffffff; 
             z-index: 2147483601; 
-            border-radius: 0 0 15px 15px; 
-            padding: 10px 20px 20px 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-top: 1px solid #f1f5f9;
+            border-radius: 0 0 18px 18px; 
+            padding: 12px 18px 24px 18px;
+            box-shadow: 0 16px 35px rgba(15, 23, 42, 0.14);
             display: flex; flex-direction: column; opacity: 0; visibility: hidden; 
-            transform: translateY(-10px); transition: all 0.3s ease-out;
+            transform: translateY(-10px); transition: all 0.25s ease-out;
             overflow-y: auto; font-family: 'Plus Jakarta Sans', sans-serif;
         }
         .mobile-menu-popup.show { opacity: 1; visibility: visible; transform: translateY(0); }
 
-        .mm-list { list-style: none; padding: 0; margin: 0; } 
-        .mm-item { display: flex; align-items: center; padding: 15px 10px; text-decoration: none !important; color: #334155; font-weight: 700; font-size: 15px; border-bottom: 1px solid #f1f5f9; transition: 0.2s; }
-        .mm-item:last-child { border-bottom: none; }
-        .mm-item i { width: 35px; font-size: 18px; color: #2563eb; }
-        .mm-item:active, .mm-item:hover { background: #eff6ff; color: #2563eb; }
+        .mm-user-card {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 12px; margin-bottom: 8px;
+            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;
+            text-decoration: none !important;
+        }
+        .mm-user-info { display: flex; align-items: center; gap: 10px; min-width: 0; }
+        .mm-user-avatar {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: #2563eb; color: #ffffff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; flex-shrink: 0;
+        }
+        .mm-user-name { font-size: 13.5px; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mm-user-sub { font-size: 11px; font-weight: 600; color: #2563eb; }
 
-        .mm-actions { display: flex; justify-content: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #f1f5f9; }
-        .mm-btn { width: auto; min-width: 150px; padding: 10px 25px; text-align: center; border-radius: 50px; text-decoration: none !important; font-weight: 700; font-size: 14px; display: block; background: #2563eb; color: #fff; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
+        .mm-list { list-style: none; padding: 0; margin: 0; } 
+        .mm-item { display: flex; align-items: center; padding: 12px; border-radius: 10px; text-decoration: none !important; color: #334155; font-weight: 600; font-size: 14.5px; border-bottom: 1px solid #f8fafc; transition: 0.2s; }
+        .mm-item:last-child { border-bottom: none; }
+        .mm-item i { width: 32px; font-size: 16px; color: #2563eb; }
+        .mm-item:active, .mm-item:hover, .mm-item.active { background: #eff6ff; color: #2563eb; }
+
+        .mm-actions { display: flex; justify-content: center; margin-top: 14px; padding-top: 14px; border-top: 1px solid #f1f5f9; }
+        .mm-btn { width: 100%; padding: 11px 20px; text-align: center; border-radius: 12px; text-decoration: none !important; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; background: #2563eb; color: #fff !important; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.22); transition: 0.2s; }
+        .mm-btn.mm-btn-logout { background: #fef2f2; color: #dc2626 !important; border: 1px solid #fecaca; box-shadow: none; }
+        .mm-btn.mm-btn-logout:active, .mm-btn.mm-btn-logout:hover { background: #fee2e2; color: #b91c1c !important; }
 
         /* =========================================
            3. CSS GLOBAL & HEADER
@@ -131,7 +150,7 @@
 
         .user-dropdown { position: relative; display: inline-block; }
         .user-toggle { display: flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 50px; background: #f1f5f9; color: #0f172a !important; font-weight: 700; font-size: 13px; cursor: pointer; text-decoration: none; }
-        .user-avatar { width: 28px; height: 28px; background: #0284c7; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        .user-avatar { width: 28px; height: 28px; background: #2563eb; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
         .dropdown-menu-custom { position: absolute; right: 0; top: 110%; background: white; min-width: 180px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); border-radius: 10px; padding: 5px 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: 0.3s; border: 1px solid #f1f5f9; z-index: 9999; }
         .user-dropdown:hover .dropdown-menu-custom { opacity: 1; visibility: visible; transform: translateY(0); }
         .dropdown-item-custom { display: flex; align-items: center; gap: 8px; padding: 8px 15px; color: #64748b; font-size: 13px; font-weight: 500; text-decoration: none; }
@@ -274,8 +293,19 @@
         .slider-content { height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; }
         #home, #about, #services, #portfolio, #blog, #contact { scroll-margin-top: 90px; }
 
+        @media (hover: none), (pointer: coarse) {
+            html, body, a, button, input, select, textarea, .nav-menu a, .user-toggle, .mobile-nav-toggle, .mm-item, .mm-btn {
+                cursor: auto !important;
+            }
+            .cursor-trail-dot { display: none !important; }
+        }
+
         @media (max-width: 991px) {
-            #header { height: 70px; padding: 10px 0; } 
+            html, body, a, button, input, select, textarea, .nav-menu a, .user-toggle, .mobile-nav-toggle, .mm-item, .mm-btn {
+                cursor: auto !important;
+            }
+            .cursor-trail-dot { display: none !important; }
+            #header, #header.header-scrolled { height: 70px !important; padding: 10px 0 !important; } 
             
             /* --- LOGO HP SEDANG & PROPORSIONAL --- */
             .logo-image { max-height: 28px; } 
@@ -285,23 +315,26 @@
             .mobile-nav-toggle { display: none !important; } 
 
             .custom-mobile-toggle { 
-                display: block !important; 
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                width: 38px;
+                height: 38px;
+                border-radius: 10px;
                 color: #2563eb !important; 
-                font-size: 28px; 
+                font-size: 22px; 
                 cursor: pointer; 
-                position: fixed; right: 20px; top: 18px; 
+                position: fixed; right: 16px; top: 16px; 
                 z-index: 2147483647; 
-                background: transparent; border: none; padding: 0;
+                background: #eff6ff; border: none; padding: 0;
                 outline: none !important;
                 -webkit-tap-highlight-color: transparent;
             }
             .custom-mobile-toggle:focus { outline: none !important; }
-
-            .header-right .user-toggle { position: fixed; right: 65px; top: 15px; z-index: 9998; }
             
             .mobile-menu-popup, .menu-backdrop { 
-                top: 60px !important; 
-                max-height: calc(100vh - 60px);
+                top: 70px !important; 
+                max-height: calc(100vh - 70px);
             }
             
             .mobile-nav, .mobile-nav-overly, #mobile-nav { display: none !important; opacity: 0 !important; visibility: hidden !important; }
@@ -372,7 +405,6 @@
                             <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item-custom" style="color: #ef4444;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar</a>
                         </div>
                     </div>
-                    <a href="{{ route('profile.view') }}" class="user-toggle d-flex d-lg-none"><div class="user-avatar"><i class="fa-solid fa-user"></i></div></a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
                 @else
                     <a href="{{ route('login') }}" class="d-none d-lg-block" style="font-weight: 700; color: #2563eb; margin-right: 25px; text-decoration: none;">Masuk</a>
@@ -380,7 +412,7 @@
                 @endauth
                 
                 {{-- TOMBOL MENU PAKAI ONCLICK (PASTI JALAN DI LAPORAN) --}}
-                <button class="custom-mobile-toggle d-lg-none" onclick="toggleMobileMenu()"><i class="fa-solid fa-bars"></i></button>
+                <button class="custom-mobile-toggle d-lg-none" type="button" aria-label="Buka Menu" onclick="toggleMobileMenu()"><i id="mobileToggleIcon" class="fa-solid fa-bars"></i></button>
             </div>
         </div>
     </header>
@@ -429,27 +461,43 @@
 
     <div id="menuBackdrop" class="menu-backdrop" onclick="toggleMobileMenu()"></div>
     <div id="mobileMenuPopup" class="mobile-menu-popup">
+        @auth
+            <a href="{{ route('profile.view') }}" class="mm-user-card" onclick="toggleMobileMenu()">
+                <div class="mm-user-info">
+                    <div class="mm-user-avatar"><i class="fa-solid fa-user"></i></div>
+                    <div style="min-width: 0;">
+                        <div class="mm-user-name">{{ Auth::user()->name }}</div>
+                        <div class="mm-user-sub">Lihat Profil Saya</div>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color: #94a3b8; font-size: 12px;"></i>
+            </a>
+        @endauth
         <ul class="mm-list">
-            <li><a href="{{ url('/') }}#home" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-house"></i> <span>Beranda</span></a></li>
+            <li><a href="{{ url('/') }}#home" class="mm-item {{ request()->is('/', 'home') ? 'active' : '' }}" onclick="toggleMobileMenu()"><i class="fa-solid fa-house"></i> <span>Beranda</span></a></li>
             <li><a href="{{ url('/') }}#about" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-circle-info"></i> <span>Tentang</span></a></li>
             <li><a href="{{ url('/') }}#services" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-list-check"></i> <span>Alur Proses</span></a></li>
             <li><a href="{{ url('/') }}#portfolio" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-images"></i> <span>Galeri</span></a></li>
             <li><a href="{{ url('/') }}#blog" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-newspaper"></i> <span>Berita</span></a></li>
             @auth
-                @if(!$statusDiterima) <li><a href="{{ route('pendaftaran.index') }}" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-file-signature"></i> <span>Pendaftaran</span></a></li> @endif
-                <li><a href="{{ route('pelamar.lamaran.index') }}" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-briefcase"></i> <span>Status Magang</span></a></li>
+                @if(!$statusDiterima) <li><a href="{{ route('pendaftaran.index') }}" class="mm-item {{ request()->routeIs('pendaftaran*') ? 'active' : '' }}" onclick="toggleMobileMenu()"><i class="fa-solid fa-file-signature"></i> <span>Pendaftaran</span></a></li> @endif
+                <li><a href="{{ route('pelamar.lamaran.index') }}" class="mm-item {{ request()->routeIs('pelamar.lamaran*') ? 'active' : '' }}" onclick="toggleMobileMenu()"><i class="fa-solid fa-briefcase"></i> <span>Status Magang</span></a></li>
                 @if($statusDiterima) 
-                    <li><a href="{{ route('mahasiswa.laporan.index') }}" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-file-lines"></i> <span>Data Laporan</span></a></li>
+                    <li><a href="{{ route('mahasiswa.laporan.index') }}" class="mm-item {{ request()->routeIs('mahasiswa.laporan*') ? 'active' : '' }}" onclick="toggleMobileMenu()"><i class="fa-solid fa-file-lines"></i> <span>Data Laporan</span></a></li>
                     {{-- MENU ABSENSI MOBILE (BARU) --}}
-                    <li><a href="{{ route('mahasiswa.absensi.index') }}" class="mm-item" onclick="toggleMobileMenu()"><i class="fa-solid fa-clock"></i> <span>Data Absensi</span></a></li>
+                    <li><a href="{{ route('mahasiswa.absensi.index') }}" class="mm-item {{ request()->routeIs('mahasiswa.absensi*') ? 'active' : '' }}" onclick="toggleMobileMenu()"><i class="fa-solid fa-clock"></i> <span>Data Absensi</span></a></li>
                 @endif
             @endauth
         </ul>
         <div class="mm-actions">
             @auth
-                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="mm-btn">Keluar</a>
+                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="mm-btn mm-btn-logout">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar
+                </a>
             @else
-                <a href="{{ route('login') }}" class="mm-btn">Masuk</a>
+                <a href="{{ route('login') }}" class="mm-btn">
+                    <i class="fa-solid fa-right-to-bracket"></i> Masuk
+                </a>
             @endauth
         </div>
     </div>
@@ -466,40 +514,49 @@
         function toggleMobileMenu() { 
             var backdrop = document.getElementById('menuBackdrop');
             var popup = document.getElementById('mobileMenuPopup');
+            var toggleIcon = document.getElementById('mobileToggleIcon');
             
             if (backdrop.classList.contains('show')) {
                 backdrop.classList.remove('show');
                 popup.classList.remove('show');
+                if (toggleIcon) {
+                    toggleIcon.classList.remove('fa-xmark');
+                    toggleIcon.classList.add('fa-bars');
+                }
             } else {
                 backdrop.classList.add('show');
                 popup.classList.add('show');
+                if (toggleIcon) {
+                    toggleIcon.classList.remove('fa-bars');
+                    toggleIcon.classList.add('fa-xmark');
+                }
             }
         }
 
         $(document).ready(function() {
-            // SNAKE TRAIL ASLI
-            (function() {
-                const trailLength = 10; const dots = []; let mouseX = window.innerWidth/2; let mouseY = window.innerHeight/2;
-                for (let i = 0; i < trailLength; i++) { 
-                    const dot = document.createElement('div'); dot.classList.add('cursor-trail-dot'); 
-                    if (i === 0) dot.classList.add('trail-leader'); document.body.appendChild(dot); 
-                    dots.push({ element: dot, x: mouseX, y: mouseY }); 
-                }
-                document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
-                document.addEventListener('mousedown', () => dots[0].element.classList.add('is-clicking'));
-                document.addEventListener('mouseup', () => dots[0].element.classList.remove('is-clicking'));
-                document.addEventListener('touchmove', (e) => { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; });
-                document.addEventListener('touchstart', (e) => { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; dots[0].element.classList.add('is-clicking'); });
-                document.addEventListener('touchend', () => dots[0].element.classList.remove('is-clicking'));
-                function animateTrail() { 
-                    let targetX = mouseX; let targetY = mouseY; 
-                    dots.forEach((dot, index) => { 
-                        if (index === 0) { dot.x = targetX; dot.y = targetY; } 
-                        else { const prevDot = dots[index - 1]; dot.x += (prevDot.x - dot.x) * 0.35; dot.y += (prevDot.y - dot.y) * 0.35; const scale = 1 - (index * 0.05); dot.element.style.transform = `translate(-50%, -50%) scale(${scale})`; } 
-                        dot.element.style.left = dot.x + 'px'; dot.element.style.top = dot.y + 'px'; 
-                    }); requestAnimationFrame(animateTrail); 
-                } animateTrail();
-            })();
+            // SNAKE TRAIL ASLI (Hanya aktif di desktop non-touch)
+            const isMobileOrTouch = window.matchMedia('(max-width: 991px)').matches || window.matchMedia('(pointer: coarse)').matches;
+            if (!isMobileOrTouch) {
+                (function() {
+                    const trailLength = 10; const dots = []; let mouseX = window.innerWidth/2; let mouseY = window.innerHeight/2;
+                    for (let i = 0; i < trailLength; i++) { 
+                        const dot = document.createElement('div'); dot.classList.add('cursor-trail-dot'); 
+                        if (i === 0) dot.classList.add('trail-leader'); document.body.appendChild(dot); 
+                        dots.push({ element: dot, x: mouseX, y: mouseY }); 
+                    }
+                    document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+                    document.addEventListener('mousedown', () => dots[0].element.classList.add('is-clicking'));
+                    document.addEventListener('mouseup', () => dots[0].element.classList.remove('is-clicking'));
+                    function animateTrail() { 
+                        let targetX = mouseX; let targetY = mouseY; 
+                        dots.forEach((dot, index) => { 
+                            if (index === 0) { dot.x = targetX; dot.y = targetY; } 
+                            else { const prevDot = dots[index - 1]; dot.x += (prevDot.x - dot.x) * 0.35; dot.y += (prevDot.y - dot.y) * 0.35; const scale = 1 - (index * 0.05); dot.element.style.transform = `translate(-50%, -50%) scale(${scale})`; } 
+                            dot.element.style.left = dot.x + 'px'; dot.element.style.top = dot.y + 'px'; 
+                        }); requestAnimationFrame(animateTrail); 
+                    } animateTrail();
+                })();
+            }
 
             if ($('.table').length > 0) { $('.table').DataTable({ dom: 'lBfrtip', buttons: ['copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5'], "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ] }); }
 
