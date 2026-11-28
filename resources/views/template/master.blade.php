@@ -402,7 +402,6 @@
                         </a>
                     </div>
                     <p class="footer-desc">PT MEDIA BALAI NUSA (ASTRONET.ID) merupakan perusahaan penyedia layanan internet (ISP) berbasis fiber optik yang resmi dan terpercaya.</p>
-                    <a href="{{ route('admin.login') }}" class="btn-admin-footer"><i class="fa-solid fa-user-shield"></i> Login Admin</a>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-12 footer-col">
                     <span class="footer-title">INFORMASI MAGANG</span>

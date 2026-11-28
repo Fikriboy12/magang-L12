@@ -74,53 +74,10 @@ class DataAbsensiController extends Controller
         return view('admin.absensi.detail', compact('user', 'riwayat'));
     }
 
-    // PUSAT PRESENSI ENTERPRISE (ALA EDLINK): TAB QR DINAMIS & TAB MANUAL INPUT
+    // HALAMAN PRESENSI HARIAN KHUSUS QR DINAMIS
     public function portal(Request $request)
     {
-        $defaultTab = $request->is('*qr*') ? 'qr' : 'manual';
-        $activeTab = $request->input('tab', $defaultTab);
-        $tanggal = $request->input('date', Carbon::now('Asia/Jakarta')->format('Y-m-d'));
-        $carbonDate = Carbon::parse($tanggal, 'Asia/Jakarta');
-
-        // Ambil semua mahasiswa magang yang diterima
-        $mahasiswa = Pendaftaran::with('user')
-                        ->where('status_pendaftaran', 'diterima')
-                        ->get();
-
-        // Ambil data absensi yang sudah tercatat pada tanggal tersebut
-        $existingAbsensi = Absensi::where('tgl_absen', $tanggal)
-                                  ->get()
-                                  ->keyBy('id_users');
-
-        // Hitung statistik
-        $totalSiswa = $mahasiswa->count();
-        $totalHadir = 0;
-        $totalIzin = 0;
-        $totalSakit = 0;
-        $totalAlfa = 0;
-
-        foreach ($mahasiswa as $m) {
-            $absen = $existingAbsensi->get($m->id_users);
-            if ($absen) {
-                $st = strtolower($absen->status);
-                if ($st === 'hadir') $totalHadir++;
-                elseif ($st === 'izin') $totalIzin++;
-                elseif ($st === 'sakit') $totalSakit++;
-                elseif (in_array($st, ['alfa', 'alpa'])) $totalAlfa++;
-            }
-        }
-        $totalBelum = $totalSiswa - ($totalHadir + $totalIzin + $totalSakit + $totalAlfa);
-
-        $stats = [
-            'total' => $totalSiswa,
-            'hadir' => $totalHadir,
-            'izin' => $totalIzin,
-            'sakit' => $totalSakit,
-            'alfa' => $totalAlfa,
-            'belum' => max(0, $totalBelum),
-        ];
-
-        return view('admin.absensi.portal', compact('mahasiswa', 'existingAbsensi', 'tanggal', 'carbonDate', 'stats', 'activeTab'));
+        return view('admin.absensi.portal');
     }
 
     // AJAX API: AMBIL DATA PRESENSI MANUAL BERDASARKAN TANGGAL TERTENTU

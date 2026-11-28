@@ -170,9 +170,6 @@
             </small>
         </div>
         <div class="mt-3 mt-md-0 d-flex flex-wrap gap-2">
-            <a href="{{ route('admin.absensi.portal') }}" class="btn btn-warning font-weight-bold text-dark mr-2 shadow-sm" style="border-radius: 10px;">
-                <i class="fas fa-calendar-check mr-1"></i> Pusat Presensi EdLink
-            </a>
             <a href="{{ route('admin.absensi.qr') }}" class="btn btn-primary font-weight-bold shadow-sm" style="background: linear-gradient(135deg, #0284c7, #3CB9E0); border: none; border-radius: 10px;">
                 <i class="fas fa-qrcode mr-1"></i> Layar QR Presensi
             </a>
@@ -247,7 +244,7 @@
                     <h5 class="font-weight-bold text-dark mb-1" style="font-size: 16px;">
                         <i class="fas fa-calendar-day text-primary mr-2"></i> Presensi Tanggal: {{ \Carbon\Carbon::parse($selectedDate)->translatedFormat('l, d F Y') }}
                     </h5>
-                    <p class="text-muted small mb-0">Status kehadiran otomatis diperbarui saat siswa scan QR atau diabsenkan manual.</p>
+                    <p class="text-muted small mb-0">Status kehadiran otomatis diperbarui saat siswa melakukan scan QR melalui aplikasi mobile.</p>
                 </div>
                 
                 {{-- Form Filter Tanggal --}}
