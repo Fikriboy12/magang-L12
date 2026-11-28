@@ -268,11 +268,11 @@ class DataAbsensiController extends Controller
         ]);
     }
 
-    // AJAX API: GENERATOR DYNAMIC QR TOKEN (BERUBAH TIAP 20 DETIK)
+    // AJAX API: GENERATOR DYNAMIC QR TOKEN (BERUBAH TIAP 10 DETIK)
     public function getQrToken()
     {
         $now = Carbon::now('Asia/Jakarta');
-        $interval = 20; // 20 detik
+        $interval = 10; // 10 detik sesuai aturan skripsi
         
         $token = 'MBN-QR-' . strtoupper(Str::random(10)) . '-' . $now->timestamp;
         
@@ -280,10 +280,10 @@ class DataAbsensiController extends Controller
             'token' => $token,
             'created_at' => $now->timestamp,
             'expires_at' => $now->timestamp + $interval,
-            'valid_until' => $now->timestamp + $interval + 15,
-        ], 40);
+            'valid_until' => $now->timestamp + $interval + 5,
+        ], 30);
 
-        Cache::put('current_active_qr_token', $token, 40);
+        Cache::put('current_active_qr_token', $token, 30);
 
         $qrPayload = json_encode([
             'app' => 'magang-mbn',

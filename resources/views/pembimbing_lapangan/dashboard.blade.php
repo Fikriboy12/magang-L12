@@ -29,7 +29,7 @@
     @endif
 
     {{-- Banner Selamat Datang --}}
-    <div class="card mb-4 border-0 shadow-sm" style="background: linear-gradient(135deg, #0d47a1 0%, #1976d2 100%); color: white; border-radius: 14px;">
+    <div class="card mb-4 border-0 shadow-sm" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 55%, #3CB9E0 100%); color: white; border-radius: 14px;">
         <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between">
             <div class="mb-3 mb-md-0">
                 <h4 class="font-weight-bold mb-1">

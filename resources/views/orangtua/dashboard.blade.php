@@ -14,25 +14,25 @@
         background-color: #f3f4f6;
     }
 
-    /* --- 1. BANNER ADMIN STYLE (Biru Terang Solid) --- */
+    /* --- 1. BANNER ADMIN STYLE (Corporate Blue-Cyan Gradient) --- */
     .admin-banner {
-        background-color: #3b82f6;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 55%, #3CB9E0 100%);
         color: white;
-        padding: 40px 30px;
-        border-radius: 15px;
-        text-align: center;
-        box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
-        margin-bottom: 30px;
+        padding: 32px 28px;
+        border-radius: 14px;
+        text-align: left;
+        box-shadow: 0 4px 14px rgba(30, 60, 114, 0.2);
+        margin-bottom: 24px;
     }
 
     .banner-title {
-        font-size: 2.2rem;
+        font-size: 1.75rem;
         font-weight: 700;
-        margin-bottom: 10px;
+        margin-bottom: 6px;
     }
 
     .banner-subtitle {
-        font-size: 1.1rem;
+        font-size: 0.95rem;
         font-weight: 400;
         opacity: 0.9;
     }

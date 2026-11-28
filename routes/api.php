@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/absensi/masuk', [MobileController::class, 'absenMasuk']);
     Route::post('/absensi/pulang/{id}', [MobileController::class, 'absenPulang']);
     Route::post('/absensi/scan-qr', [MobileController::class, 'scanQrAbsensi']);
+    Route::post('/absensi/izin', [MobileController::class, 'ajukanIzin']);
 
     // Pengajuan Sertifikat
     Route::get('/sertifikat', [MobileController::class, 'getSertifikat']);
@@ -64,7 +65,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/laporan', [MobileController::class, 'getPembimbingLapanganLaporan']);
         Route::post('/laporan/{id}/approve', [MobileController::class, 'approveLaporanMobile']);
         Route::post('/laporan/{id}/reject', [MobileController::class, 'rejectLaporanMobile']);
-        // Absensi Siswa
+        // Absensi Siswa & QR Dinamis 10 Detik
+        Route::get('/qr-token', [MobileController::class, 'getPembimbingLapanganQrToken']);
         Route::get('/absensi', [MobileController::class, 'getPembimbingLapanganAbsensi']);
         Route::get('/absensi/siswa/{siswa_id}', [MobileController::class, 'getPembimbingLapanganAbsensiDetail']);
         // Sertifikat
@@ -78,6 +80,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // --- RUTE CHAT UMUM UNTUK SISWA & MENTOR ---
+    Route::get('/chat/mentor', [MobileController::class, 'getSiswaMentor']);
     Route::get('/chat/messages/{partner_id}', [MobileController::class, 'getChatMessages']);
     Route::post('/chat/send', [MobileController::class, 'sendChatMessage']);
 });

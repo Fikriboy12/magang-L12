@@ -207,14 +207,15 @@ class PembimbingLapanganController extends Controller
         $siswaIds = $this->getSiswaIds();
         $absensi = Absensi::whereIn('id_users', $siswaIds)->findOrFail($id);
 
-        $alasan = $request->keterangan_penolakan ? ' [Ditolak: ' . $request->keterangan_penolakan . ']' : '';
+        $alasan = $request->keterangan_penolakan ? ' [Ditolak: ' . $request->keterangan_penolakan . ' - Tercatat Alfa]' : ' [Ditolak - Tercatat Alfa]';
 
         $absensi->update([
+            'status' => 'Alfa',
             'status_validasi' => 'rejected',
             'keterangan' => ($absensi->keterangan ?? '') . $alasan
         ]);
 
-        return redirect()->back()->with('error', 'Pengajuan izin siswa telah ditolak.');
+        return redirect()->back()->with('error', 'Pengajuan izin siswa telah ditolak dan status kehadiran diubah menjadi Alfa.');
     }
 
     // ==========================================
@@ -225,16 +226,13 @@ class PembimbingLapanganController extends Controller
         $siswaIds = $this->getSiswaIds();
         $siswaList = $this->getSiswaList();
 
-        $statusFilter = $request->get('status', 'all');
+        $statusFilter = 'approved';
         $siswaFilter = $request->get('siswa_id');
         $search = $request->get('search');
 
         $query = LaporanHarian::whereIn('user_id', $siswaIds)
+                              ->where('status', 'approved')
                               ->with(['user', 'user.pendaftaran']);
-
-        if ($statusFilter !== 'all' && in_array($statusFilter, ['pending', 'approved', 'rejected'])) {
-            $query->where('status', $statusFilter);
-        }
 
         if ($siswaFilter) {
             $query->where('user_id', $siswaFilter);

@@ -24,6 +24,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 
     <style>
+        body {
+            background-color: #f4f7fc;
+        }
+
+        .navbar-bg {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #3CB9E0 100%) !important;
+        }
+
         /* Styling Dasar Tabel DataTables */
         .table.dataTable {
             border-collapse: collapse !important;

@@ -354,6 +354,68 @@ class MobileController extends Controller
     }
 
     /**
+     * 📝 Pengajuan Izin / Sakit Siswa (Diverifikasi Pembimbing Lapangan)
+     */
+    public function ajukanIzin(Request $request)
+    {
+        $user = $request->user();
+        $today = Carbon::now('Asia/Jakarta')->toDateString();
+
+        $sudahAda = Absensi::where('id_users', $user->id)
+            ->whereDate('tgl_absen', $today)
+            ->first();
+
+        if ($sudahAda) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Kehadiran atau pengajuan izin Anda hari ini sudah tercatat.'
+            ], 400);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:Izin,Sakit',
+            'keterangan' => 'required|string',
+            'foto_bukti' => 'required|file|mimes:jpg,jpeg,png,pdf|max:4096',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Lengkapi jenis izin, alasan, dan lampiran bukti.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $fotoPath = null;
+        if ($request->hasFile('foto_bukti')) {
+            $file = $request->file('foto_bukti');
+            $namaFile = time() . '_izin_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
+            $dest = public_path('uploads/absensi');
+            if (!file_exists($dest)) {
+                mkdir($dest, 0755, true);
+            }
+            $file->move($dest, $namaFile);
+            $fotoPath = $namaFile;
+        }
+
+        $absen = Absensi::create([
+            'id_users' => $user->id,
+            'tgl_absen' => $today,
+            'jam_masuk' => Carbon::now('Asia/Jakarta')->format('H:i:s'),
+            'status' => $request->status,
+            'foto_bukti' => $fotoPath,
+            'keterangan' => $request->keterangan,
+            'status_validasi' => 'pending',
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Pengajuan ' . $request->status . ' berhasil dikirim dan menunggu persetujuan Pembimbing Lapangan.',
+            'data' => $absen
+        ]);
+    }
+
+    /**
      * 📱 Scan Dynamic QR Code Absensi Siswa
      * Menerima input:
      * - qr_token (wajib): String token hasil scan QR dari layar Admin
@@ -391,7 +453,7 @@ class MobileController extends Controller
             return response()->json([
                 'status' => 'error',
                 'code' => 'QR_EXPIRED',
-                'message' => 'QR Code sudah kedaluwarsa atau tidak valid! Mohon arahkan kamera ke layar monitor kantor dan pindai QR Code terbaru yang sedang tampil.'
+                'message' => 'QR Code Kedaluwarsa Silakan Pindai Ulang'
             ], 400);
         }
 
@@ -435,11 +497,15 @@ class MobileController extends Controller
                 ], 400);
             }
 
+            // Aturan waktu skripsi: 07:00-08:00 = Hadir, lewat 08:00 = Terlambat
+            $batasTepatWaktu = Carbon::parse($hariIni . ' 08:00:59', 'Asia/Jakarta');
+            $statusKehadiran = $waktuSekarang->greaterThan($batasTepatWaktu) ? 'Terlambat' : 'Hadir';
+
             $absen = Absensi::create([
                 'id_users' => $user->id,
                 'tgl_absen' => $hariIni,
                 'jam_masuk' => $waktuSekarang->format('H:i:s'),
-                'status' => 'Hadir',
+                'status' => $statusKehadiran,
                 'foto_bukti' => $fotoPath,
                 'lokasi_masuk' => $lokasiInput,
                 'keterangan' => $keteranganInput,
@@ -447,12 +513,13 @@ class MobileController extends Controller
             ]);
 
             // Catat log live feed untuk layar Admin
-            $this->pushLiveScanFeed($user->name, 'Masuk', $waktuSekarang->format('H:i:s'));
+            $this->pushLiveScanFeed($user->name, 'Masuk (' . $statusKehadiran . ')', $waktuSekarang->format('H:i:s'));
 
             return response()->json([
                 'status' => 'success',
                 'tipe' => 'masuk',
-                'message' => 'Presensi MASUK berhasil! Tercatat pada pukul ' . $waktuSekarang->format('H:i:s') . ' WIB.',
+                'status_kehadiran' => $statusKehadiran,
+                'message' => 'Absensi Berhasil Tercatat (' . $statusKehadiran . ' • ' . $waktuSekarang->format('H:i:s') . ' WIB).',
                 'data' => $absen
             ], 200);
         }
@@ -463,7 +530,8 @@ class MobileController extends Controller
             if ($reqTipe === 'masuk') {
                 return response()->json([
                     'status' => 'warning',
-                    'message' => 'Anda sudah melakukan absen masuk hari ini pada pukul ' . substr($absenHariIni->jam_masuk, 0, 5) . ' WIB.'
+                    'code' => 'ALREADY_ATTENDED',
+                    'message' => 'Absensi Ditolak karena kehadiran sudah Tercatat (' . substr($absenHariIni->jam_masuk, 0, 5) . ' WIB).'
                 ], 400);
             }
 
@@ -472,7 +540,8 @@ class MobileController extends Controller
             if ($waktuSekarang->diffInMinutes($jamMasukCarbon) < 2) {
                 return response()->json([
                     'status' => 'warning',
-                    'message' => 'Anda baru saja absen masuk. Absen pulang dapat dilakukan minimal 2 menit setelah absen masuk.'
+                    'code' => 'ALREADY_ATTENDED',
+                    'message' => 'Absensi Ditolak karena kehadiran sudah Tercatat. Absen pulang dapat dilakukan minimal 2 menit setelah absen masuk.'
                 ], 400);
             }
 
@@ -482,13 +551,13 @@ class MobileController extends Controller
                 'lokasi_keluar' => $lokasiInput,
             ]);
 
-            // Catat log live feed untuk layar Admin
+            // Catat log live feed untuk layar Pembimbing Lapangan / Admin
             $this->pushLiveScanFeed($user->name, 'Pulang', $waktuSekarang->format('H:i:s'));
 
             return response()->json([
                 'status' => 'success',
                 'tipe' => 'pulang',
-                'message' => 'Presensi PULANG berhasil! Tercatat pada pukul ' . $waktuSekarang->format('H:i:s') . ' WIB. Hati-hati di jalan!',
+                'message' => 'Absensi Pulang Berhasil Tercatat (' . $waktuSekarang->format('H:i:s') . ' WIB).',
                 'data' => $absenHariIni
             ], 200);
         }
@@ -496,9 +565,10 @@ class MobileController extends Controller
         // KASUS C: SUDAH SELESAI MASUK DAN PULANG HARI INI
         return response()->json([
             'status' => 'info',
-            'message' => 'Anda sudah menyelesaikan absensi masuk (' . substr($absenHariIni->jam_masuk, 0, 5) . ' WIB) dan absen pulang (' . substr($absenHariIni->jam_keluar, 0, 5) . ' WIB) untuk hari ini.',
+            'code' => 'ALREADY_ATTENDED',
+            'message' => 'Absensi Ditolak karena kehadiran sudah Tercatat (Masuk ' . substr($absenHariIni->jam_masuk, 0, 5) . ' WIB & Pulang ' . substr($absenHariIni->jam_keluar, 0, 5) . ' WIB).',
             'data' => $absenHariIni
-        ], 200);
+        ], 400);
     }
 
     /**
@@ -1370,12 +1440,21 @@ class MobileController extends Controller
         $siswaIds = $this->getMentorSiswaIds($mentor);
 
         $absensi = Absensi::whereIn('id_users', $siswaIds)->findOrFail($id);
+        $alasanText = $request->alasan ?? $request->keterangan_penolakan;
+        $alasan = $alasanText
+            ? ' [Izin Ditolak: ' . $alasanText . ' - Tercatat Alfa]'
+            : ' [Izin Ditolak (Surat Tidak Lengkap) - Tercatat Alfa]';
+
         $absensi->update([
+            'status' => 'Alfa',
             'status_validasi' => 'rejected',
-            'keterangan' => ($absensi->keterangan ?? '') . ($request->alasan ? ' [Ditolak: ' . $request->alasan . ']' : ' [Ditolak]')
+            'keterangan' => ($absensi->keterangan ?? '') . $alasan
         ]);
 
-        return response()->json(['status' => 'success', 'message' => 'Izin berhasil ditolak.']);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Izin ditolak. Status kehadiran siswa otomatis diubah menjadi Alfa.'
+        ]);
     }
 
     public function getPembimbingLapanganLaporan(Request $request)
@@ -1384,6 +1463,7 @@ class MobileController extends Controller
         $siswaIds = $this->getMentorSiswaIds($mentor);
 
         $laporan = LaporanHarian::whereIn('user_id', $siswaIds)
+                                ->where('status', 'approved')
                                 ->with('user')
                                 ->latest('tanggal')
                                 ->get();
@@ -1422,20 +1502,72 @@ class MobileController extends Controller
         return response()->json(['status' => 'success', 'message' => 'Laporan harian ditolak untuk revisi.']);
     }
 
+    public function getPembimbingLapanganQrToken(Request $request)
+    {
+        $mentor = $request->user();
+        if ($mentor->role !== 'pembimbing_lapangan') {
+            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
+        }
+
+        $now = Carbon::now('Asia/Jakarta');
+        $interval = 10; // QR dinamis berganti tiap 10 detik
+        $token = 'MBN-PL-QR-' . strtoupper(\Illuminate\Support\Str::random(10)) . '-' . $now->timestamp;
+
+        Cache::put('active_attendance_qr_' . $token, [
+            'token' => $token,
+            'mentor_id' => $mentor->id,
+            'created_at' => $now->timestamp,
+            'expires_at' => $now->timestamp + $interval,
+            'valid_until' => $now->timestamp + $interval + 5, // +5 dtk toleransi jaringan
+        ], 30);
+
+        Cache::put('current_active_qr_token', $token, 30);
+
+        $qrPayload = json_encode([
+            'app' => 'magang-mbn',
+            'type' => 'dynamic_attendance_qr',
+            'token' => $token,
+            'mentor_id' => $mentor->id,
+            'ts' => $now->timestamp,
+        ]);
+
+        $qrImageUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=12&data=' . urlencode($qrPayload);
+        $recentScans = Cache::get('recent_attendance_scans', []);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'token' => $token,
+                'qr_payload' => $qrPayload,
+                'qr_image_url' => $qrImageUrl,
+                'interval' => $interval,
+                'server_time' => $now->format('H:i:s'),
+                'date_formatted' => $now->translatedFormat('l, d F Y'),
+                'recent_scans' => is_array($recentScans) ? array_slice($recentScans, 0, 8) : [],
+            ]
+        ]);
+    }
+
     public function getPembimbingLapanganAbsensi(Request $request)
     {
         $mentor = $request->user();
         $siswaIds = $this->getMentorSiswaIds($mentor);
-        $date = $request->get('tanggal', Carbon::today()->toDateString());
+        $date = $request->get('tanggal');
 
-        $absensi = Absensi::whereIn('id_users', $siswaIds)
-                          ->whereDate('tgl_absen', $date)
-                          ->with('user')
-                          ->get();
+        $query = Absensi::whereIn('id_users', $siswaIds)
+                        ->with('user')
+                        ->orderBy('tgl_absen', 'desc')
+                        ->orderBy('jam_masuk', 'desc');
+
+        if ($date) {
+            $query->whereDate('tgl_absen', $date);
+        }
+
+        $absensi = $query->limit(100)->get();
 
         return response()->json([
             'status' => 'success',
-            'date' => $date,
+            'date' => $date ?? 'all',
             'data' => $absensi
         ]);
     }
@@ -1495,6 +1627,45 @@ class MobileController extends Controller
     // ==========================================
     // 💬 API CHAT MOBILE (GENERAL)
     // ==========================================
+    public function getSiswaMentor(Request $request)
+    {
+        $siswa = $request->user();
+        $mentor = null;
+
+        if ($siswa->pembimbing_lapangan_id) {
+            $mentor = User::where('id', $siswa->pembimbing_lapangan_id)
+                          ->where('role', 'pembimbing_lapangan')
+                          ->first();
+        }
+
+        if (!$mentor) {
+            $mentor = User::where('role', 'pembimbing_lapangan')->first();
+        }
+
+        if (!$mentor) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Pembimbing lapangan belum tersedia. Hubungi admin.'
+            ], 404);
+        }
+
+        $unreadCount = Chat::where('sender_id', $mentor->id)
+                           ->where('receiver_id', $siswa->id)
+                           ->where('is_read', false)
+                           ->count();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'id' => $mentor->id,
+                'name' => $mentor->name,
+                'email' => $mentor->email,
+                'no_telp' => $mentor->no_telp,
+                'unread_count' => $unreadCount,
+            ]
+        ]);
+    }
+
     public function getChatMessages(Request $request, $partner_id)
     {
         $currentUser = $request->user();
