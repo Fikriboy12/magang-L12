@@ -461,11 +461,11 @@
         <div class="row">
           <div class="col-md-12">
             <div class="section-headline text-center animasi-masuk">
-              <h2>Informasi Berita</h2>
+              <h2>Berita & Kegiatan</h2>
             </div>
           </div>
         </div>
-        <div class="row row-flex">
+        <div class="row row-flex justify-content-center">
           @foreach ($data['informasi'] as $value)
             <div class="col-lg-4 col-md-4 col-sm-6 col-12 col-flex mb-4"> 
               <div class="animasi-masuk delay-{{ ($loop->iteration % 3) * 100 }} w-100-flex">
@@ -486,7 +486,7 @@
                             {{(str_word_count("$value->deskripsi") > 15 ? substr("$value->deskripsi",0,100)."..." : "$value->deskripsi") }}
                         </p>
                         <div style="text-align: right; margin-top: auto;"> 
-                            <a href="{{ url('detail-informasi/'.$value->id_informasi) }}" class="btn-world-class" style="font-size: 12px; padding: 10px 25px;">Read more</a>
+                            <a href="{{ url('detail-informasi/'.$value->id_informasi) }}" class="btn-world-class" style="font-size: 12px; padding: 10px 25px;">Baca Selengkapnya</a>
                         </div>
                     </div>
                 </div>
